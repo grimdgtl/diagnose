@@ -1,0 +1,413 @@
+/* resources/css/app.css */
+@import 'custom/sidebar.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+/* app.css */
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Red Hat Display';
+  background-color: #0a0a0a; /* --black */
+  color: #ffffff;            /* --white */
+}
+
+:root {
+  --black: #0a0a0a;
+  --orange: #FF5C00;
+  --white: #ffffff;
+  --gray: #121212;
+}
+
+/* Često se koristi box-sizing: border-box za lakše layout-e */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Uklanjanje strelica iz `number` polja za sve browser-e */
+input[type="number"] {
+    -moz-appearance: textfield; /* Firefox */
+    -webkit-appearance: none; /* Safari i Chrome */
+    appearance: none; /* Standardni CSS */
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0; /* Uklanjanje margina za spin dugmad */
+}
+
+/* Dodavanje strelice za dropdown */
+select {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="black" d="M2 0L0 2h4z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 8px 8px;
+    padding-right: 2rem; /* Prostor za strelicu */
+    border: 1px solid #ccc; /* Prilagodite okvir */
+    border-radius: 4px; /* Zaobljeni uglovi */
+}
+
+
+input:focus,
+textarea:focus {
+    outline: none; 
+    box-shadow: none; 
+}
+
+input::placeholder {
+    color: var(--white);
+    opacity: 1;
+}
+
+textarea::placeholder {
+    color: var(--white);
+    opacity: 1;
+}
+
+input:focus::placeholder,
+textarea:focus::placeholder {
+    color: transparent;
+}
+
+select {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+}
+
+h1 {
+  text-shadow: 0px 0px 10px rgba(255, 92.00000000000001, 0, 0.8117647058823529);
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--orange);
+  font-weight: 900 !important;
+  font-size: 3rem;
+}
+
+h2 {
+    font-size: 2rem;
+}
+
+h3 {
+    font-size: 1.5rem;
+}
+
+p, a {
+    font-size: 1rem;
+    color: var(--white);
+    font-optical-sizing: auto;
+    font-style: normal;
+    line-height: 1.4;
+}
+
+
+/* Omotač koji drži sidebar i glavni deo */
+.layout-container {
+  display: flex;        /* Sidebar sa leve, content sa desne */
+  min-height: 100vh;    /* Da sidebar se pruži do dna */
+}
+
+/* Sidebar */
+.sidebar {
+  width: 260px;               /* fiksna širina sidebara */
+  background-color: var(--black);
+  border-right: 2px solid var(--orange);
+  padding-top: 1rem;          /* malo prostora gore */
+}
+
+/* Logo “D” i naslov unutar sidebara */
+.sidebar .logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;    /* razmak između D i teksta “Dijagnoza” */
+  padding: 0 1rem;
+}
+
+.sidebar .logo .logo-letter {
+  color: var(--orange);
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+/* Linkovi u sidebar-u */
+.sidebar nav a {
+  display: block;
+  padding: 0.75rem 1.2rem;
+  color: var(--white);
+  text-decoration: none;
+  border-top: 1px solid #1c1c1c; /* tanka linija za odvajanje linkova */
+  transition: background-color 0.2s;
+}
+.sidebar nav a:hover {
+  background-color: #1c1c1c;     /* malo sivkasto */
+  color: var(--orange);         /* naglasi text */
+}
+
+/* “Odjavi se” dugme može biti <form> => stilizuješ ili klasu .logout-btn */
+.logout-btn {
+  display: block;
+  padding: 0.75rem 1.2rem;
+  color: var(--white);
+  text-decoration: none;
+  border-top: 1px solid #1c1c1c;
+  transition: background-color 0.2s;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0px 0px 20px 0px var(--orange);
+}
+.logout-btn:hover {
+  background-color: #1c1c1c;
+  color: var(--orange);
+}
+
+/* Glavni deo (desna strana) */
+.main-content {
+  flex: 1;          /* raste */
+  padding: 1rem 2rem;
+  background: var(--black);
+}
+
+
+/* Naslov */
+.page-title {
+  font-size: 3rem;
+  font-weight: bold;
+  color: var(--orange);
+  margin-bottom: 1rem;
+}
+
+/* Podnaslov ili opis */
+.page-subtitle {
+  color: #aaaaaa; /* ili var(--gray) ako želiš tamno sivu */
+  margin-bottom: 2rem;
+}
+
+.step {
+  margin-bottom: 25px;
+}
+
+/* Pomoćni box oko formi ili podela sadržaja */
+.box {
+  background-color: #1a1a1a; /* ili var(--gray) ako hoćeš baš #121212 */
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 2px solid var(--orange);
+  margin-bottom: 1rem;
+}
+
+/* Sve input i textarea polja */
+.input-field {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 2px solid var(--orange);
+  border-radius: 10px;
+  background-color: var(--gray);
+  color: var(--white);
+  font-size: 1rem;
+  outline: none;
+  box-shadow: 0px 0px 20px 0px var(--orange);
+}
+.input-field::placeholder {
+  color: #fff; /* bledji placeholder */
+}
+
+/* Selekt polje */
+.select-field {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 2px solid var(--orange);
+  box-shadow: 0px 0px 20px 0px var(--orange);
+  border-radius: 10px;
+  background-color: var(--gray);
+  color: var(--white);
+  font-size: 1rem;
+  outline: none;
+  appearance: none; /* Ukloni default strelicu, pa dodaš custom ako želiš */
+}
+
+/* Dugmad */
+.btn-orange {
+  background-color: var(--orange);
+  font-family: "Red Hat Display", Sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  border-style: solid;
+  border-width: 2px 2px 2px 2px;
+  border-color: var(--orange);
+  border-radius: 5px 5px 5px 5px;
+  box-shadow: 0px 0px 20px 0px var(--orange);
+  color: var(--white);
+  display: block;
+  transition: background-color 0.2s;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  max-width: 200px;
+  text-align: center;
+}
+.btn-orange:hover {
+  background-color: var(--black);
+}
+
+/* Ako želiš "Pošalji" dugme veće punjenje */
+.btn-large {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+}
+
+.chat-container {
+  background-color: #1a1a1a; /* Tamno siva za podlogu */
+  padding: 1rem;
+  border-radius: 8px;
+  border: 2px solid var(--orange);
+  max-height: 70vh;
+  overflow-y: auto;  /* scroll ako ima mnogo poruka */
+}
+
+/* Pojedinačna poruka (“balončić”) */
+.bubble {
+  max-width: 60%;
+  padding: 0.75rem 1rem;
+  margin: 0.5rem 0;
+  border-radius: 10px;
+  line-height: 1.4;
+}
+.bubble.assistant {
+  background-color: #252525;   /* siva */
+  color: var(--white);
+  margin-right: auto;          /* levo poravnato */
+}
+.bubble.user {
+  background-color: var(--orange);
+  color: #000;
+  margin-left: auto;           /* desno poravnato */
+}
+
+/* Chat input (za slanje nove poruke) */
+.chat-input {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.chat-input input[type="text"] {
+  flex: 1;
+  border: 2px solid var(--orange);
+  border-radius: 10px;
+  background-color: var(--gray);
+  color: var(--white);
+  padding: 0.75rem;
+  outline: none;
+}
+
+.chat-input button {
+  border: 2px solid var(--orange);
+  border-radius: 10px;
+  background-color: var(--black);
+  color: var(--white);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.chat-input button:hover {
+  background-color: var(--orange);
+  color: var(--black);
+}
+
+.hero {
+  text-align: center;
+  padding: 2rem;
+  background: none; /* ili slika, pattern... */
+}
+
+.hero-title {
+  font-size: 2.5rem;
+  color: var(--orange);
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.hero-subtitle {
+  color: #999999;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+
+.assistant-response {
+  max-width: 700px;
+  background-color: var(--black);
+  padding: 20px;
+  /*box-shadow: 0px 0px 20px 0px var(--orange);*/
+  border: 2px solid var(--orange);
+  margin-bottom: 20px;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.auth-form {
+  width: 100%;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.user-chat {
+  height: 95vh;
+}
+
+.question-response {
+  max-width: 700px;
+  background-color: #212121;
+  padding: 20px;
+  /*box-shadow: 0px 0px 20px 0px var(--orange);*/
+  /*border: 2px solid var(--orange);*/
+  margin-bottom: 20px;
+  font-size: 1rem;
+  color:#fff;
+  font-weight: 400;
+}
+
+.new-messsage-input {
+  margin-bottom: 0;
+  padding: 0.55rem;
+}
+
+.send-message {
+  width: 100%;
+  max-width: 100px;
+}
+
+.select-arrow {
+  position: relative;
+}
+.select-arrow::after {
+  content: "▼";
+  color: var(--orange);
+  font-size: 1rem;
+  position: absolute;
+  right: 20px;
+  top: 60%;
+  transform: translateY(-100%);
+  pointer-events: none;
+}
