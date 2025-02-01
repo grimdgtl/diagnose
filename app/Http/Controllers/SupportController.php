@@ -12,10 +12,6 @@ class SupportController extends Controller
     /**
      * Prikaz forme za podršku.
      */
-    public function showSupportForm()
-    {
-        return view('support.form');
-    }
 
     /**
      * Obrada podataka iz forme za podršku.
@@ -45,11 +41,35 @@ class SupportController extends Controller
         }
     }
 
-    /**
-     * Prikaz FAQ stranice.
-     */
-    public function showFAQ()
+    public function showSupportForm()
     {
-        return view('support.faq');
+        $faqs = [
+            [
+                'question' => 'Kako da zakažem servis?',
+                'answer' => 'Posjetite sekciju "Moja Garaža" i izaberite željeni termin...',
+                'link' => route('profile.garage')
+            ],
+            // Dodajte ostala pitanja
+            [
+                'question' => 'Kako da zakažem servis?',
+                'answer' => 'Posjetite sekciju "Moja Garaža" i izaberite željeni termin...',
+                'link' => route('profile.garage')
+            ],
+            // Dodajte ostala pitanja
+            [
+                'question' => 'Kako da zakažem servis?',
+                'answer' => 'Posjetite sekciju "Moja Garaža" i izaberite željeni termin...',
+                'link' => route('profile.garage')
+            ],
+            // Dodajte ostala pitanja
+            [
+                'question' => 'Kako da zakažem servis?',
+                'answer' => 'Posjetite sekciju "Moja Garaža" i izaberite željeni termin...',
+                'link' => route('profile.garage')
+            ],
+            // Dodajte ostala pitanja
+        ];  
+
+        return view('support.form', compact('faqs'));
     }
 }

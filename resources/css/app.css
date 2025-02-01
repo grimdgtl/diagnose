@@ -1,288 +1,449 @@
-/* resources/css/app.css */
-@import 'custom/sidebar.css';
-
+/******************************************************************************
+ *  1) TAILWIND IMPORTS
+ ******************************************************************************/
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/******************************************************************************
+ *  2) GLOBALNE PROMENLJIVE & OSNOVNA PODEŠAVANJA
+ ******************************************************************************/
+:root {
+    --black: #0a0a0a;
+    --orange: #FF5C00;
+    --white: #ffffff;
+    --gray: #121212;
 
+    --navbar-light-primary: #FFFFFF;
+    --navbar-light-secondary: #CCCCCC;
+    --navbar-dark-primary: #333333;
+    --navbar-dark-secondary: #555555;
+    --background: #1a202c;
 
-/* app.css */
+    /* Širina sidebara: otvoren/zatvoren */
+    --sidebar-width-open: 250px;
+    --sidebar-width-closed: 60px;
+}
 
 html, body {
   margin: 0;
   padding: 0;
-  font-family: 'Red Hat Display';
-  background-color: #0a0a0a; /* --black */
-  color: #ffffff;            /* --white */
+  font-family: 'Red Hat Display', sans-serif;
+  background-color: var(--black);
+  color: var(--white);
+  background-image: url('../images/app-background.jpg');
+  background-size: cover;
+  background-position: center; 
+
 }
 
-:root {
-  --black: #0a0a0a;
-  --orange: #FF5C00;
-  --white: #ffffff;
-  --gray: #121212;
-}
-
-/* Često se koristi box-sizing: border-box za lakše layout-e */
 *, *::before, *::after {
   box-sizing: border-box;
 }
 
-/* Uklanjanje strelica iz `number` polja za sve browser-e */
+/* Uklanjanje strelica kod number input-a */
 input[type="number"] {
-    -moz-appearance: textfield; /* Firefox */
-    -webkit-appearance: none; /* Safari i Chrome */
-    appearance: none; /* Standardni CSS */
+    -moz-appearance: textfield;
+    -webkit-appearance: none;
+    appearance: none;
 }
-
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
-    margin: 0; /* Uklanjanje margina za spin dugmad */
+    margin: 0;
 }
 
-/* Dodavanje strelice za dropdown */
-select {
-    appearance: none;
-    -moz-appearance: none;
-    -webkit-appearance: none;
-    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="black" d="M2 0L0 2h4z"/></svg>');
-    background-repeat: no-repeat;
-    background-position: right 0.75rem center;
-    background-size: 8px 8px;
-    padding-right: 2rem; /* Prostor za strelicu */
-    border: 1px solid #ccc; /* Prilagodite okvir */
-    border-radius: 4px; /* Zaobljeni uglovi */
-}
-
-
+/* Fokus i placeholder */
 input:focus,
-textarea:focus {
-    outline: none; 
-    box-shadow: none; 
+textarea:focus,
+select:focus {
+  box-shadow: 0 0 10px var(--orange);
+  outline: none;
 }
-
-input::placeholder {
-    color: var(--white);
-    opacity: 1;
-}
-
+input::placeholder,
 textarea::placeholder {
     color: var(--white);
-    opacity: 1;
+    opacity: 0.7;
 }
-
 input:focus::placeholder,
 textarea:focus::placeholder {
     color: transparent;
 }
 
-select {
-    appearance: none;
-    -moz-appearance: none;
-    -webkit-appearance: none;
+/******************************************************************************
+ *  3) LAYOUT: SIDEBAR & MAIN CONTENT
+ ******************************************************************************/
+.layout-container {
+  display: flex;
+  min-height: 100vh;
+}
+.nav-toggle-checkbox {
+  display: none;
 }
 
-h1 {
-  text-shadow: 0px 0px 10px rgba(255, 92.00000000000001, 0, 0.8117647058823529);
+/* SIDEBAR (LEVO) */
+#nav-bar {
+    position: fixed;
+    top: 6%;
+    left: 1%;
+    height: 90vh;
+
+    /* Otvoren => 250px */
+    width: var(--sidebar-width-open);
+    transition: width 0.3s ease-in-out;
+    border-radius: 15px;
+
+    background: var(--black);
+    border: 2px solid var(--orange);
+    overflow: hidden;
+    z-index: 1000;
+    user-select: none;
+}
+.nav-toggle-checkbox:checked ~ #nav-bar {
+  width: var(--sidebar-width-closed);
+}
+
+/* Logo + hamburger */
+#nav-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+}
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.sidebar-logo img {
+  height: 50px;
+  transition: height 0.3s;
+}
+.nav-toggle-checkbox:checked ~ #nav-bar .sidebar-logo img {
+  height:0;
+  transition: height 0.3s;
+}
+
+/******************************************************************************
+ *  3.1) HAMBURGER ANIMACIJA
+ ******************************************************************************/
+.hamburger-label {
+  position: relative;
+  width: 30px;
+  height: 24px;
+  cursor: pointer;
+}
+.hamburger-label i {
+  display: none; /* sakrij fa-bars ako postoji */
+}
+.hamburger-line {
+  position: absolute;
+  top: 50%; 
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--white);
+  transform: translate(-50%, -50%);
+  transition: all 0.3s ease-in-out;
+  background: transparent;
+}
+
+.hamburger-line::before {
+  top: 0;
+  transform: rotate(45deg);
+}
+
+.hamburger-line::after {
+  top: 0;
+  transform: rotate(-45deg);
+}
+.hamburger-line::before,
+.hamburger-line::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: var(--white);
+  transition: all 0.3s ease-in-out;
+}
+
+/*transform into X */
+.nav-toggle-checkbox:checked ~ #nav-bar #nav-header .hamburger-line {
+  background: transparent;
+}
+.nav-toggle-checkbox:checked ~ #nav-bar #nav-header .hamburger-line::before {
+  top: 0;
+  transform: rotate(0deg);
+}
+.nav-toggle-checkbox:checked ~ #nav-bar #nav-header .hamburger-line::after {
+  top: 8px;
+  transform: rotate(0deg);
+}
+
+/******************************************************************************
+ *  4) SIDEBAR LINKOVI
+ ******************************************************************************/
+#nav-content {
+  display: flex;
+  flex-direction: column;
+  margin-top: 0.5rem;
+}
+.nav-button {
+  border-bottom: 1px solid #222;
+}
+.nav-button a {
+  display: flex;
+  align-items: center;
+  padding: 0.8rem 1rem;
+  text-decoration: none;
+  color: var(--white);
+  transition: background 0.2s;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.nav-button a:hover {
+  background: #1c1c1c;
+}
+.nav-button i {
+  min-width: 24px;
+  font-size: 1.2rem;
+  text-align: center;
+  margin-right: 1rem; 
+}
+.link-text {
+  font-size: 1rem; 
+  white-space: nowrap;
+  margin-left: 20px;
+  font-weight: 900;
+  text-transform: uppercase;
+  transition: ease-in-out 1.2s;
+}
+/* Kad je sidebar zatvoren => sakrij .link-text */
+.nav-toggle-checkbox:checked ~ #nav-bar #nav-content .link-text {
+  display: none;
+}
+
+/******************************************************************************
+ *  5) MAIN CONTENT
+ ******************************************************************************/
+.main-content {
+  flex: 1;
+  margin-left: var(--sidebar-width-open); 
+  transition: margin-left 0.3s ease-in-out;
+  padding: 3rem 2rem;
+}
+.nav-toggle-checkbox:checked ~ .main-content {
+  margin-left: var(--sidebar-width-closed);
+}
+
+/******************************************************************************
+ *  6) PODMENI (Moj Profil)
+ ******************************************************************************/
+.profile-submenu-section {
+  position: relative;
+}
+.profile-menu-label {
+  cursor: pointer;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  padding: 0.8rem 1rem;
+  transition: background 0.2s;
+}
+.profile-menu-label:hover {
+  background: #1c1c1c;
+}
+.profile-submenu {
+  display: none;
+  background-color: #0a0a0a; 
+  margin-left: 1rem;
+  border-left: 2px solid var(--orange);
+}
+.profile-submenu a {
+  display: block;
+  color: var(--white);
+  padding: 0.5rem 1.5rem;
+  text-decoration: none;
+  border-bottom: 1px solid #222;
+  font-family: 'Red Hat Display', sans-serif;
+}
+.profile-submenu a:hover {
+  background-color: #1c1c1c;
+}
+#profile-submenu-checkbox:checked ~ .profile-submenu {
+  display: block;
+}
+/******************************************************************************
+ *  6.1) MOJI PODACI
+ ******************************************************************************/
+
+.second-btn {
+  background-color: var(--black) !important;
+  min-width: 200px;
+}
+
+.second-btn:hover {
+  background-color: var(--orange) !important;
+}
+
+.my-profile-data-head {
+  display: flex;
+  justify-content: space-between;
+}
+
+.my-profile-data {
+  background-color: black;
+  box-shadow: 0 0 10px var(--orange);
+  border-radius: 15px;
+}
+
+/******************************************************************************
+ *  6.2) MOJA GARAŽA
+ ******************************************************************************/
+/* Garaža - Custom stilovi */
+.garage {
+  border-radius: 15px;
+  height: 88vh;
+  border: 2px solid var(--orange);
+}
+
+.garage-grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.garage-card {
+    background: #1a1a1a;
+    border-radius: 15px;
+    border: 2px solid rgba(255, 92, 0, 0.1);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.garage-card:hover {
+    border-color: rgba(255, 92, 0, 0.5);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(255, 92, 0, 0.1);
+}
+
+.garage-icon {
+    color: #FF5C00;
+    font-size: 1.2rem;
+    margin-right: 0.5rem;
+}
+
+.empty-garage {
+    background: rgba(255, 92, 0, 0.05);
+    border: 2px dashed rgba(255, 92, 0, 0.3);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+}
+
+.empty-garage i {
+    font-size: 3rem;
+    color: rgba(255, 92, 0, 0.5);
+}
+
+.car-card {
+  background-color: var(--gray);
+  box-shadow: 0 0 10px var(--orange);
+
+}
+/******************************************************************************
+ *  6.3) MOJA ISTORIJA
+ ******************************************************************************/
+.archive-chat {
+  background-color: black;
+  box-shadow: 0 0 10px var(--orange);
+  border-radius: 15px;
+}
+
+.chat-row {
+  border-top: 2px solid var(--orange);
+}
+
+/******************************************************************************
+ *  6.3) MOJA ISTORIJA
+ ******************************************************************************/
+.rate-form {
+  box-shadow: 0 0 10px var(--orange); 
+}
+
+/******************************************************************************
+ *  8) OSTALI GLOBALNI STILOVI (Naslovi, input polja, dugmad...)
+ ******************************************************************************/
+h1, .page-title {
+  text-shadow: 0 0 10px rgba(255,92,0,0.8);
   text-transform: uppercase;
   text-align: center;
   color: var(--orange);
-  font-weight: 900 !important;
-  font-size: 3rem;
-}
-
-h2 {
-    font-size: 2rem;
-}
-
-h3 {
-    font-size: 1.5rem;
-}
-
-p, a {
-    font-size: 1rem;
-    color: var(--white);
-    font-optical-sizing: auto;
-    font-style: normal;
-    line-height: 1.4;
-}
-
-
-/* Omotač koji drži sidebar i glavni deo */
-.layout-container {
-  display: flex;        /* Sidebar sa leve, content sa desne */
-  min-height: 100vh;    /* Da sidebar se pruži do dna */
-}
-
-/* Sidebar */
-.sidebar {
-  width: 260px;               /* fiksna širina sidebara */
-  background-color: var(--black);
-  border-right: 2px solid var(--orange);
-  padding-top: 1rem;          /* malo prostora gore */
-}
-
-/* Logo “D” i naslov unutar sidebara */
-.sidebar .logo {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;    /* razmak između D i teksta “Dijagnoza” */
-  padding: 0 1rem;
-}
-
-.sidebar .logo .logo-letter {
-  color: var(--orange);
+  font-weight: 900;
+  margin-bottom: 1rem;
   font-size: 2rem;
-  font-weight: bold;
 }
 
-/* Linkovi u sidebar-u */
-.sidebar nav a {
-  display: block;
-  padding: 0.75rem 1.2rem;
-  color: var(--white);
-  text-decoration: none;
-  border-top: 1px solid #1c1c1c; /* tanka linija za odvajanje linkova */
-  transition: background-color 0.2s;
-}
-.sidebar nav a:hover {
-  background-color: #1c1c1c;     /* malo sivkasto */
-  color: var(--orange);         /* naglasi text */
-}
-
-/* “Odjavi se” dugme može biti <form> => stilizuješ ili klasu .logout-btn */
-.logout-btn {
-  display: block;
-  padding: 0.75rem 1.2rem;
-  color: var(--white);
-  text-decoration: none;
-  border-top: 1px solid #1c1c1c;
-  transition: background-color 0.2s;
-  width: 100%;
-  text-align: left;
-  background: none;
-  border: none;
-  cursor: pointer;
-  box-shadow: 0px 0px 20px 0px var(--orange);
-}
-.logout-btn:hover {
-  background-color: #1c1c1c;
+h2, h3 {
   color: var(--orange);
 }
-
-/* Glavni deo (desna strana) */
-.main-content {
-  flex: 1;          /* raste */
-  padding: 1rem 2rem;
-  background: var(--black);
-}
-
-
-/* Naslov */
-.page-title {
-  font-size: 3rem;
-  font-weight: bold;
-  color: var(--orange);
-  margin-bottom: 1rem;
-}
-
-/* Podnaslov ili opis */
-.page-subtitle {
-  color: #aaaaaa; /* ili var(--gray) ako želiš tamno sivu */
-  margin-bottom: 2rem;
-}
-
-.step {
-  margin-bottom: 25px;
-}
-
-/* Pomoćni box oko formi ili podela sadržaja */
-.box {
-  background-color: #1a1a1a; /* ili var(--gray) ako hoćeš baš #121212 */
-  padding: 1.5rem;
-  border-radius: 8px;
-  border: 2px solid var(--orange);
-  margin-bottom: 1rem;
-}
-
-/* Sve input i textarea polja */
-.input-field {
-  display: block;
-  width: 100%;
-  padding: 0.75rem;
-  margin-bottom: 1rem;
-  border: 2px solid var(--orange);
-  border-radius: 10px;
-  background-color: var(--gray);
-  color: var(--white);
+p, a, label, span {
   font-size: 1rem;
-  outline: none;
-  box-shadow: 0px 0px 20px 0px var(--orange);
-}
-.input-field::placeholder {
-  color: #fff; /* bledji placeholder */
-}
-
-/* Selekt polje */
-.select-field {
-  display: block;
-  width: 100%;
-  padding: 0.75rem;
-  margin-bottom: 1rem;
-  border: 2px solid var(--orange);
-  box-shadow: 0px 0px 20px 0px var(--orange);
-  border-radius: 10px;
-  background-color: var(--gray);
+  line-height: 1.4;
   color: var(--white);
-  font-size: 1rem;
-  outline: none;
-  appearance: none; /* Ukloni default strelicu, pa dodaš custom ako želiš */
 }
-
-/* Dugmad */
 .btn-orange {
   background-color: var(--orange);
-  font-family: "Red Hat Display", Sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  text-transform: uppercase;
-  border-style: solid;
-  border-width: 2px 2px 2px 2px;
-  border-color: var(--orange);
-  border-radius: 5px 5px 5px 5px;
-  box-shadow: 0px 0px 20px 0px var(--orange);
+  border: 2px solid var(--orange);
+  border-radius: 5px;
+  box-shadow: 0 0 10px var(--orange);
   color: var(--white);
-  display: block;
-  transition: background-color 0.2s;
-  padding: 0.5rem 1rem;
   cursor: pointer;
-  transition: all 0.2s;
+  display: inline-block;
+  transition: 0.2s;
+  /*padding: 0.5rem 1rem;*/
+  padding: 0.5rem;
+  text-transform: uppercase;
+  font-weight: 900;
   width: 100%;
   max-width: 200px;
   text-align: center;
 }
 .btn-orange:hover {
   background-color: var(--black);
+  text-decoration: none;
 }
 
-/* Ako želiš "Pošalji" dugme veće punjenje */
-.btn-large {
-  padding: 0.75rem 1.5rem;
+/* Input polja */
+.input-field {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid var(--orange);
+  border-radius: 10px;
+  background-color: var(--gray);
+  color: var(--white);
   font-size: 1rem;
+  margin-bottom: 1rem;
+  outline: none;
+  box-shadow: none;
 }
 
+/******************************************************************************
+ *  9) CHAT STILOVI
+ ******************************************************************************/
+.user-chat {
+  min-height: 80vh;
+}
 .chat-container {
-  background-color: #1a1a1a; /* Tamno siva za podlogu */
+  background-color: var(--black);
   padding: 1rem;
   border-radius: 8px;
   border: 2px solid var(--orange);
+  min-height: 70vh;
+  overflow-y: auto;
   max-height: 70vh;
-  overflow-y: auto;  /* scroll ako ima mnogo poruka */
 }
-
-/* Pojedinačna poruka (“balončić”) */
 .bubble {
   max-width: 60%;
   padding: 0.75rem 1rem;
@@ -291,123 +452,270 @@ p, a {
   line-height: 1.4;
 }
 .bubble.assistant {
-  background-color: #252525;   /* siva */
+  background-color: #252525;
   color: var(--white);
-  margin-right: auto;          /* levo poravnato */
+  margin-right: auto;
 }
 .bubble.user {
   background-color: var(--orange);
-  color: #000;
-  margin-left: auto;           /* desno poravnato */
+  color: #fff;
+  margin-left: auto;
 }
-
-/* Chat input (za slanje nove poruke) */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-in-out;
+}
 .chat-input {
-  margin-top: 1rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
-
 .chat-input input[type="text"] {
   flex: 1;
-  border: 2px solid var(--orange);
-  border-radius: 10px;
   background-color: var(--gray);
   color: var(--white);
+  border: 2px solid var(--orange);
+  border-radius: 10px;
   padding: 0.75rem;
-  outline: none;
 }
-
 .chat-input button {
   border: 2px solid var(--orange);
   border-radius: 10px;
   background-color: var(--black);
   color: var(--white);
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: 0.2s;
+  box-shadow: none;
 }
 .chat-input button:hover {
   background-color: var(--orange);
-  color: var(--black);
+  color: #000;
+  box-shadow: 0 0 10px var(--orange);
+}
+.new-message-field {
+  margin-bottom:0;
 }
 
-.hero {
-  text-align: center;
-  padding: 2rem;
-  background: none; /* ili slika, pattern... */
+/******************************************************************************
+ *  SUBSCRIPTION (IDENTIČAN IZGLED KAO NA SLICI)
+ ******************************************************************************/
+/* Omotač za ceo subscription deo */
+.subscription-wrapper {
+  /* mozes dodati background transparent ili #1a1a1a, 
+     jer se možda naslanja na glavni .main-content? */
 }
 
-.hero-title {
-  font-size: 2.5rem;
+/* Glavni naslov “ODABERI PAKET” */
+.plan-page-title {
+  font-size: 2rem;            /* velika slova */
+  font-weight: 900;
   color: var(--orange);
-  font-weight: bold;
+  text-transform: uppercase;
+  text-shadow: 0 0 15px rgba(255,92,0,0.8);
+  text-align: left;
+}
+
+/* Tekst ispod naslova */
+.plan-subtext {
+  color: #ccc;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+/* Kartice raspored (2 kolone na MD +) */
+.plan-grid {
+  /* mozes i ovde definisati gap, npr. gap: 2rem; */
+}
+
+/* Blok sa info o trenutnom paketu */
+.current-sub-info {
+  box-shadow: 0 0 15px rgba(255,92,0,0.4);
+  text-align: left;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(255,92,0,0.4);
+}
+
+/* Jedna kartica (starter/pro) */
+.plan-box {
+  background: #000; /* ili #1a1a1a */
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  position: relative;
+  transition: all 0.3s ease;
+  min-height: 60vh;
+  box-shadow: 0 0 15px rgba(255,92,0,0.4);
+
+}
+.plan-box:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 30px 3px var(--orange);
+}
+
+/* "POPULARNO" traka u uglu */
+.plan-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: var(--orange);
+  color: #000;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  border-bottom-left-radius: 5px;
+}
+
+/* Naziv plana (npr. “Starter”) */
+.plan-name {
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #fff;
   margin-bottom: 1rem;
 }
 
-.hero-subtitle {
-  color: #999999;
-  max-width: 600px;
-  margin: 0 auto;
-  line-height: 1.5;
+/* Cena */
+.plan-price {
+  font-size: 2rem; 
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 1.5rem;
+  line-height: 1; /* zbijeno da RSD i 999 budu bliže */
 }
-
-
-.assistant-response {
-  max-width: 700px;
-  background-color: var(--black);
-  padding: 20px;
-  /*box-shadow: 0px 0px 20px 0px var(--orange);*/
-  border: 2px solid var(--orange);
-  margin-bottom: 20px;
+.plan-currency {
+  font-size: 1.2rem;
+  margin-right: 0.25rem;
+}
+.plan-amount {
+  font-size: 4rem; /* naglasi glavni broj */
+  margin: 0 0.25rem;
+  font-weight: 900;
+}
+.plan-interval {
   font-size: 1rem;
-  font-weight: 400;
+  color: #aaa;
+  margin-left: 0.25rem;
 }
 
-.auth-form {
-  width: 100%;
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.user-chat {
-  height: 95vh;
-}
-
-.question-response {
-  max-width: 700px;
-  background-color: #212121;
-  padding: 20px;
-  /*box-shadow: 0px 0px 20px 0px var(--orange);*/
-  /*border: 2px solid var(--orange);*/
-  margin-bottom: 20px;
+/* Bullet-list unutar kartice (features) */
+.plan-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+  text-transform: uppercase;
+  color: #bbb;
   font-size: 1rem;
-  color:#fff;
-  font-weight: 400;
+  line-height: 1.6;
+}
+.plan-features li {
+  margin-bottom: 0.5rem;
 }
 
-.new-messsage-input {
-  margin-bottom: 0;
-  padding: 0.55rem;
+/* Dugme unutar plan kartice */
+.plan-button {
+  margin-top: 1rem;
+  display: inline-block;
+  width: auto; /* mozes i 100% */
 }
 
-.send-message {
-  width: 100%;
-  max-width: 100px;
-}
-
-.select-arrow {
-  position: relative;
-}
-.select-arrow::after {
-  content: "▼";
+/* Po želji da bullet items imaju • 
+.plan-features li::before {
+  content: "• ";
   color: var(--orange);
-  font-size: 1rem;
-  position: absolute;
-  right: 20px;
-  top: 60%;
-  transform: translateY(-100%);
-  pointer-events: none;
+} */
+
+/******************************************************************************
+ *  CUSTOM RADIO BUTTONS
+ ******************************************************************************/
+.radio-custom-display {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--orange);
+    border-radius: 50%;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.radio-custom:checked + .radio-custom-display {
+    background-color: var(--orange);
+    box-shadow: 0 0 8px rgba(255,92,0,0.6);
+}
+
+.radio-custom:checked + .radio-custom-display::after {
+    content: "";
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: var(--black);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/******************************************************************************
+ *  DROPDOWN STILIZACIJA
+ ******************************************************************************/
+select.input-field {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FF5C00'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1.5em;
+    padding-right: 2.5rem;
+}
+
+select.input-field option {
+    background-color: var(--gray);
+    color: var(--white);
+}
+
+select.input-field:focus {
+    box-shadow: 0 0 10px var(--orange);
+}
+
+.box-height {
+  height: 100%;
+  max-height: 88vh;
+}
+
+.default-width {
+  max-width: 800px;
+  width: 100%;
+  margin: 2rem auto;
+}
+
+/******************************************************************************
+ *  10) RESPONSIVE => MOBILNI
+ ******************************************************************************/
+@media (max-width: 768px) {
+  /* Prebacujemo sidebar na desnu stranu */
+  #nav-bar {
+    right: 0;
+    left: auto;
+    width: var(--sidebar-width-closed); 
+    border-left: 2px solid var(--orange);
+    border-right: none;
+  }
+  .nav-toggle-checkbox:checked ~ #nav-bar {
+    width: var(--sidebar-width-open);
+  }
+  .main-content {
+    margin-left: 0;
+  }
+  .nav-toggle-checkbox:checked ~ .main-content {
+    margin-right: var(--sidebar-width-open);
+  }
+  .chat-container {
+    max-height: 50vh;
+  }
+  .page-title {
+    font-size: 1.5rem;
+  }
 }

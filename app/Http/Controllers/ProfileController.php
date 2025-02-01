@@ -87,6 +87,12 @@ class ProfileController extends Controller
     }
 
     // Oceni aplikaciju
+    
+    public function showRateForm()
+    {
+        return view('profile.rate');
+    }
+    
     public function rateApp(Request $request)
     {
         $request->validate([
@@ -110,3 +116,4 @@ class ProfileController extends Controller
     }
 
 }
+

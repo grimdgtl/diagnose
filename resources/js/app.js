@@ -49,15 +49,4 @@ app.component('example-component', ExampleComponent);
 //    });
 //});
 
-document.addEventListener('DOMContentLoaded', function () {
-    var submenuToggle = document.querySelector('.profile-submenu-toggle');
-    submenuToggle.addEventListener('click', function () {
-        var submenu = this.querySelector('.profile-submenu');
-        if (submenu.style.display === 'block') {
-            submenu.style.display = 'none';
-        } else {
-            submenu.style.display = 'block';
-        }
-    });
-});
 

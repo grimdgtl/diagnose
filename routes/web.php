@@ -20,20 +20,12 @@ use App\Http\Controllers\SupportController;
 // -------------------------------------------------
 
 // 1. GET ruta - prikazuje objedinjenu (dvostepnu) formu:
-Route::get('/wizard-form', [GuestFlowController::class, 'showWizardForm'])
+Route::get('/', [GuestFlowController::class, 'showWizardForm'])
      ->name('guest.wizard-form');
 
 // 2. POST ruta - prima submit i čuva sve podatke u temp_* tabelama:
 Route::post('/wizard-form', [GuestFlowController::class, 'storeTempData'])
      ->name('guest.store-temp-data');
-
-// Forma 1: Opis problema
-Route::get('/', [GuestFlowController::class, 'showProblemForm'])
-    ->name('guest.problem-form');
-
-// Forma 2: Podaci o autu
-Route::get('/car-form', [GuestFlowController::class, 'showCarForm'])
-    ->name('guest.car-form');
 
 // Submit podataka i poziv ChatGPT-a, čuvanje u temp_*
 Route::post('/submit-temp-data', [GuestFlowController::class, 'storeTempData'])
@@ -205,14 +197,13 @@ Route::post('/support', [SupportController::class, 'submitSupportForm'])
 Route::get('/faq', [SupportController::class, 'showFAQ'])
     ->name('faq');
 
-Route::get('/test-email', function() {
-    try {
-        \Illuminate\Support\Facades\Mail::raw('Ovo je test poruka', function($msg) {
-            $msg->to('nikola.sandbox@gmail.com');
-            $msg->subject('Test email');
-        });
-        return 'Poslato!';
-    } catch (\Exception $e) {
-        return 'Greška: '.$e->getMessage();
-    }
-});
+
+// U `web.php`
+Route::get('/wizard-form-registered', [\App\Http\Controllers\RegisteredWizardController::class, 'showForm'])
+     ->name('registered.wizard-form')
+     ->middleware('auth'); 
+
+Route::post('/wizard-form-registered', [\App\Http\Controllers\RegisteredWizardController::class, 'storeData'])
+     ->name('registered.store-data')
+     ->middleware('auth');
+

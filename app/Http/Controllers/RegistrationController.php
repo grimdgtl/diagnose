@@ -34,6 +34,7 @@ class RegistrationController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name'  => 'required|string|max:255',
             'email'      => 'required|email|unique:users,email',
+            'phone'  => 'nullable|string|max:255',
             'password'   => [
                 'required',
                 'confirmed', // Potvrda šifre
@@ -61,6 +62,7 @@ class RegistrationController extends Controller
             'first_name'        => $request->first_name,
             'last_name'         => $request->last_name,
             'email'             => $request->email,
+            'phone'             => $request->phone,
             'password'          => Hash::make($request->password),
             'city'              => $request->city,
             'country'           => $request->country,

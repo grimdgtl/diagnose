@@ -88,10 +88,12 @@ class ChatController extends Controller
         return redirect()->route('dashboard')->with('success','Pitanje i odgovor su sačuvani.');
     }
 
+    // ChatController.php
     public function newChat()
     {
         $user = Auth::user();
-        // pronadji stari open chat i zatvori ga
+
+        // Zatvori stari chat, ako postoji
         $openChat = Chat::where('user_id', $user->id)->where('status','open')->first();
         if ($openChat) {
             $openChat->status = 'closed';
@@ -99,7 +101,14 @@ class ChatController extends Controller
             $openChat->save();
         }
 
-        // Preusmerimo na formu za novi problem ili wizard
-        return redirect()->route('guest.wizard-form');
-    }
+        // Ako je gost (teoretski, ovo se zove iz linka koji je dostupan samo registrovanima
+        // ali za svaki slučaj):
+        if (!$user) {
+            return redirect()->route('guest.wizard-form');
+        }
+
+        // Ako je registrovan
+        return redirect()->route('registered.wizard-form');
+    }  
+
 }
