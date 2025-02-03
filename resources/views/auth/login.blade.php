@@ -2,7 +2,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-md mx-auto p-10 mt-12 bg-black rounded-lg shadow-lg">
+<div class="max-w-md mx-auto p-10 bg-black translate-y-1/4 rounded-lg shadow-lg">
     <h2 class="text-2xl page-title font-black text-orange mb-4 text-center">Prijava</h2>
 
     @if ($errors->any())

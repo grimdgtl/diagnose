@@ -22,7 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('verification_token', 255)->nullable();
             $table->boolean('verified')->default(false);
             // Polja za reset lozinke / pamćenje
-            $table->string('reset_token', 255)->nullable();
+            $table->string('password_reset_tokens', 255)->nullable();
             $table->dateTime('reset_requested_at')->nullable();
             $table->string('remember_token', 255)->nullable();
 

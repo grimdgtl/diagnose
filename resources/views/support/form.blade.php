@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="max-w-7xl mx-auto my-12 px-4 sm:px-6 lg:px-8">
 
     <!-- FAQ sekcija -->
     <div class="grid lg:grid-cols-1 gap-8 mb-8">

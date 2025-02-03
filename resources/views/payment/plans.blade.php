@@ -15,9 +15,10 @@
                 <li>Okvirne cene delova</li>
                 <li>Preporuke servisa</li>
             </ul>
+            <!-- Forma koja šalje 'plan_id' = 'plan_20' na routes/plans/buy -->
             <form action="{{ route('plans.buy') }}" method="POST">
                 @csrf
-                <input type="hidden" name="plan_type" value="20">
+                <input type="hidden" name="plan_id" value="plan_20">
                 <button type="submit" class="btn-orange px-4 py-2 mt-2 text-black hover:bg-orange-500">
                     Kupi Starter
                 </button>
@@ -37,9 +38,10 @@
                 <li>Cene delova</li>
                 <li>Preporuke servisa</li>
             </ul>
+            <!-- Forma koja šalje 'plan_id' = 'plan_unlimited' na routes/plans/buy -->
             <form action="{{ route('plans.buy') }}" method="POST">
                 @csrf
-                <input type="hidden" name="plan_type" value="unlimited">
+                <input type="hidden" name="plan_id" value="plan_unlimited">
                 <button type="submit" class="btn-orange px-4 py-2 mt-2 text-black hover:bg-orange-500">
                     Kupi Pro
                 </button>

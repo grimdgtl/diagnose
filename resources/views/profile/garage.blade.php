@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-7xl garage bg-black mx-auto px-4 sm:px-6 lg:px-8 py-12">
+<div class="max-w-7xl garage bg-black mx-8 my-12 px-4 sm:px-6 lg:px-8 py-12">
     <!-- Hero sekcija -->
     <div class="text-center mb-12">
         <h1 class="text-4xl font-black bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text">

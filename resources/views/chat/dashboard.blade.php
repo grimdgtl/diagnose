@@ -4,10 +4,10 @@
 @section('title','Dijagnoza - Dashboard')
 
 @section('content')
-<div class="user-chat flex flex-col pl-4 pr-4">
+<div class="user-chat flex flex-col px-12 pt-12">
 
     <!-- Gornja traka: naslov i broj preostalih pitanja -->
-    <div class="flex items-center justify-between">
+    <div class="flex items-center justify-between chat-header">
         <h1 class="page-title">
             DIJAGNOZA
         </h1>
@@ -45,7 +45,7 @@
                 @csrf
                 <input type="hidden" name="chat_id" value="{{ $chat->id ?? '' }}" />
                 <input type="text" name="message" class="new-message-field" placeholder="Unesi novo pitanje"
-                       class="input-field flex-1 bg-gray-700" />
+                       class="input-field flex-1 bg-black" />
                 <button type="submit" class="btn-orange send-message text-black hover:bg-orange-500">
                     <i class="fa fa-paper-plane"></i>
                 </button>

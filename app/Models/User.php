@@ -28,7 +28,7 @@ class User extends Authenticatable
         'num_of_questions_left',
         'verification_token',
         'verified',
-        'reset_token',
+        'password_reset_tokens',
         'reset_requested_at',
         'remember_token',
         'created_at',

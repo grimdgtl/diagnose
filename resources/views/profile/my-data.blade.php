@@ -2,7 +2,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="my-profile-data max-w-2xl mx-auto p-4 mt-12 bg-gray-800 rounded-lg shadow-lg">
+<div class="my-profile-data max-w-2xl translate-y-1/4 mx-auto p-4  bg-gray-800 rounded-lg shadow-lg">
     <div class="my-profile-data-head grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <h1 class="page-title text-2xl font-bold text-orange mb-4">Moji podaci</h1>
         <!-- Brisanje profila -->

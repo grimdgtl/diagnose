@@ -3,7 +3,7 @@
 @section('title', 'Unos problema i podataka o automobilu - Dva koraka')
 
 @section('content')
-<div class="mx-auto box-height p-12 bg-black rounded-lg shadow-lg" x-data="{ step: 1 }">
+<div class="box-height border-orange p-12 my-11 mx-8 bg-black radius shadow-lg" x-data="{ step: 1 }">
     <h1 class="text-3xl text-orange font-bold mb-4 text-center page-title">
         Dobrodošao na Dijagnozu
     </h1>

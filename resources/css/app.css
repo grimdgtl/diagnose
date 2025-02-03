@@ -31,10 +31,10 @@ html, body {
   font-family: 'Red Hat Display', sans-serif;
   background-color: var(--black);
   color: var(--white);
-  background-image: url('../images/app-background.jpg');
-  background-size: cover;
+  background-image: url('../images/app-background2.jpg');
+  background-size: contain;
   background-position: center; 
-
+  background-repeat: repeat;
 }
 
 *, *::before, *::after {
@@ -145,17 +145,16 @@ textarea:focus::placeholder {
   background: var(--white);
   transform: translate(-50%, -50%);
   transition: all 0.3s ease-in-out;
-  background: transparent;
 }
 
 .hamburger-line::before {
-  top: 0;
-  transform: rotate(45deg);
+  top: 5px;
+  /*transform: rotate(45deg);*/
 }
 
 .hamburger-line::after {
-  top: 0;
-  transform: rotate(-45deg);
+  top: -5px;
+  /*transform: rotate(-45deg);*/
 }
 .hamburger-line::before,
 .hamburger-line::after {
@@ -167,17 +166,29 @@ textarea:focus::placeholder {
   transition: all 0.3s ease-in-out;
 }
 
-/*transform into X */
-.nav-toggle-checkbox:checked ~ #nav-bar #nav-header .hamburger-line {
-  background: transparent;
+.hamburger-line::before {
+  width: 50%;
+  right: 0px;
 }
+
+.hamburger-line::after {
+  width: 50%;
+  left: 0px;
+}
+
+/*transform into X */
+/*.nav-toggle-checkbox:checked ~ #nav-bar #nav-header .hamburger-line {
+  background: transparent;
+}*/
 .nav-toggle-checkbox:checked ~ #nav-bar #nav-header .hamburger-line::before {
-  top: 0;
+  top: -5px;
   transform: rotate(0deg);
+  width: 100%;
 }
 .nav-toggle-checkbox:checked ~ #nav-bar #nav-header .hamburger-line::after {
-  top: 8px;
+  top: 5px;
   transform: rotate(0deg);
+  width: 100%;
 }
 
 /******************************************************************************
@@ -230,7 +241,7 @@ textarea:focus::placeholder {
   flex: 1;
   margin-left: var(--sidebar-width-open); 
   transition: margin-left 0.3s ease-in-out;
-  padding: 3rem 2rem;
+  /*padding: 3rem 2rem;*/
 }
 .nav-toggle-checkbox:checked ~ .main-content {
   margin-left: var(--sidebar-width-closed);
@@ -380,7 +391,7 @@ h1, .page-title {
   text-align: center;
   color: var(--orange);
   font-weight: 900;
-  margin-bottom: 1rem;
+  /*margin-bottom: 1rem;*/
   font-size: 2rem;
 }
 
@@ -435,10 +446,21 @@ p, a, label, span {
 .user-chat {
   min-height: 80vh;
 }
+
+.chat-header {
+  background-color: var(--black);
+  padding: 0.25rem 1rem;
+  border: 2px solid var(--orange);
+  border-bottom: 0px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
 .chat-container {
   background-color: var(--black);
   padding: 1rem;
-  border-radius: 8px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
   border: 2px solid var(--orange);
   min-height: 70vh;
   overflow-y: auto;
@@ -475,7 +497,7 @@ p, a, label, span {
 }
 .chat-input input[type="text"] {
   flex: 1;
-  background-color: var(--gray);
+  background-color: var(--black);
   color: var(--white);
   border: 2px solid var(--orange);
   border-radius: 10px;
@@ -682,7 +704,7 @@ select.input-field:focus {
 
 .box-height {
   height: 100%;
-  max-height: 88vh;
+  max-height: 90vh;
 }
 
 .default-width {
@@ -691,12 +713,19 @@ select.input-field:focus {
   margin: 2rem auto;
 }
 
+.border-orange {
+  border: 2px solid var(--orange);
+}
+
+.radius {
+  border-radius: 15px;
+}
 /******************************************************************************
  *  10) RESPONSIVE => MOBILNI
  ******************************************************************************/
 @media (max-width: 768px) {
   /* Prebacujemo sidebar na desnu stranu */
-  #nav-bar {
+ /* #nav-bar {
     right: 0;
     left: auto;
     width: var(--sidebar-width-closed); 
@@ -717,5 +746,5 @@ select.input-field:focus {
   }
   .page-title {
     font-size: 1.5rem;
-  }
+  }*/
 }

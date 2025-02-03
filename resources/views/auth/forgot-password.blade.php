@@ -2,7 +2,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-md mx-auto p-6 mt-12 bg-black rounded-lg shadow-lg">
+<div class="max-w-md mx-auto p-6 translate-y-1/3 bg-black rounded-lg shadow-lg">
     <h2 class="text-2xl font-black text-orange my-8 page-title text-center">Zaboravljena Šifra</h2>
 
     @if (session('status'))

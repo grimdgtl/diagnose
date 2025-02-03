@@ -87,8 +87,8 @@ class RegistrationController extends Controller
         }
 
         //5. Opcionalno odmah uloguj user-a (ako želiš)
-        auth()->login($user);
-        Log::info("User je ulogovan, prelazimo na verify.notice...");
+        //auth()->login($user);
+        //Log::info("User je ulogovan, prelazimo na verify.notice...");
 
         //6. Preusmeri na "molimo proverite mail"
         return redirect()->route('verify.notice');

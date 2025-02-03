@@ -3,7 +3,7 @@
 @section('title', 'Unos problema i podataka o automobilu (registrovani)')
 
 @section('content')
-<div class="mx-auto box-height p-12 bg-black rounded-lg shadow-lg"
+<div class="box-height p-12 my-11 mx-8 bg-black radius border-orange shadow-lg"
      x-data="{
          step: 1,
          carOption: 'existing',    // 'existing' ili 'new'
