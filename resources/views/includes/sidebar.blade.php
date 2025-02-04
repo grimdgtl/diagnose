@@ -5,7 +5,7 @@
         <div class="sidebar-logo">
             <!-- Logo slika -->
             <a href="{{ route('dashboard') }}" class="logo-img">
-                <img src="{{ Vite::asset('resources/images/logo-neon.png') }}" alt="Logo">
+                <img src="{{ asset('images/logo-neon.png') }}">
             </a>
         </div>
 
