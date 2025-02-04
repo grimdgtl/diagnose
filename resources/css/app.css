@@ -723,9 +723,9 @@ select.input-field:focus {
 /******************************************************************************
  *  10) RESPONSIVE => MOBILNI
  ******************************************************************************/
-/*@media (max-width: 768px) {*/
-  /* Prebacujemo sidebar na desnu stranu */
- /* #nav-bar {
+/*@media (max-width: 768px) {
+  Prebacujemo sidebar na desnu stranu
+ #nav-bar {
     right: 0;
     left: auto;
     width: var(--sidebar-width-closed); 
@@ -746,5 +746,5 @@ select.input-field:focus {
   }
   .page-title {
     font-size: 1.5rem;
-  }*/
-}
+  }
+}*/
