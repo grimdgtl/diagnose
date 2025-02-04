@@ -21,7 +21,7 @@ jobs:
     - name: Deploy to Server
       run: |
         ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "
-          cd /var/www/html/your-repo-name &&
+          cd /var/www/html/diagnose &&
           git pull origin main &&
           composer install --no-dev --optimize-autoloader &&
           npm install &&
