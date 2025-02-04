@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
+import copy from 'vite-plugin-copy';
 
 export default defineConfig({
     plugins: [
@@ -19,6 +20,12 @@ export default defineConfig({
                 },
             },
         }),
+        copy({
+            targets: [
+                { src: 'resources/images/*', dest: 'public/images' }
+            ],
+            hook: 'writeBundle' // ensure resources are copied after building
+        })
     ],
     resolve: {
         alias: {
