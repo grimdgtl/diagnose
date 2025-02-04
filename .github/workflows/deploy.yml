@@ -22,7 +22,8 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "
           cd /var/www/html/diagnose &&
-          git pull origin main &&
+          git fetch origin &&
+          git reset --hard origin/master &&
           composer install --no-dev --optimize-autoloader &&
           npm install &&
           npm run build &&
