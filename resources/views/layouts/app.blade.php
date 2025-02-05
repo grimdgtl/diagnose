@@ -25,8 +25,11 @@
         <!-- Checkbox koji kontroliše sidebar -->
         <input type="checkbox" id="nav-toggle" class="nav-toggle-checkbox" />
 
-        <!-- Sidebar -->
-        @include('includes.sidebar')
+        <!-- Desktop Sidebar -->
+            @include('includes.sidebar')
+
+        <!-- Mobile Navigation -->
+        @include('includes.mobile-collapsible-nav') 
 
         <!-- Glavni sadržaj -->
         <div class="main-content">

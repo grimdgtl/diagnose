@@ -664,6 +664,10 @@ p, a, label, span {
     transition: all 0.3s ease;
 }
 
+.mobile-nav {
+  border-radius: 15px;
+}
+
 .radio-custom:checked + .radio-custom-display {
     background-color: var(--orange);
     box-shadow: 0 0 8px rgba(255,92,0,0.6);
@@ -719,32 +723,171 @@ select.input-field:focus {
 
 .radius {
   border-radius: 15px;
-}/**/
-/******************************************************************************
- *  10) RESPONSIVE => MOBILNI
- ******************************************************************************/
-/*@media (max-width: 768px) {
-  Prebacujemo sidebar na desnu stranu
- #nav-bar {
-    right: 0;
-    left: auto;
-    width: var(--sidebar-width-closed); 
-    border-left: 2px solid var(--orange);
-    border-right: none;
+}
+
+/* =============================================
+   MOBILE NAV SPECIFIČNI STILOVI
+============================================= */
+
+/* 
+   Sakrij kada je veći od “md” breakpoints 
+   (ovo se već radi i klasa 'block md:hidden' 
+   u Blade-u, ali možemo i ovde ako želimo).
+*/
+@media (min-width: 768px) {
+  .mobile-nav-collapsible {
+    display: none;
   }
-  .nav-toggle-checkbox:checked ~ #nav-bar {
-    width: var(--sidebar-width-open);
+}
+
+.mobile-nav-collapsible {
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+.mobile-header {
+    z-index: 1000;
+    position: relative;
+    margin: 4px;
+    border-radius: 15px;
+}
+
+/* Hamburger (3 linije) */
+.hamburger {
+  width: 40px;
+  height: 22px;
+  position: relative;
+}
+.hamburger-line {
+  width: 100%;
+  height: 2px;
+  margin: 4px 0;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Collapsible nav je isprva sakriven: max-height: 0 */
+.collapse-nav {
+  max-height: 0;
+  transition: max-height 0.4s ease;
+  margin-top: -5rem;
+  padding-top: 5rem;
+  border-radius: 15px;
+}
+
+/* 
+   Kad checkbox #mobile-menu-toggle:checked,
+   nav “otvori” do neke visine (npr. 400px). 
+   Ili stavi veliki broj tipa 9999px.
+*/
+#mobile-menu-toggle:checked ~ .collapse-nav {
+  max-height: 600px; /* prilagodi */
+}
+
+/* Stilovi linkova unutar collapse nav */
+.collapsible-link {
+  border-bottom: 1px solid #222;
+}
+.collapsible-link a, .submenu-label {
+  display: flex;
+  align-items: center;
+  padding: 1rem 2rem;
+  color: var(--white);
+  text-decoration: none;
+  font-weight: 900;
+  text-transform: uppercase;
+  transition: background 0.2s;
+}
+
+.collapsible-link a svg {
+    height: 1.75rem;
+    margin-right: 15px;
+}
+
+.collapsible-link a:hover, .submenu-label:hover {
+  background-color: #1c1c1c;
+}
+
+/* Submeni (Moj Profil) - ako želiš “accordion” */
+.submenu-section {
+  position: relative;
+}
+.submenu-label {
+  cursor: pointer;
+}
+.submenu-items {
+  display: none;
+  background-color: #0a0a0a;
+  border-left: 2px solid var(--orange);
+  padding-left: 1rem;
+}
+.submenu-items a {
+  text-transform: none;
+  font-weight: 400;
+  border-bottom: 1px solid #222;
+}
+/* Kad je #mobile-profile-submenu:checked => prikaži submenu */
+#mobile-profile-submenu:checked ~ .submenu-items {
+  display: block;
+}
+
+#mobile-profile-submenu:checked ~ .hamburger-line:before {
+    transform: rotate(45deg) !important;
+    width: 100% !important;
+    top:0 !important;
+    background-color: #fff !important;
+}
+
+#mobile-profile-submenu:checked ~ .hamburger-line {
+    background-color: transparent !important;
+}
+
+#mobile-profile-submenu:checked ~ .hamburger-line:after {
+    transform: rotate(-45deg) !important;
+    width: 100% !important;
+    top:0 !important;
+    background-color: #fff !important;
+}
+
+
+@media (max-width: 768px) {
+  #nav-bar {
+    display: none;
   }
   .main-content {
-    margin-left: 0;
+    margin-left: 0rem;
+    margin-top: 1rem;
   }
-  .nav-toggle-checkbox:checked ~ .main-content {
-    margin-right: var(--sidebar-width-open);
+  .box-height {
+    height: auto;
+    min-height: fit-content;
+    margin: 4.5rem auto 0 auto;
+  }
+  .user-chat {
+    margin-top: 4.5rem;
+    padding-top: 0rem;
+    padding-left: 0rem;
+    padding-right: 0rem;
   }
   .chat-container {
-    max-height: 50vh;
+    min-height: 73vh;
+    margin-bottom: 0.5rem;
   }
-  .page-title {
-    font-size: 1.5rem;
+  .user-chat h1 {
+    display: none;
   }
-}*/
+  .send-message {
+    max-width: 70px;
+  }
+  .chat-header span {
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+  }
+  .submenu-label svg {
+    height: 2rem;
+    margin-right: 15px;
+  }
+  .bubble {
+    max-width: 75%;
+  }
+}

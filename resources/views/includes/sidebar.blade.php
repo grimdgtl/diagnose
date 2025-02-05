@@ -5,7 +5,7 @@
         <div class="sidebar-logo">
             <!-- Logo slika -->
             <a href="{{ route('dashboard') }}" class="logo-img">
-                <img src="{{ asset('images/logo-neon.png') }}">
+                <img src="{{ asset('assets/images/logo-neon.png') }}">
             </a>
         </div>
 
