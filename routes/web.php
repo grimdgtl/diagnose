@@ -121,7 +121,8 @@ Route::post('/plans/buy', [PaymentController::class, 'buyPlan'])
 
 // Webhook, verifikacija potpisa od strane LemonSqueezy / Stripe
 Route::post('/webhook', [PaymentController::class, 'webhook'])
-    ->name('payment.webhook');
+    ->name('payment.webhook')
+    ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 
 Route::get('/plans/thank-you', [PaymentController::class, 'thankYou'])
     ->name('plans.thank-you')
