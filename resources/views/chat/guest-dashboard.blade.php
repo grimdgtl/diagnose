@@ -21,9 +21,9 @@
         @foreach($myResponses as $res)
             <!-- Levi bubble (assistant) -->
             <div class="flex justify-start mb-2">
-                <div class="bubble assistant animate-fadeIn">
-                    {{ $res->content }}
-                </div>
+                <div class="bubble assistant markdown-content animate-fadeIn"
+                        data-content="{{ e($resp->content) }}">
+                    </div>
             </div>
         </div>
 
@@ -41,3 +41,17 @@
     @endforeach
 </div>
 @endsection
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Selektujemo sve elemente koji imaju .markdown-content
+    document.querySelectorAll('.markdown-content').forEach(function(el) {
+        // 1) Dohvati originalni, HTML-escaped tekst iz data-content
+        const originalText = el.dataset.content || '';
+        // 2) Marked će da parsira Markdown
+        const html = marked.parse(originalText);
+        // 3) Ubacimo HTML nazad u element
+        el.innerHTML = html;
+    });
+});
+</script>

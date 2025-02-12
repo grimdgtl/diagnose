@@ -3,13 +3,21 @@
 @section('title', 'Unos problema i podataka o automobilu - Dva koraka')
 
 @section('content')
-<div class="box-height border-orange p-12 my-11 mx-8 bg-black radius shadow-lg" x-data="{ step: 1 }">
+<div class="box-height border-orange support-card p-12 my-11 mx-8 bg-black radius shadow-lg" x-data="{ step: 1 }">
     <h1 class="text-3xl text-orange font-bold mb-4 text-center page-title">
         Dobrodošao na Dijagnozu
     </h1>
     <p class="mb-6 text-gray-400 text-center">
         Ovo je dvostepni formular. Popuni korak 1, zatim pređi na korak 2.
     </p>
+
+    <div id="loader" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50 hidden">
+        <div class="text-center">
+            <!-- Može slika, animirani GIF, ili CSS spinner -->
+            <img class="pulse" src="{{ asset('assets/images/logo-neon.png') }}">
+            <p class="text-white uppercase font-black">Treba mi 10s da razmislim, molim sačekajte...</p>
+        </div>
+    </div>
 
     @if ($errors->any())
         <div class="bg-red-500 text-white p-3 rounded mb-4">
@@ -21,21 +29,21 @@
         </div>
     @endif
 
-    <form action="{{ route('guest.store-temp-data') }}" method="POST" class="space-y-6 default-width">
+    <form id="guest-form" action="{{ route('guest.store-temp-data') }}" method="POST" class="space-y-6 default-width">
         @csrf
 
         <!-- STEP 1 -->
         <div x-show="step === 1" x-cloak>
             <h2 class="text-xl font-semibold text-orange mb-2 text-center">Korak 1: Opis problema</h2>
             <textarea id="issueDescription" name="issueDescription" rows="3"
-                      class="input-field bg-gray-700"
+                      class="input-field bg-gray-700 mb-4"
                       placeholder="Detaljno opišite problem koji imate sa automobilom">{{ old('issueDescription') }}</textarea>
 
-            <input type="text" id="diagnose" name="diagnose" class="input-field bg-gray-700"
+            <input type="text" id="diagnose" name="diagnose" class="input-field bg-gray-700 mb-4"
                    placeholder="Ako ste kačili auto na dijagnostiku, upišite kod greške"
                    value="{{ old('diagnose') }}">
 
-            <input type="text" id="indicatorLight" name="indicatorLight" class="input-field bg-gray-700"
+            <input type="text" id="indicatorLight" name="indicatorLight" class="input-field bg-gray-700 mb-4"
                    placeholder="Da li Vam sija neka od lampica?"
                    value="{{ old('indicatorLight') }}">
 
@@ -115,4 +123,56 @@
         </div>
     </form>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('guest-form');
+    const loader = document.getElementById('loader');
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault(); // sprečava klasičan reload
+
+        // 1) Pokaži loader
+        loader.classList.remove('hidden');
+
+        // 2) Formiraj formData
+        const formData = new FormData(form);
+
+        // 3) Pošalji AJAX zahteve
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest', // da Laravel zna da je AJAX
+            }
+        })
+        .then(async (response) => {
+            // ako želimo JSON
+            if (!response.ok) {
+                // 4xx ili 5xx greška
+                throw await response.json();
+            }
+            return response.json();
+        })
+        .then(data => {
+            //console.log("ODGOVOR:", data);
+            // Ovde možeš prikazati data.response ili slično
+            //alert("Odgovor ChatGPT-a: " + data.response);
+            window.location = data.redirectUrl;
+        })
+        .catch(errData => {
+            console.error("Greška:", errData);
+            if (errData && errData.errors) {
+                // Ako postoji validaciona greška ili slično
+                alert("Došlo je do greške u validaciji.");
+            }
+        })
+        .finally(() => {
+            // 4) Sakrij loader
+            loader.classList.add('hidden');
+        });
+    });
+});
+</script>
+
 @endsection

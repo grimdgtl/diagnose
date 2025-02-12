@@ -23,91 +23,84 @@ class GuestFlowController extends Controller
         return view('guest.wizard-form'); 
     }
 
-    public function showProblemForm()
-    {
-        return view('guest.problem-form');
-    }
-
-    /**
-     * Prikazuje drugu formu (podaci o automobilu).
-     */
-    public function showCarForm(Request $request)
-    {
-        return view('guest.car-form');
-    }
-
     /**
      * Nakon što korisnik popuni forme, ovde čuvamo temp_ podatke i zovemo ChatGPT.
+     * Sada vraćamo JSON ako je zahtev AJAX, ili radimo redirect ako nije.
      */
     public function storeTempData(Request $request)
-    {
-        // 1) Validacija
-        $request->validate([
-            'issueDescription' => 'required|string',
-            'indicatorLight'   => 'nullable|string',
-            'diagnose'         => 'nullable|string',
-            'brand'            => 'required|string',
-            'model'            => 'required|string',
-            'year'             => 'required|integer',
-            'engine_capacity'  => 'required|string',
-            'engine_power'     => 'required|string',
-            'fuel_type'        => 'required|string',
-            'transmission'     => 'required|string',
+{
+    // 1) Validacija
+    $validatedData = $request->validate([
+        'issueDescription' => 'required|string',
+        'indicatorLight'   => 'nullable|string',
+        'diagnose'         => 'nullable|string',
+        'brand'            => 'required|string',
+        'model'            => 'required|string',
+        'year'             => 'required|integer',
+        'engine_capacity'  => 'required|string',
+        'engine_power'     => 'required|string',
+        'fuel_type'        => 'required|string',
+        'transmission'     => 'required|string',
+    ]);
+
+    // 2) Kreiranje tempUser, question, carDetail, itd...
+    $tempId = (string) Str::uuid();
+    $tempUser = TempUser::create(['temp_id' => $tempId]);
+
+    $tempQuestion = TempQuestion::create([
+        'temp_id'         => $tempId,
+        'issueDescription'=> $validatedData['issueDescription'],
+        'diagnose'        => $validatedData['diagnose']        ?? null,
+        'indicatorLight'  => $validatedData['indicatorLight']  ?? null,
+    ]);
+
+    TempCarDetail::create([
+        'temp_id'         => $tempId,
+        'brand'           => $validatedData['brand'],
+        'model'           => $validatedData['model'],
+        'year'            => $validatedData['year'],
+        'fuel_type'       => $validatedData['fuel_type'],
+        'engine_capacity' => $validatedData['engine_capacity'],
+        'engine_power'    => $validatedData['engine_power'],
+        'transmission'    => $validatedData['transmission'],
+    ]);
+
+    $tempChat = TempChat::create([
+        'temp_id' => $tempId,
+        'status'  => 'open',
+    ]);
+
+    // 3) Formiranje prompta
+    $fullPrompt = "Opis problema: ".$validatedData['issueDescription']."\n".
+                  "Dijagnostika: ".($validatedData['diagnose'] ?? '')."\n".
+                  "Lampica: ".($validatedData['indicatorLight'] ?? '')."\n".
+                  "Auto (brand/model/year...): "
+                  .$validatedData['brand']." "
+                  .$validatedData['model']." "
+                  .$validatedData['year']." ...";
+
+    // 4) ChatGPT upit
+    $chatGptResponse = (new OpenAiService())->ask($fullPrompt);
+
+    // 5) Snimamo odgovor u bazu, ne prikazujemo ga korisniku
+    TempResponse::create([
+        'question_id' => $tempQuestion->id,
+        'content'     => $chatGptResponse,
+    ]);
+
+    // 6) Snimamo temp_id u session, radi gost daljeg pregleda
+    session(['temp_id' => $tempId]);
+    Log::info("Temp ID in session: {$tempId}");
+
+    // 7) Bez prikaza poruka – samo redirect
+    if ($request->ajax() || $request->wantsJson()) {
+        // 7a) Ako je AJAX => vratimo samo URL; front da uradi window.location
+        return response()->json([
+            'redirectUrl' => route('dashboard'),
         ]);
-
-        // 2) Kreiramo tempUser
-        $tempId = (string) Str::uuid();
-        $tempUser = TempUser::create([
-            'temp_id' => $tempId
-        ]);
-
-        // 3) Kreiramo tempQuestion
-        $tempQuestion = TempQuestion::create([
-            'temp_id'         => $tempId,
-            'issueDescription'=> $request->issueDescription,
-            'diagnose'        => $request->diagnose,
-            'indicatorLight'  => $request->indicatorLight,
-        ]);
-
-        // 4) Kreiramo tempCarDetail
-        TempCarDetail::create([
-            'temp_id'          => $tempId,
-            'brand'            => $request->brand,
-            'model'            => $request->model,
-            'year'             => $request->year,
-            'fuel_type'        => $request->fuel_type,
-            'engine_capacity'  => $request->engine_capacity,
-            'engine_power'     => $request->engine_power,
-            'transmission'     => $request->transmission,
-        ]);
-
-        // 5) Kreiramo tempChat
-        $tempChat = TempChat::create([
-            'temp_id' => $tempId,
-            'status'  => 'open',
-        ]);
-
-        // 6) Formiramo prompt
-        $fullPrompt = "Opis problema: ".$request->issueDescription."\n".
-                      "Dijagnostika: ".$request->diagnose."\n".
-                      "Lampica: ".$request->indicatorLight."\n".
-                      "Auto (brand/model/year...): ".$request->brand." ".$request->model." ".$request->year." ...";
-
-        // 7) Pozivamo ChatGPT preko OpenAiService
-        $chatGptResponse = (new OpenAiService)->ask($fullPrompt);
-
-        // 8) Snimamo odgovor u temp_responses
-        $tempResponse = TempResponse::create([
-            'question_id' => $tempQuestion->id,
-            'content'     => $chatGptResponse,
-        ]);
-
-        // 9) Čuvamo temp_id u session
-        session(['temp_id' => $tempId]);
-        Log::info("Temp ID saved in session: {$tempId}");
-        Log::info("Session ID: " . session()->getId());
-
-        // 10) Preusmeravamo na /dashboard
-        return redirect()->route('dashboard')->with('info','Podaci su poslati, ChatGPT je odgovorio.');
+    } else {
+        // 7b) Klasičan submit => direktan redirect
+        return redirect()->route('dashboard');
     }
+}
 }

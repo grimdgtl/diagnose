@@ -7,10 +7,10 @@
     <div class="mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 plan-grid">
         
         <!-- Blok s info o trenutnoj pretplati -->
-        <div class="current-sub-info bg-gray-800 p-6 rounded-md shadow-lg">
+        <div class="current-sub-info support-card bg-gray-800 p-6 rounded-md shadow-lg">
             <div>
                 <h1 class="plan-page-title text-center mb-8">
-                    ODABERI PAKET
+                    Dijagnoza paketi
                 </h1>
             </div>
             <div>
@@ -31,7 +31,7 @@
         </div>
         
         <!-- Starter plan (20 pitanja) -->
-        <div class="plan-box relative">
+        <div class="plan-box relative support-card">
             <h2 class="plan-name">Starter</h2>
             
             <div class="plan-price">
@@ -58,7 +58,7 @@
         </div>
 
         <!-- Pro plan (unlimited pitanja) -->
-        <div class="plan-box relative">
+        <div class="plan-box relative support-card">
             <!-- Traka “POPULARNO” -->
             <div class="plan-badge">POPULARNO</div>
             

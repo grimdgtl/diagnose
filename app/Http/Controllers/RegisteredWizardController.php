@@ -26,9 +26,7 @@ class RegisteredWizardController extends Controller
 
     public function storeData(Request $request)
     {
-        // Validacija: Korak 1 i 2
-        // Pogledaj da li je user odabrao "existing" ili "new"
-        // pa validiraj u skladu s tim
+        // Validacija
         $rules = [
             'issueDescription' => 'required|string',
             'diagnose'         => 'nullable|string',
@@ -37,10 +35,10 @@ class RegisteredWizardController extends Controller
         ];
 
         if ($request->carOption === 'existing') {
-            // Zahtevamo "existing_car_id"
+            // Ako je već postojeći automobil
             $rules['existing_car_id'] = 'required|exists:car_details,id';
         } else {
-            // Zahtevamo sva polja za novi auto
+            // Ako je novi automobil (obavezna polja)
             $rules['brand']           = 'required|string';
             $rules['model']           = 'required|string';
             $rules['year']            = 'required|integer';
@@ -56,13 +54,16 @@ class RegisteredWizardController extends Controller
 
         // 1) Napravi novi Chat (status = 'open')
         $chat = Chat::create([
-            'user_id'   => $user->id,
-            'status'    => 'open',
+            'user_id' => $user->id,
+            'status'  => 'open',
         ]);
 
-        // 2) Ako je carOption = new, snimi nov car
+        // 2) Odredi koji CarDetail koristimo (novi ili postojeći)
         $carId = null;
+        $car   = null;
+
         if ($request->carOption === 'new') {
+            // Kreiramo novi auto
             $car = CarDetail::create([
                 'user_id'         => $user->id,
                 'brand'           => $request->brand,
@@ -76,8 +77,9 @@ class RegisteredWizardController extends Controller
             ]);
             $carId = $car->id;
         } else {
-            // Uzeo je postojeći auto
+            // Uzmi ID postojećeg automobila
             $carId = $request->existing_car_id;
+            $car   = CarDetail::find($carId);
         }
 
         // 3) Kreiraj Question (opis problema)
@@ -90,28 +92,53 @@ class RegisteredWizardController extends Controller
             'created_at'       => now(),
         ]);
 
-        // 4) Pozovi ChatGPT
-        $fullPrompt = "Opis problema: ".$request->issueDescription."\n".
-                      "Dijagnostika: ".$request->diagnose."\n".
-                      "Lampica: ".$request->indicatorLight."\n".
-                      "CarDetail ID: " . $carId . " (za interni ID)";
+        // 4) Postavimo OpenAiService
+        $openAi = new OpenAiService();
 
-        $chatGptResponse = (new OpenAiService())->ask($fullPrompt);
+        // Ako imamo $car, pripremamo carForm
+        $carForm = [];
+        if ($car) {
+            $carForm = [
+                'brand'           => $car->brand,
+                'model'           => $car->model,
+                'year'            => $car->year,
+                'fuelType'        => $car->fuel_type,
+                'engineCapacity'  => $car->engine_capacity,
+                'enginePower'     => $car->engine_power,
+                'transmission'    => $car->transmission,
+            ];
+        }
 
-        // 5) Sačuvaj odgovor
+        /**
+         * 5) Sada koristimo handleUserQuestion za kontekst:
+         *    - $request->diagnose
+         *    - $request->indicatorLight
+         *    - $request->issueDescription (glavno pitanje)
+         *    - $carForm (ako ga imamo)
+         *    - System poruku (opcionalno) postavimo
+         */
+        $chatGptResponse = $openAi->handleUserQuestion(
+            $request->diagnose,
+            $request->indicatorLight,
+            $request->issueDescription, // user question
+            $carForm,
+            "Ti si AutoMentor – virtualni asistent. Molim te analiziraj problem i daj savet...Odgovaraj u Markdown formatu, koristi listu za nabrajanje, linkove u [tekst](url) formatu i podeli pasuse praznim redovima"
+        );
+
+        // 6) Sačuvamo GPT odgovor u bazu
         Response::create([
             'question_id' => $question->id,
             'content'     => $chatGptResponse,
             'created_at'  => now(),
         ]);
 
-        // 6) (Opcionalno) Smanji broj preostalih pitanja user-u, ako to želiš
+        // 7) Smanjimo broj pitanja (ako koristite tu logiku)
         if ($user->num_of_questions_left > 0) {
             $user->num_of_questions_left -= 1;
             $user->save();
         }
 
-        // Preusmeri na dashboard
+        // 8) Preusmeri na dashboard
         return redirect()->route('dashboard')
                          ->with('success','Uspešno kreiran novi chat i zatražen odgovor.');
     }

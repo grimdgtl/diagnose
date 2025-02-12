@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-7xl mx-auto my-12 px-4 sm:px-6 lg:px-8">
+<div class="max-w-7xl mx-auto my-12 px-4 sm:px-6 lg:px-8 support-application">
 
     <!-- FAQ sekcija -->
     <div class="grid lg:grid-cols-1 gap-8 mb-8">
-        <div class="bg-black p-8 rounded-2xl border-orange-500/30">
+        <div class="bg-black p-8 rounded-2xl first-card support-card border-orange-500/30">
             <div class="flex items-center gap-4">
                     <div class="pl-4 pr-4 bg-orange-500/10 rounded-xl">
                         <i class="fas fa-lightbulb text-3xl text-orange-500"></i>
@@ -39,7 +39,7 @@
         </div>
     <!-- Glavni sadržaj -->
         <!-- Kontakt sekcija -->
-        <div class="bg-black from-gray-900 to-black p-8 rounded-2xl border-orange-500/30 relative overflow-hidden">
+        <div class="bg-black from-gray-900 to-black p-8 rounded-2xl support-card border-orange-500/30 relative overflow-hidden">
             <div class="absolute -top-20 -right-20 w-48 h-48 bg-orange-500/10 rounded-full blur-xl"></div>
             
             <div class="relative space-y-6">
@@ -84,7 +84,7 @@
         </div>
 
         <!-- Forma za podršku -->
-        <div class="support-form bg-black p-8 rounded-2xl border-orange-500/30 relative">
+        <div class="support-form bg-black p-8 support-card rounded-2xl border-orange-500/30 relative">
             <div class="absolute -bottom-20 -left-20 w-48 h-48 bg-orange-500/10 rounded-full blur-xl"></div>
                 <div class="flex items-center gap-4">
                     <div class="pl-4 pr-4 bg-orange-500/10 rounded-xl">
@@ -92,7 +92,7 @@
                     </div>
                     <h2 class="text-2xl font-bold text-orange-500">Prijavi problem</h2>
                 </div>
-            <form action="{{ route('support.submit') }}" method="POST" class="space-y-6 pl-20" id="supportForm">
+            <form action="{{ route('support.submit') }}" method="POST" class="space-y-6 pl-20 support-aplication-form" id="supportForm">
                 @csrf
                 
                 <div class="grid md:grid-cols-2 gap-4">

@@ -435,7 +435,7 @@ p, a, label, span {
   background-color: var(--gray);
   color: var(--white);
   font-size: 1rem;
-  margin-bottom: 1rem;
+  /*margin-bottom: 1rem;*/
   outline: none;
   box-shadow: none;
 }
@@ -559,6 +559,7 @@ p, a, label, span {
   text-align: left;
   border-radius: 10px;
   box-shadow: 0 0 15px rgba(255,92,0,0.4);
+  background-color: var(--black);
 }
 
 /* Jedna kartica (starter/pro) */
@@ -725,6 +726,40 @@ select.input-field:focus {
   border-radius: 15px;
 }
 
+#loader {
+  z-index: 1000;
+}
+
+#loader img {
+  width: 30%;
+  margin-left: auto;
+  margin-right: auto;
+  /*transform: translateY(50%);*/
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+      transform: scale(1);
+  }
+
+  50% {
+      transform: scale(1.1);
+  }
+
+  100% {
+      transform: scale(1);
+  }
+}
+
+.orange-shadow {
+  box-shadow: 0 0 10px var(--orange);
+}
+
+
 /* =============================================
    MOBILE NAV SPECIFIČNI STILOVI
 ============================================= */
@@ -742,8 +777,10 @@ select.input-field:focus {
 
 .mobile-nav-collapsible {
     position: fixed;
-    width: 100%;
+    width: 98%;
     z-index: 1000;
+    margin-top: 4px;
+    left:1%;
 }
 
 .mobile-header {
@@ -786,7 +823,7 @@ select.input-field:focus {
 
 /* Stilovi linkova unutar collapse nav */
 .collapsible-link {
-  border-bottom: 1px solid #222;
+  /*border-bottom: 1px solid #222;*/
 }
 .collapsible-link a, .submenu-label {
   display: flex;
@@ -861,7 +898,7 @@ select.input-field:focus {
   .box-height {
     height: auto;
     min-height: fit-content;
-    margin: 4.5rem auto 0 auto;
+    margin: 6rem auto 0 auto;
   }
   .user-chat {
     margin-top: 4.5rem;
@@ -889,5 +926,52 @@ select.input-field:focus {
   }
   .bubble {
     max-width: 75%;
+  }
+  .nav-toggle-checkbox:checked ~ .main-content {
+    margin-left: 0;
+  }
+  .chat-input {
+    position: fixed;
+    width: 100%;
+    bottom: 1%;
+  }
+  .my-profile-data {
+    transform: translateY(17%);
+  }
+  .garage {
+    height: min-content;
+    margin-top: 6rem;
+    border: none;
+  }
+  .archive-chat {
+    margin-top: 6rem;
+  }
+  .support-application-form {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .support-application {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .support-card {
+    margin-left: auto;
+    margin-right: auto;
+    width: 98%;
+    box-shadow: 0 0 10px var(--orange);
+    border-width: 0;
+  }
+  .first-card {
+    margin-top: 3rem;
+  }
+  .rate-form {
+    margin-top: 6rem;
+  }
+  .current-sub-info {
+    margin-top: 3rem;
+  }
+  .subscription-wrapper {
+    margin-left: auto;
+    margin-right: auto;
   }
 }

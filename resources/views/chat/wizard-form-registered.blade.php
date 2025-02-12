@@ -48,14 +48,14 @@
         <div x-show="step === 1" x-transition x-cloak>
             <h2 class="text-xl font-semibold text-orange mb-2 text-center">Korak 1: Opis problema</h2>
             <textarea id="issueDescription" name="issueDescription" rows="3"
-                      class="input-field"
+                      class="input-field mb-4"
                       placeholder="Detaljno opišite problem koji imate sa automobilom">{{ old('issueDescription') }}</textarea>
 
-            <input type="text" id="diagnose" name="diagnose" class="input-field"
+            <input type="text" id="diagnose" name="diagnose" class="input-field mb-4"
                    placeholder="Ako ste kačili auto na dijagnostiku, upišite kod greške"
                    value="{{ old('diagnose') }}">
 
-            <input type="text" id="indicatorLight" name="indicatorLight" class="input-field"
+            <input type="text" id="indicatorLight" name="indicatorLight" class="input-field mb-4"
                    placeholder="Da li Vam sija neka od lampica?"
                    value="{{ old('indicatorLight') }}">
 

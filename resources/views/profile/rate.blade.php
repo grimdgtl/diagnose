@@ -3,7 +3,7 @@
 @section('content')
 <div class="max-w-2xl mx-auto space-y-6 my-12">
     <!-- Glavni kontejner sa gradient pozadinom -->
-    <div class="bg-black rate-form from-gray-900 via-black to-gray-900 rounded-2xl p-6 relative overflow-hidden">
+    <div class="bg-black rate-form support-card from-gray-900 via-black to-gray-900 rounded-2xl p-6 relative overflow-hidden">
         <!-- Dekorativni elementi -->
         <div class="absolute -top-20 -right-20 w-48 h-48 bg-orange-500/10 rounded-full blur-xl"></div>
         <div class="absolute -bottom-20 -left-20 w-48 h-48 bg-orange-500/10 rounded-full blur-xl"></div>
@@ -27,7 +27,7 @@
         </div>
 
         <!-- Forma -->
-        <form action="{{ route('profile.rate') }}" method="POST" class="space-y-6">
+        <form action="{{ route('profile.rate') }}" method="POST" class="space-y-6 text-center">
             @csrf
             
             <!-- Zvezdice sa hover efektom -->

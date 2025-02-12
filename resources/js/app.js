@@ -49,4 +49,16 @@ app.component('example-component', ExampleComponent);
 //    });
 //});
 
+// Selektujemo sve elemente s klasom 'toggle-password'
+document.querySelectorAll('.toggle-password').forEach(function(toggle) {
+    toggle.addEventListener('click', function() {
+        // Pretpostavljamo da je input polje odmah prije toggle elementa
+        let passwordInput = this.previousElementSibling;
+        if (passwordInput && passwordInput.getAttribute('type')) {
+            // Ako je trenutno tip 'password', promijeni u 'text'; inače, nazad u 'password'
+            const currentType = passwordInput.getAttribute('type');
+            passwordInput.setAttribute('type', currentType === 'password' ? 'text' : 'password');
+        }
+    });
+});
 

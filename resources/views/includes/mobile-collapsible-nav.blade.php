@@ -24,7 +24,7 @@
 
     <!-- 3) Navigacija koja se “collapsuje” unutar headera -->
     <!-- Kad je #mobile-menu-toggle:checked, menja se .collapse-nav (max-height) -->
-    <nav class="collapse-nav bg-black border-b-2 border-orange overflow-hidden">
+    <nav class="collapse-nav bg-black orange-shadow overflow-hidden">
         <!-- Isti linkovi kao u sidebaru -->
         @auth
             <div class="collapsible-link">

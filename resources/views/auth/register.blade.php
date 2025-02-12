@@ -29,9 +29,9 @@
                 <input type="text" name="last_name" placeholder="Prezime" value="{{ old('last_name') }}"
                        class="input-field bg-gray-700" required>
             </div>
-        </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
+
+
             <!-- Email -->
             <div>
                 <input type="email" name="email" placeholder="Email" value="{{ old('email') }}"
@@ -42,22 +42,30 @@
                 <input type="number" name="phone" placeholder="Broj telefona (opciono)" value="{{ old('phone') }}"
                        class="input-field bg-gray-700">
             </div>
-        </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
             <!-- Password -->
-            <div>
+            <div class="relative">
                 <input type="password" name="password" placeholder="Šifra"
-                       class="input-field bg-gray-700" required>
+                       class="input-field bg-gray-700 mb-0" required>
+                <span class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer toggle-password">
+                    <svg class="w-5 h-5 text-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                </span>       
             </div>
             <!-- Confirm Password -->
-            <div>
+            <div class="relative">
                 <input type="password" name="password_confirmation" placeholder="Potvrdite šifru"
-                       class="input-field bg-gray-700" required>
+                       class="input-field bg-gray-700 mb-0" required>
+                <span class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer toggle-password">
+                    <svg class="w-5 h-5 text-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                </span> 
             </div>
-        </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
             <!-- Grad -->
             <div>
                 <input type="text" name="city" placeholder="Grad" value="{{ old('city') }}"
