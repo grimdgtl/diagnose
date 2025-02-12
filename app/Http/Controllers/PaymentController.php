@@ -4,22 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log; // da možemo logovati
 use App\Models\User;
 
 class PaymentController extends Controller
 {
-    /**
-     * Prikaži listu planova (20 pitanja, unlimited/500 pitanja).
-     */
     public function showPlans()
     {
         return view('payment.plans');
     }
 
-    /**
-     * Prima zahtev za kupovinu. Validira koji plan je izabran
-     * i čuva ga u sesiji radi preusmerenja na checkout.
-     */
     public function buyPlan(Request $request)
     {
         $request->validate([
@@ -35,9 +29,6 @@ class PaymentController extends Controller
         return redirect()->route('payment.redirectToCheckout');
     }
 
-    /**
-     * Formira URL do LemonSqueezy Hosted Checkouts (prosleđuje success/cancel i user_id kroz metadata).
-     */
     public function redirectToLemonSqueezyCheckout(Request $request)
     {
         $planId = session('selected_plan_id');
@@ -49,28 +40,24 @@ class PaymentController extends Controller
         $productId20        = env('PLAN_20_ID');
         $productIdUnlimited = env('PLAN_UNLIMITED_ID');
 
-        // Adrese za success i cancel
         $successUrl = route('plans.thank-you'); 
         $cancelUrl  = route('plans.cancel');
-
-        // Tvoj subdomen na LemonSqueezy:
         $lemonStoreDomain = 'dijagnoza-app.lemonsqueezy.com';
 
         switch ($planId) {
             case 'plan_20':
-                // One-time kupovina (Starter)
                 $checkoutUrl = "https://{$lemonStoreDomain}/buy/{$productId20}"
                     . "?success={$successUrl}"
                     . "&cancel={$cancelUrl}"
-                    . "&metadata[user_id]=" . Auth::id();
+                    // metadata treba da se prosledi ovako:
+                    . "&checkout[metadata][user_id]=" . Auth::id();
                 break;
 
             case 'plan_unlimited':
-                // Pretplata ili one-time za “unlimited”/“Pro”
                 $checkoutUrl = "https://{$lemonStoreDomain}/buy/{$productIdUnlimited}"
                     . "?success={$successUrl}"
                     . "&cancel={$cancelUrl}"
-                    . "&metadata[user_id]=" . Auth::id();
+                    . "&checkout[metadata][user_id]=" . Auth::id();
                 break;
 
             default:
@@ -81,43 +68,59 @@ class PaymentController extends Controller
     }
 
     /**
-     * Webhook od LemonSqueezy – ovde ažuriramo bazu nakon naplate.
+     * Webhook endpoint.
+     * Obavezno podesite route da ga zove LemonSqueezy i unestite Webhook Secret u .env (LEMONSQUEEZY_WEBHOOK_SECRET).
      */
     public function webhook(Request $request)
     {
-        // 1) Verifikacija potpisa (OBAVEZNO u produkciji)
-        $signature = $request->header('X-Signature') ?? null;
+        // 1) Provera potpisa
+        // LemonSqueezy šalje potpis u 'X-Lemon-Signature'.
+        $signature = $request->header('X-Lemon-Signature') ?? null;
         if (!$this->verifyLemonSignature($signature, $request->getContent())) {
+            Log::warning("LemonSqueezy webhook signature failed.");
             return response()->json(['error' => 'Invalid signature'], 400);
         }
 
-        // 2) Uzmemo payload
+        // 2) Uzmemo payload i event_type
         $payload = $request->all();
-
-        // Neke prodaje stižu kao "order_paid", neke (pretplate) kao "subscription_payment_success"
         $eventType = $payload['meta']['event_name'] ?? null;
-        if (! in_array($eventType, ['order_created', 'subscription_payment_success'])) {
+
+        // Za debug: zapišite koji event je stigao
+        Log::info("LemonSqueezy Webhook: event = " . $eventType, $payload);
+
+        // 3) Da li je order plaćen ili subscription plaćen?
+        //   Kod single-purchase je "order_paid"
+        //   Kod pretplate je "subscription_payment_success"
+        if (! in_array($eventType, ['order_paid', 'subscription_payment_success'])) {
+            // Ako nije jedan od ova dva eventa, samo ga ignorišemo
             return response()->json(['status' => 'ignored'], 200);
         }
 
-        // Izvučemo user_id i product_id
-        $userId    = $payload['data']['attributes']['meta']['user_id'] ?? null;
-        $productId = $payload['data']['attributes']['product_id'] ?? null;
+        // 4) Izvučemo user_id iz meta, product_id iz data
+        // Napomena: ako ste gore prosledili "checkout[metadata][user_id]", ovde se nalazi:
+        // payload['data']['attributes']['meta']['user_id']
+        $attributes = $payload['data']['attributes'] ?? [];
+        $userId = $attributes['meta']['user_id'] ?? null;
+        $productId = $attributes['product_id'] ?? null;
 
         if (!$userId || !$productId) {
+            Log::warning("LemonSqueezy webhook: userId ili productId je prazan");
             return response()->json(['error' => 'Missing user_id or product_id'], 400);
         }
 
-        // Pronađemo korisnika
+        // 5) Pronađemo korisnika
         $user = User::find($userId);
         if (!$user) {
+            Log::warning("LemonSqueezy webhook: user not found, ID = $userId");
             return response()->json(['error' => 'User not found'], 404);
         }
 
-        // Uporedimo productId sa onim iz .env
+        // 6) Uporedimo productId sa onim iz .env
         $envProductId20        = env('PLAN_20_ID');
         $envProductIdUnlimited = env('PLAN_UNLIMITED_ID');
 
+        // Možda je ID u bazi string, obratite pažnju
+        // Inače poredite direktno (===), ili konvertujte $productId
         if ($productId == $envProductId20) {
             // Dodeli 20 pitanja
             $user->num_of_questions_left += 20;
@@ -125,35 +128,31 @@ class PaymentController extends Controller
             $user->save();
 
         } elseif ($productId == $envProductIdUnlimited) {
-            // Dodeli 500 pitanja (ili stavi subscription_type='unlimited')
+            // Dodeli 500 pitanja i stavi subscription
             $user->num_of_questions_left += 500;
             $user->subscription_type = 'unlimited';
             $user->save();
+        } else {
+            // U slučaju da stigne neki drugi productId
+            Log::info("LemonSqueezy webhook: product_id nije prepoznat => $productId");
         }
 
         return response()->json(['status' => 'success']);
     }
 
-    /**
-     * Posle uspešne kupovine, LemonSqueezy će redirektovati ovde (success URL).
-     * Ako želimo odmah na dashboard, samo radimo redirect().
-     */
     public function thankYou()
     {
         return redirect()->route('dashboard')
             ->with('status', 'Uspešna kupovina! Pitanja su dodeljena.');
     }
 
-    /**
-     * Ako želiš i Cancel stranicu u kontroleru umesto closure-a u web.php.
-     */
     public function cancel()
     {
         return view('payment.cancel');
     }
 
     /**
-     * Verifikacija potpisa iz LemonSqueezy.
+     * Verifikacija potpisa iz LemonSqueezy: hashed payload + secret = dobijeni potpis?
      */
     private function verifyLemonSignature($signature, $payloadRaw)
     {
@@ -162,7 +161,9 @@ class PaymentController extends Controller
             return false;
         }
 
+        // Prvo SHA-256 HMAC
         $computedSignature = hash_hmac('sha256', $payloadRaw, $secret);
+        // Uporedimo s onim što je došlo u "X-Lemon-Signature"
         return hash_equals($computedSignature, $signature);
     }
 }
