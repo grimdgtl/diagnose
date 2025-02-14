@@ -91,14 +91,6 @@
 </div>
 
 <script>
-document.getElementById("buy-basic").addEventListener("click", function() {
-    buyPlan("basic");
-});
-
-document.getElementById("buy-pro").addEventListener("click", function() {
-    buyPlan("pro");
-});
-
 function buyPlan(planType) {
     fetch("{{ route('payment.create') }}", {
         method: "POST",

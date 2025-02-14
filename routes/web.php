@@ -61,33 +61,18 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/subscription', [ProfileController::class, 'subscription'])->name('profile.subscription');
 });
 
-// ✅ PLAĆANJE (Paketi, checkout, webhook)
+//PAYMENT
 Route::middleware(['auth'])->group(function () {
-    Route::get('/plans', [PaymentController::class, 'showPlans'])->name('plans.show');
-    Route::post('/plans/buy', [PaymentController::class, 'buyPlan'])->name('plans.buy');
+    // Kreiranje checkout-a (ono što zoveš iz AJAX-a)
+    Route::post('/payment/create', [PaymentController::class, 'create'])->name('payment.create');
 
-    Route::post('/create-checkout', [PaymentController::class, 'createCheckout'])->name('payment.create');
-    Route::get('/payment-success', [PaymentController::class, 'paymentSuccess'])->name('payment.success');
-    Route::get('/payment-cancel', function () {
-        return redirect()->route('home')->with('error', 'Payment canceled.');
-    })->name('payment.cancel');
-
-    Route::get('/plans/thank-you', function () {
-        return view('payment.thank-you');
-    })->name('plans.thank-you');
-
-
-    Route::get('/plans/cancel', function () {
-        return view('payment.cancel');
-    })->name('plans.cancel');
-
-    Route::get('/payment/redirect-to-checkout', [PaymentController::class, 'redirectToLemonSqueezyCheckout'])->name('payment.redirectToCheckout');
+    // Success ruta gde LemonSqueezy vraća korisnika posle plaćanja
+    Route::get('/payment/success', [PaymentController::class, 'success'])->name('payment.success');
 });
 
-// ✅ WEBHOOK za Lemon Squeezy (bez CSRF zaštite)
-Route::post('/webhook', [PaymentController::class, 'handleWebhook'])
-    ->name('payment.webhook')
-    ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+// Webhook ruta - obično ne mora da bude pod 'auth' middlewarom
+Route::post('/webhook/lemon-squeezy', [PaymentController::class, 'webhook'])
+    ->name('payment.webhook');
 
 // ✅ SUPPORT & FAQ
 Route::middleware(['auth'])->group(function () {
