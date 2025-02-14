@@ -21,9 +21,11 @@ class PaymentController extends Controller
      */
     public function webhook(Request $request)
     {
-        Log::info('🟢 Webhook accessed - request received'); // ✅ Log pre bilo kakve validacije
-        Log::info('🟢 Full Request:', $request->all()); // ✅ Loguje ceo request payload
-
+        Log::info('✅ Webhook PRIMLJEN:', [
+            'headers' => $request->headers->all(),
+            'body'    => $request->getContent()
+        ]);
+        
         // Koristi Laravel `config()` umesto `env()`
         $secret = config('services.lemonsqueezy.webhook_secret'); 
         $signature = $request->header('X-Signature');
