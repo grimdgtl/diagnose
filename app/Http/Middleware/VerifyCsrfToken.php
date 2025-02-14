@@ -7,9 +7,6 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
 class VerifyCsrfToken extends Middleware
 {
     protected $except = [
-        'lemon-squeezy-webhook',
-        '/webhook/lemon-squeezy',
-        'lemon-squeezy/webhook',
+        'lemon-squeezy/webhook', // Isključi webhook iz CSRF zaštite
     ];
-
 }
