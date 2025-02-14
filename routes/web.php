@@ -63,7 +63,8 @@ Route::middleware(['auth'])->group(function () {
 
 //PAYMENT
 // Webhook ruta za Lemon Squeezy
-Route::post('/lemon-squeezy-webhook', [PaymentController::class, 'webhook']);
+Route::post('/lemon-squeezy/webhook', [PaymentController::class, 'webhook'])
+    ->name('lemonsqueezy.webhook');
 
 // ✅ SUPPORT & FAQ
 Route::middleware(['auth'])->group(function () {

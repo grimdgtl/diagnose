@@ -18,66 +18,74 @@ class PaymentController extends Controller
 
     /**
      * Webhook metod za obradu događaja od Lemon Squeezy.
-     *
-     * Očekivani event: order_created sa statusom "paid".
-     * Koristi se "customer_email" iz payload-a za identifikaciju korisnika,
-     * a variant ID se uzima iz "first_order_item.variant_id".
      */
     public function webhook(Request $request)
     {
-        $secret = env('LEMON_SQUEEZY_WEBHOOK_SECRET');
+        Log::info('🔔 Webhook received:', $request->all());
+
+        // Koristi Laravel `config()` umesto `env()`
+        $secret = config('services.lemonsqueezy.webhook_secret'); 
         $signature = $request->header('X-Signature');
         $payload = $request->getContent();
+
+        if (!$secret || !$signature) {
+            Log::error('❌ Webhook error: Missing signature or secret.');
+            return response('Invalid request', 400);
+        }
 
         // Provera potpisa
         $computedSignature = hash_hmac('sha256', $payload, $secret);
         if (!hash_equals($computedSignature, $signature)) {
-            Log::error('Invalid webhook signature.');
+            Log::error('❌ Invalid webhook signature.');
             return response('Invalid signature', 400);
         }
 
         $data = json_decode($payload, true);
-        Log::info('Lemon Squeezy webhook payload:', $data);
+        if (!$data) {
+            Log::error('❌ Invalid JSON payload received.');
+            return response('Invalid JSON', 400);
+        }
+
+        Log::info('✅ Webhook payload:', $data);
 
         $eventType = $data['meta']['event_name'] ?? null;
         $attributes = $data['data']['attributes'] ?? [];
 
-        // Koristi "customer_email" iz payload-a
+        // Koristi "customer_email" iz payload-a za identifikaciju korisnika
         $userEmail = $attributes['customer_email'] ?? null;
         if (!$userEmail) {
-            Log::warning('No customer email in webhook payload.');
+            Log::warning('⚠️ Webhook: No customer email in payload.');
             return response('No customer email', 200);
         }
 
-        // Pronađi korisnika
+        // Pronađi korisnika u bazi
         $user = User::where('email', $userEmail)->first();
         if (!$user) {
-            Log::warning('User not found for email: ' . $userEmail);
+            Log::warning('⚠️ User not found for email: ' . $userEmail);
             return response('User not found', 200);
         }
 
         // Proveri da li je narudžbina uspešno plaćena
         if ($eventType === 'order_created' && ($attributes['status'] ?? null) === 'paid') {
-            // Izvuci variant ID iz first_order_item
             $orderItem = $attributes['first_order_item'] ?? null;
             $variantId = $orderItem['variant_id'] ?? null;
 
             if (!$variantId) {
-                Log::warning('Variant ID not found in webhook payload.');
+                Log::warning('⚠️ Webhook: Variant ID not found in payload.');
                 return response('Variant ID not found', 200);
             }
 
             // Ažuriraj korisnika u zavisnosti od paketa
-            if ($variantId == env('LEMON_SQUEEZY_BASIC_VARIANT_ID')) {
+            if ($variantId == config('services.lemonsqueezy.basic_variant')) {
                 $user->subscription_type = 'basic';
                 $user->num_of_questions_left += 20;
-            } elseif ($variantId == env('LEMON_SQUEEZY_PRO_VARIANT_ID')) {
+            } elseif ($variantId == config('services.lemonsqueezy.pro_variant')) {
                 $user->subscription_type = 'unlimited';
                 $user->num_of_questions_left = 500;
             }
 
             $user->save();
-            Log::info('User updated:', [
+            Log::info('✅ User updated:', [
                 'email' => $user->email,
                 'subscription_type' => $user->subscription_type,
                 'num_of_questions_left' => $user->num_of_questions_left,

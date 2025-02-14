@@ -45,10 +45,11 @@
             </ul>
 
             <!-- Direktan checkout link generisan u Lemon Squeezy dashboard-u -->
-            <a href="https://checkout.lemonsqueezy.com/checkout?store=134385&variant=681064" 
+            <!-- Starter plan -->
+            <a href="https://dijagnoza-app.lemonsqueezy.com/checkout?store=134385&variant=681064" 
                target="_blank"
                class="btn-orange plan-button text-black hover:bg-orange-500 block text-center py-2 px-4 mt-4">
-                Kupi Basic
+                Kupi Starter
             </a>
         </div>
 
@@ -73,7 +74,8 @@
             </ul>
 
             <!-- Direktan checkout link generisan u Lemon Squeezy dashboard-u -->
-            <a href="https://checkout.lemonsqueezy.com/checkout?store=134385&variant=681065" 
+            <!-- Pro plan -->
+            <a href="https://dijagnoza-app.lemonsqueezy.com/checkout?store=134385&variant=681065" 
                target="_blank"
                class="btn-orange plan-button text-black hover:bg-orange-500 block text-center py-2 px-4 mt-4">
                 Kupi Pro

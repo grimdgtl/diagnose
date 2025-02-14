@@ -33,6 +33,14 @@ return [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
-    ],
+    ],  
+
+    'lemonsqueezy' => [
+        'api_key' => env('LEMON_SQUEEZY_API_KEY'),
+        'store_id' => env('LEMON_SQUEEZY_STORE'),
+        'basic_variant' => env('LEMON_SQUEEZY_BASIC_VARIANT_ID'),
+        'pro_variant' => env('LEMON_SQUEEZY_PRO_VARIANT_ID'),
+        'webhook_secret' => env('LEMON_SQUEEZY_WEBHOOK_SECRET'),
+        ],
 
 ];
