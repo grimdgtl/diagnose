@@ -111,7 +111,7 @@ Route::post('/profile/rate', [ProfileController::class, 'rateApp'])
     ->middleware('auth');
 
 // PLAĆANJE / KUPOVINA PAKETA
-Route::post('/create-checkout', [PaymentController::class, 'createCheckout'])->name('payment.create');
+
 Route::get('/payment-success', [PaymentController::class, 'paymentSuccess'])->name('payment.success');
 Route::get('/payment-cancel', function () {
     return redirect()->route('home')->with('error', 'Payment canceled.');
