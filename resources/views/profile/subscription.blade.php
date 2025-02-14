@@ -48,13 +48,14 @@
             </ul>
 
             <form id="buy-basic-form">
-    @csrf
-    <input type="hidden" name="product" value="basic">
-    <button type="button" class="btn-orange plan-button text-black hover:bg-orange-500" id="buy-basic">
-        Kupi Starter
-    </button>
-</form>
-
+                @csrf
+                <input type="hidden" name="product" value="basic">
+                <button type="button" 
+                        class="btn-orange plan-button text-black hover:bg-orange-500"
+                        id="buy-basic">
+                    Kupi Basic
+                </button>
+            </form>
         </div>
 
         <!-- Pro plan (unlimited pitanja) -->
@@ -78,40 +79,54 @@
             </ul>
 
             <form id="buy-pro-form">
-    @csrf
-    <input type="hidden" name="product" value="pro">
-    <button type="button" class="btn-orange plan-button text-black hover:bg-orange-500" id="buy-pro">
-        Kupi Pro
-    </button>
-</form>
-
-
+                @csrf
+                <input type="hidden" name="product" value="pro">
+                <button type="button" 
+                        class="btn-orange plan-button text-black hover:bg-orange-500"
+                        id="buy-pro">
+                    Kupi Pro
+                </button>
+            </form>
         </div>
     </div>
 </div>
 
 <script>
-function buyPlan(planType) {
-    fetch("{{ route('payment.create') }}", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
-        },
-        body: JSON.stringify({ product: planType })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.checkout_url) {
-            window.location.href = data.checkout_url; // Preusmeravanje na checkout
-        } else {
-            alert("Error: Could not load checkout.");
-        }
-    })
-    .catch(error => {
-        console.error("Error:", error);
-        alert("Došlo je do greške prilikom kupovine.");
+document.addEventListener('DOMContentLoaded', function() {
+    const buyBasicBtn = document.getElementById('buy-basic');
+    const buyProBtn   = document.getElementById('buy-pro');
+    
+    // Event listeneri
+    buyBasicBtn.addEventListener('click', () => {
+        buyPlan('basic');
     });
-}
+
+    buyProBtn.addEventListener('click', () => {
+        buyPlan('pro');
+    });
+
+    function buyPlan(planType) {
+        fetch("{{ route('payment.create') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document.querySelector('meta[name=\"csrf-token\"]').getAttribute("content")
+            },
+            body: JSON.stringify({ product: planType })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.checkout_url) {
+                window.location.href = data.checkout_url;
+            } else {
+                alert("Error: Could not load checkout.");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("Došlo je do greške prilikom kupovine.");
+        });
+    }
+});
 </script>
 @endsection
