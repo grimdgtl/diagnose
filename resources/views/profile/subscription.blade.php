@@ -2,16 +2,13 @@
 
 @section('content')
 <div class="subscription-wrapper m-12">
-
     <!-- Informacije o trenutnom paketu i preostalim pitanjima -->
     <div class="mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 plan-grid">
         
         <!-- Blok s info o trenutnoj pretplati -->
         <div class="current-sub-info support-card bg-gray-800 p-6 rounded-md shadow-lg">
             <div>
-                <h1 class="plan-page-title text-center mb-8">
-                    Dijagnoza paketi
-                </h1>
+                <h1 class="plan-page-title text-center mb-8">Dijagnoza paketi</h1>
             </div>
             <div>
                 <h2 class="text-xl font-semibold text-orange mb-2">Trenutno stanje</h2>
@@ -96,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const buyBasicBtn = document.getElementById('buy-basic');
     const buyProBtn   = document.getElementById('buy-pro');
     
-    // Event listeneri
+    // Event listeneri za klik na dugmad
     buyBasicBtn.addEventListener('click', () => {
         buyPlan('basic');
     });
