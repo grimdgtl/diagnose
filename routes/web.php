@@ -72,7 +72,11 @@ Route::middleware(['auth'])->group(function () {
         return redirect()->route('home')->with('error', 'Payment canceled.');
     })->name('payment.cancel');
 
-    Route::get('/plans/thank-you', [PaymentController::class, 'thankYou'])->name('plans.thank-you');
+    Route::get('/plans/thank-you', function () {
+        return view('payment.thank-you');
+    })->name('plans.thank-you');
+
+
     Route::get('/plans/cancel', function () {
         return view('payment.cancel');
     })->name('plans.cancel');
