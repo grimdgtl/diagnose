@@ -9,6 +9,7 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         '/payment/create',
         '/webhook/lemon-squeezy',
+        '/webhook/lemon-squeezy/',
     ];
 
 }
