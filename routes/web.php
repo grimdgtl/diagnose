@@ -16,7 +16,7 @@ Route::group([], function () {
     Route::post('/submit-temp-data', [GuestFlowController::class, 'storeTempData'])->name('guest.submit-temp-data');
 
     Route::get('/register', [RegistrationController::class, 'showRegistrationForm'])->name('register');
-    Route::post('/register', [RegistrationController::class, 'register'])->name('register');
+    Route::post('/register', [RegistrationController::class, 'register'])->name('register.submit');
 
     Route::get('/verify-notice', [RegistrationController::class, 'verifyNotice'])->name('verify.notice');
     Route::get('/verify', [RegistrationController::class, 'verifyEmail'])->name('verify.email');
