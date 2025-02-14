@@ -111,6 +111,18 @@ Route::post('/profile/rate', [ProfileController::class, 'rateApp'])
     ->middleware('auth');
 
 // PLAĆANJE / KUPOVINA PAKETA
+Route::post('/create-checkout', [PaymentController::class, 'createCheckout'])->name('payment.create');
+Route::get('/payment-success', [PaymentController::class, 'paymentSuccess'])->name('payment.success');
+Route::get('/payment-cancel', function () {
+    return redirect()->route('home')->with('error', 'Payment canceled.');
+})->name('payment.cancel');
+
+Route::middleware(['auth', 'check.questions'])->group(function () {
+    Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
+});
+ 
+Route::post('/create-checkout', [PaymentController::class, 'createCheckout'])->name('payment.create');
+
 Route::get('/plans', [PaymentController::class, 'showPlans'])
     ->name('plans.show')
     ->middleware('auth');
@@ -119,10 +131,9 @@ Route::post('/plans/buy', [PaymentController::class, 'buyPlan'])
     ->name('plans.buy')
     ->middleware('auth');
 
-// Webhook, verifikacija potpisa od strane LemonSqueezy / Stripe
-Route::post('/webhook', [PaymentController::class, 'webhook'])
+Route::post('/webhook', [PaymentController::class, 'handleWebhook'])
     ->name('payment.webhook')
-    ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+    ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]); // Bez CSRF zaštite za webhooks
 
 Route::get('/plans/thank-you', [PaymentController::class, 'thankYou'])
     ->name('plans.thank-you')
@@ -167,4 +178,6 @@ Route::post('/wizard-form-registered', [\App\Http\Controllers\RegisteredWizardCo
 
 Route::get('/payment/redirect-to-checkout', [PaymentController::class, 'redirectToLemonSqueezyCheckout'])
     ->name('payment.redirectToCheckout');
+
+
 

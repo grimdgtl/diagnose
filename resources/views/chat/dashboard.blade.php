@@ -69,6 +69,7 @@
     @endauth
 
 </div>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
