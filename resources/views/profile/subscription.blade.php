@@ -44,15 +44,12 @@
                 <li>PREPORUKE SERVISA</li>
             </ul>
 
-            <form id="buy-basic-form">
-                @csrf
-                <input type="hidden" name="product" value="basic">
-                <button type="button" 
-                        class="btn-orange plan-button text-black hover:bg-orange-500"
-                        id="buy-basic">
-                    Kupi Basic
-                </button>
-            </form>
+            <!-- Direktan checkout link generisan u Lemon Squeezy dashboard-u -->
+            <a href="https://checkout.lemonsqueezy.com/checkout?store=134385&variant=681064" 
+               target="_blank"
+               class="btn-orange plan-button text-black hover:bg-orange-500 block text-center py-2 px-4 mt-4">
+                Kupi Basic
+            </a>
         </div>
 
         <!-- Pro plan (unlimited pitanja) -->
@@ -75,55 +72,13 @@
                 <li>PREPORUKE SERVISA</li>
             </ul>
 
-            <form id="buy-pro-form">
-                @csrf
-                <input type="hidden" name="product" value="pro">
-                <button type="button" 
-                        class="btn-orange plan-button text-black hover:bg-orange-500"
-                        id="buy-pro">
-                    Kupi Pro
-                </button>
-            </form>
+            <!-- Direktan checkout link generisan u Lemon Squeezy dashboard-u -->
+            <a href="https://checkout.lemonsqueezy.com/checkout?store=134385&variant=681065" 
+               target="_blank"
+               class="btn-orange plan-button text-black hover:bg-orange-500 block text-center py-2 px-4 mt-4">
+                Kupi Pro
+            </a>
         </div>
     </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const buyBasicBtn = document.getElementById('buy-basic');
-    const buyProBtn   = document.getElementById('buy-pro');
-    
-    // Event listeneri za klik na dugmad
-    buyBasicBtn.addEventListener('click', () => {
-        buyPlan('basic');
-    });
-
-    buyProBtn.addEventListener('click', () => {
-        buyPlan('pro');
-    });
-
-    function buyPlan(planType) {
-        fetch("{{ route('payment.create') }}", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": document.querySelector('meta[name=\"csrf-token\"]').getAttribute("content")
-            },
-            body: JSON.stringify({ product: planType })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.checkout_url) {
-                window.location.href = data.checkout_url;
-            } else {
-                alert("Error: Could not load checkout.");
-            }
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            alert("Došlo je do greške prilikom kupovine.");
-        });
-    }
-});
-</script>
 @endsection

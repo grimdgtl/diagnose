@@ -62,17 +62,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 //PAYMENT
-Route::middleware(['auth'])->group(function () {
-    // Kreiranje checkout-a (ono što zoveš iz AJAX-a)
-    Route::post('/payment/create', [PaymentController::class, 'create'])->name('payment.create');
-
-    // Success ruta gde LemonSqueezy vraća korisnika posle plaćanja
-    Route::get('/payment/success', [PaymentController::class, 'success'])->name('payment.success');
-});
-
-// Webhook ruta - obično ne mora da bude pod 'auth' middlewarom
-Route::post('/webhook/lemon-squeezy', [PaymentController::class, 'webhook'])
-    ->name('payment.webhook');
+Route::post('/webhook/lemon-squeezy', [PaymentController::class, 'webhook'])->name('payment.webhook');
 
 // ✅ SUPPORT & FAQ
 Route::middleware(['auth'])->group(function () {
