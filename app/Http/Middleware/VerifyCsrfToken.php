@@ -10,6 +10,7 @@ class VerifyCsrfToken extends Middleware
         '/payment/create',
         '/webhook/lemon-squeezy',
         '/webhook/lemon-squeezy/',
+        '/webhook/*', 
     ];
 
 }
