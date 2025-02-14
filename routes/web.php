@@ -17,7 +17,7 @@ Route::post('/wizard-form', [GuestFlowController::class, 'storeTempData'])
      ->name('guest.store-temp-data');
 
 Route::post('/submit-temp-data', [GuestFlowController::class, 'storeTempData'])
-    ->name('guest.store-temp-data');
+    ->name('guest.submit-temp-data');
 
 // REGISTRACIJA / VERIFIKACIJA EMAIL-A
 Route::get('/register', [RegistrationController::class, 'showRegistrationForm'])
