@@ -1,5 +1,4 @@
 @extends('layouts.app')
-
 @section('content')
 <div class="subscription-wrapper m-12">
     <!-- Informacije o trenutnom paketu i preostalim pitanjima -->
@@ -19,9 +18,9 @@
                 <p>
                     <strong>Preostala pitanja: </strong>
                     @if($user->subscription_type === 'unlimited')
-                        Unlimited
+                    Unlimited
                     @else
-                        {{ $user->num_of_questions_left }}
+                    {{ $user->num_of_questions_left }}
                     @endif
                 </p>
             </div>
@@ -36,21 +35,18 @@
                 <span class="plan-currency">RSD</span> /
                 <span class="plan-interval">Mesečno</span>
             </div>
-
             <ul class="plan-features">
                 <li>20 PITANJA</li>
                 <li>SAVETI ZA POPRAVKU</li>
                 <li>OKVIRNE CENE DELOVA</li>
                 <li>PREPORUKE SERVISA</li>
             </ul>
-
             <!-- Direktan checkout link generisan u Lemon Squeezy dashboard-u -->
             <!-- Starter plan -->
-            <x-lemon-button :href="$checkoutBasic" class="px-4 py-2 bg-blue-500 text-white">
-                Basic paket
+            <x-lemon-button :href="$checkoutBasic">
+            Kupi Basic
             </x-lemon-button>
         </div>
-
         <!-- Pro plan (unlimited pitanja) -->
         <div class="plan-box relative support-card">
             <!-- Traka “POPULARNO” -->
@@ -63,19 +59,18 @@
                 <span class="plan-currency">RSD</span> /
                 <span class="plan-interval">Mesečno</span>
             </div>
-
             <ul class="plan-features">
                 <li>NEOGRANIČEN BROJ PITANJA</li>
                 <li>SAVETI ZA POPRAVKU</li>
                 <li>CENE DELOVA</li>
                 <li>PREPORUKE SERVISA</li>
             </ul>
-
             <!-- Direktan checkout link generisan u Lemon Squeezy dashboard-u -->
             <!-- Pro plan -->
-            <x-lemon-button :href="$checkoutPro" class="px-4 py-2 bg-green-500 text-white">
-                Pro paket
+            <x-lemon-button :href="$checkoutPro">
+            Kupi Pro
             </x-lemon-button>
+        </div>
     </div>
 </div>
 @endsection
