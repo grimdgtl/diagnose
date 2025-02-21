@@ -112,14 +112,28 @@ class ProfileController extends Controller
 
     public function subscription()
     {
-
         $user = Auth::user();
 
-        // Generiši checkout linkove za Basic i Pro paket
-        $checkoutBasic = $user->checkout('681064'); // Basic varijanta
-        $checkoutPro   = $user->checkout('681065'); // Pro varijanta
+        $checkoutBasic = $user->checkout('681064', [
+            'data' => [
+                'billing' => [
+                    'address' => [
+                        'country' => $user->country,  // npr. "RS"
+                    ],
+                ],
+            ],
+        ]);
 
-        // Prosledi 'user', 'checkoutBasic' i 'checkoutPro' Blade pogledu
+        $checkoutPro = $user->checkout('681065', [
+            'data' => [
+                'billing' => [
+                    'address' => [
+                        'country' => $user->country,
+                    ],
+                ],
+            ],
+        ]);
+
         return view('profile.subscription', compact('user', 'checkoutBasic', 'checkoutPro'));
     }
 
