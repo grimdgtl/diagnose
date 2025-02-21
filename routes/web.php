@@ -63,7 +63,8 @@ Route::middleware(['auth'])->group(function () {
 
 //PAYMENT
 // Webhook ruta za Lemon Squeezy
-Route::lemonSqueezyWebhooks('/lemon-squeezy-webhook'
+Route::lemonSqueezyWebhooks('/lemon-squeezy-webhook');
+
 // ✅ SUPPORT & FAQ
 Route::middleware(['auth'])->group(function () {
     Route::get('/support', [SupportController::class, 'showSupportForm'])->name('support');
