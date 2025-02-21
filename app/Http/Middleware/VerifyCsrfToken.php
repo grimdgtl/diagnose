@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
 class VerifyCsrfToken extends Middleware
 {
     protected $except = [
-        'lemon-squeezy-webhook',
+        'lemon-squeezy/*',
     ];
 
     public function handle($request, Closure $next)

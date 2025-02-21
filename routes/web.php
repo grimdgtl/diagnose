@@ -64,9 +64,6 @@ Route::middleware(['auth'])->group(function () {
 
 //PAYMENT
 // Webhook ruta za Lemon Squeezy
-Route::post('/lemon-squeezy-webhook', [WebhookController::class, 'handle'])
-    ->name('lemon-squeezy.webhook');
-
 Route::middleware('auth')->get('/buy', function (Request $request) {
     $checkoutBasic = $request->user()->checkout('681064');
     $checkoutPro   = $request->user()->checkout('681065');
