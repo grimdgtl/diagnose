@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\CarDetail;
 use App\Models\Chat;
 use App\Models\Rating;
+use LemonSqueezy\Laravel\Billable;
 
 class ProfileController extends Controller
 {
@@ -111,8 +112,15 @@ class ProfileController extends Controller
 
     public function subscription()
     {
+
         $user = Auth::user();
-        return view('profile.subscription', compact('user'));
+
+        // Generiši checkout linkove za Basic i Pro paket
+        $checkoutBasic = $user->checkout('681064'); // Basic varijanta
+        $checkoutPro   = $user->checkout('681065'); // Pro varijanta
+
+        // Prosledi 'user', 'checkoutBasic' i 'checkoutPro' Blade pogledu
+        return view('profile.subscription', compact('user', 'checkoutBasic', 'checkoutPro'));
     }
 
 }
