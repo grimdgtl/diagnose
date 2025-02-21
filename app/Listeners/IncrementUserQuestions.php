@@ -5,13 +5,18 @@ namespace App\Listeners;
 use LemonSqueezy\Laravel\Events\OrderCreated;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class IncrementUserQuestions
 {
     public function handle(OrderCreated $event)
     {
-        \Log::info('IncrementUserQuestions listener triggered');
-        \Log::debug('OrderCreated event payload: ' . print_r($event->payload, true));
+        // Privremeno ispisivanje payload-a radi debagovanja
+        dd($event->payload);
+
+        // Ostatak koda (nakon debagovanja, ukloni ili komentariši dd() liniju)
+        Log::info('IncrementUserQuestions listener triggered');
+        Log::debug('OrderCreated event payload: ' . print_r($event->payload, true));
 
         $payload = $event->payload;
         
@@ -23,12 +28,12 @@ class IncrementUserQuestions
         $variantId = $payload['data']['attributes']['variant_id'] 
             ?? ($payload['data']['attributes']['first_order_item']['variant_id'] ?? null);
 
-        \Log::debug("Parsed email: {$email}, variantId: {$variantId}");
+        Log::debug("Parsed email: {$email}, variantId: {$variantId}");
 
         // Nađi korisnika po email-u
         $user = User::where('email', $email)->first();
         if (! $user) {
-            \Log::warning("IncrementUserQuestions: User not found for email: {$email}");
+            Log::warning("IncrementUserQuestions: User not found for email: {$email}");
             return;
         }
 
@@ -40,6 +45,6 @@ class IncrementUserQuestions
         }
 
         $user->save();
-        \Log::info("IncrementUserQuestions: Updated user {$email} with num_of_questions_left: " . $user->num_of_questions_left);
+        Log::info("IncrementUserQuestions: Updated user {$email} with num_of_questions_left: " . $user->num_of_questions_left);
     }
 }
