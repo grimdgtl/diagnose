@@ -21,6 +21,7 @@
 
     <!-- Alpine.js (po potrebi) -->
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    @lemonJS
 </head>
 <body class="bg-gray-900 text-white">
     <div class="layout-container">
