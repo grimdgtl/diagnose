@@ -67,6 +67,13 @@ Route::middleware(['auth'])->group(function () {
 Route::post('/lemon-squeezy-webhook', [WebhookController::class, 'handle'])
     ->name('lemon-squeezy.webhook');
 
+Route::middleware('auth')->get('/buy', function (Request $request) {
+    $checkoutBasic = $request->user()->checkout('681064');
+    $checkoutPro   = $request->user()->checkout('681065');
+
+    return view('billing', compact('checkoutBasic', 'checkoutPro'));
+})->name('buy');
+
 // ✅ SUPPORT & FAQ
 Route::middleware(['auth'])->group(function () {
     Route::get('/support', [SupportController::class, 'showSupportForm'])->name('support');

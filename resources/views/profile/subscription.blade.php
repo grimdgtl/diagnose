@@ -46,11 +46,9 @@
 
             <!-- Direktan checkout link generisan u Lemon Squeezy dashboard-u -->
             <!-- Starter plan -->
-            <a href="https://dijagnoza-app.lemonsqueezy.com/checkout?store=134385&variant=681064" 
-               target="_blank"
-               class="btn-orange plan-button text-black hover:bg-orange-500 block text-center py-2 px-4 mt-4">
-                Kupi Starter
-            </a>
+            <x-lemon-button :href="$checkoutBasic" class="px-4 py-2 bg-blue-500 text-white">
+                Basic paket
+            </x-lemon-button>
         </div>
 
         <!-- Pro plan (unlimited pitanja) -->
@@ -75,12 +73,9 @@
 
             <!-- Direktan checkout link generisan u Lemon Squeezy dashboard-u -->
             <!-- Pro plan -->
-            <a href="https://dijagnoza-app.lemonsqueezy.com/checkout?store=134385&variant=681065" 
-               target="_blank"
-               class="btn-orange plan-button text-black hover:bg-orange-500 block text-center py-2 px-4 mt-4">
-                Kupi Pro
-            </a>
-        </div>
+            <x-lemon-button :href="$checkoutPro" class="px-4 py-2 bg-green-500 text-white">
+                Pro paket
+            </x-lemon-button>
     </div>
 </div>
 @endsection
