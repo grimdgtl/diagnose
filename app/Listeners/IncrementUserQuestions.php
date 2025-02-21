@@ -11,9 +11,6 @@ class IncrementUserQuestions
 {
     public function handle(OrderCreated $event)
     {
-        // Privremeno ispisivanje payload-a radi debagovanja
-        dd($event->payload);
-
         // Ostatak koda (nakon debagovanja, ukloni ili komentariši dd() liniju)
         Log::info('IncrementUserQuestions listener triggered');
         Log::debug('OrderCreated event payload: ' . print_r($event->payload, true));
