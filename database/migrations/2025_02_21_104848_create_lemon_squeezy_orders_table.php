@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('lemon_squeezy_orders', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('billable_type');
-            $table->unsignedBigInteger('billable_id');
+            $table->string('billable_id');
             $table->string('lemon_squeezy_id');
             $table->string('customer_id');
             $table->char('identifier', 36);
