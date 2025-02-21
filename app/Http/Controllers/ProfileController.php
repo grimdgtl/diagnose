@@ -114,6 +114,9 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
 
+        $countryCode = $user->country === 'Serbia' ? 'RS' : $user->country;
+        $countryCode = $user->country === 'Srbija' ? 'RS' : $user->country;
+
         $checkoutBasic = $user->checkout('681064', [
             'data' => [
                 'billing' => [
