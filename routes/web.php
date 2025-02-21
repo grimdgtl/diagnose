@@ -63,10 +63,7 @@ Route::middleware(['auth'])->group(function () {
 
 //PAYMENT
 // Webhook ruta za Lemon Squeezy
-Route::post('lemon-squeezy/webhook', [PaymentController::class, 'webhook'])
-    ->name('payment.webhook')
-    ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]); // ✅ Isključujemo CSRF ručno
-
+Route::lemonSqueezyWebhooks('/lemon-squeezy-webhook'
 // ✅ SUPPORT & FAQ
 Route::middleware(['auth'])->group(function () {
     Route::get('/support', [SupportController::class, 'showSupportForm'])->name('support');
