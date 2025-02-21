@@ -8,6 +8,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\SupportController;
+use LemonSqueezy\Laravel\Http\Controllers\WebhookController;
 
 // ✅ GOST RUTE (Unos problema, registracija)
 Route::group([], function () {
@@ -63,7 +64,8 @@ Route::middleware(['auth'])->group(function () {
 
 //PAYMENT
 // Webhook ruta za Lemon Squeezy
-Route::lemonSqueezyWebhooks('/lemon-squeezy-webhook');
+Route::post('/lemon-squeezy-webhook', [WebhookController::class, 'handle'])
+    ->name('lemon-squeezy.webhook');
 
 // ✅ SUPPORT & FAQ
 Route::middleware(['auth'])->group(function () {
