@@ -28,7 +28,7 @@ class IncrementUserQuestions
         $variantId = $payload['data']['attributes']['variant_id']
             ?? ($payload['data']['attributes']['first_order_item']['variant_id'] ?? null);
 
-        $user = \App\Models\User::where('email', $email)->first();
+        $user = User::where('email', $email)->first();
         if (! $user) {
             \Log::warning("User not found for email: {$email}");
             return;
@@ -36,11 +36,15 @@ class IncrementUserQuestions
 
         if ($variantId == '681064' || $variantId == 681064) {
             $user->num_of_questions_left += 20;
+            $user->questions_expires_at = Carbon::now()->addDays(30); // Pitanja važe 30 dana
         } elseif ($variantId == '681065' || $variantId == 681065) {
             $user->num_of_questions_left += 500;
+            $user->questions_expires_at = Carbon::now()->addDays(30); // Pitanja važe 30 dana
         }
+
         $user->save();
-        \Log::info("Updated user {$email} with num_of_questions_left: " . $user->num_of_questions_left);
+        \Log::info("Updated user {$email} with num_of_questions_left: " . $user->num_of_questions_left . 
+                   ", expires at: " . $user->questions_expires_at);
 
         // Označi narudžbinu kao obrađenu, na primer na sat vremena
         if ($orderIdentifier) {
