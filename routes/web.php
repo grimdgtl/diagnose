@@ -32,9 +32,10 @@ Route::group([], function () {
     Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 });
 
+Route::get('/dashboard', [ChatController::class, 'index'])->name('dashboard');
+
 // ✅ KORISNIČKE RUTE (Profil, garaža, istorija, ocene)
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [ChatController::class, 'index'])->name('dashboard');
 
     Route::post('/store-question', [ChatController::class, 'storeQuestion'])->name('chat.storeQuestion');
     Route::get('/new-chat', [ChatController::class, 'newChat'])->name('chat.new');

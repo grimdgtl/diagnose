@@ -22,7 +22,7 @@
             <!-- Levi bubble (assistant) -->
             <div class="flex justify-start mb-2">
                 <div class="bubble assistant markdown-content animate-fadeIn"
-                        data-content="{{ e($resp->content) }}">
+                        data-content="{{ e($res->content) }}">
                     </div>
             </div>
         </div>
