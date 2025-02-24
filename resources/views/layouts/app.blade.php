@@ -10,6 +10,14 @@
     <!-- Uključivanje CSS i JS preko Vite -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    <!-- Statički Open Graph tagovi -->
+    <meta property="og:title" content="DIJAGNOZA">
+    <meta property="og:description" content="Jedina dijganoza koja ti je stvarno potrebna">
+    <meta property="og:image" content="{{ asset('assets/images/share-image.png') }}">
+    <meta property="og:url" content="https://dijagnoza.com">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Dijagnoza APP">
+
     <!-- Google Fonts (Red Hat Display) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
