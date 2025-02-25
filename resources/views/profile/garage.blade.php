@@ -5,7 +5,7 @@
     <!-- Hero sekcija -->
     <div class="text-center mb-12">
         <h1 class="text-4xl font-black bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text">
-            Moja garaža 🚗
+            Moja garaža
         </h1>
         <p class="mt-4 text-lg text-gray-300 max-w-2xl mx-auto">
             Ovo je vaša lična kolekcija automobila. Dodajte, upravljajte i pratite sve detalje o vašim vozilima na jednom mestu.
@@ -48,11 +48,11 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div class="flex items-center space-x-2 text-gray-300">
                                 <i class="fas fa-tachometer-alt"></i>
-                                <span>{{ $car->engine_power }} KS</span>
+                                <span>{{ $car->engine_power }}</span>
                             </div>
                             <div class="flex items-center space-x-2 text-gray-300">
-                                <i class="fas fa-gas-pump"></i>
-                                <span>{{ $car->engine_capacity }} cm³</span>
+                                <i class="fas fa-cogs"></i>
+                                <span>{{ $car->engine_capacity }} cc</span>
                             </div>
                         </div>
 

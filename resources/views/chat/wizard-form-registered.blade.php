@@ -6,8 +6,8 @@
 <div class="box-height p-12 my-11 mx-8 bg-black radius border-orange shadow-lg"
      x-data="{
          step: 1,
-         carOption: 'existing',    // 'existing' ili 'new'
-         isSubmitting: false       // za loader
+         carOption: 'existing',
+         isSubmitting: false
      }"
 >
     <h1 class="text-3xl text-orange font-bold mb-4 text-center page-title">
@@ -29,17 +29,17 @@
         </div>
     @endif
 
-    {{-- LOADER (prikaži se kada je isSubmitting = true) --}}
-    <div x-show="isSubmitting"
-         x-transition
-         class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
-         style="display: none;"
-    >
-        <div class="loader ease-linear rounded-full border-4 border-t-4 border-orange h-12 w-12 mb-4"></div>
+    {{-- NOVI LOADER --}}
+    <div id="loader" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50 hidden">
+        <div class="text-center">
+            <!-- Može se koristiti slika, animirani GIF ili CSS spinner -->
+            <img class="pulse" src="{{ asset('assets/images/logo-neon.png') }}" alt="Loader">
+            <p class="text-white uppercase font-black">Treba mi 10s da razmislim, molim sačekajte...</p>
+        </div>
     </div>
 
-    <form action="{{ route('registered.store-data') }}" method="POST"
-          @submit="isSubmitting = true"
+    <form id="wizardForm" action="{{ route('registered.store-data') }}" method="POST"
+          @submit="document.getElementById('loader').classList.remove('hidden')"
           class="space-y-6 default-width"
     >
         @csrf
@@ -172,12 +172,22 @@
 </div>
 
 <style>
-    .loader {
-        border-top-color: #ff6600;
-        animation: spinner 0.6s linear infinite;
+    .pulse {
+        animation: pulse-animation 2s infinite;
     }
-    @keyframes spinner {
-        to { transform: rotate(360deg); }
+    @keyframes pulse-animation {
+        0% {
+            transform: scale(1);
+            opacity: 1;
+        }
+        50% {
+            transform: scale(1.2);
+            opacity: 0.7;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
     }
 </style>
 @endsection

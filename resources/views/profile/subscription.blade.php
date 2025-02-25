@@ -43,7 +43,7 @@
             </ul>
             <!-- Direktan checkout link generisan u Lemon Squeezy dashboard-u -->
             <!-- Starter plan -->
-            <x-lemon-button :href="$checkoutBasic">
+            <x-lemon-button :href="$checkoutBasic" class="btn-orange">
             Kupi Basic
             </x-lemon-button>
         </div>
@@ -67,7 +67,7 @@
             </ul>
             <!-- Direktan checkout link generisan u Lemon Squeezy dashboard-u -->
             <!-- Pro plan -->
-            <x-lemon-button :href="$checkoutPro">
+            <x-lemon-button :href="$checkoutPro" class="btn-orange">
             Kupi Pro
             </x-lemon-button>
         </div>

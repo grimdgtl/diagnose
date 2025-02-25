@@ -33,6 +33,27 @@ class OpenAiService
     }
 
     /**
+     * Vraća podrazumevane sistemske instrukcije za ChatGPT
+     */
+    private function getDefaultSystemMessage(): string
+    {
+        return "Ti si iskusan srpski automehaničar, ekspert za automobile, mehaniku i auto elektriku – zovu te AutoMentor. Tvoj stil je jasan, jednostavan i prijateljski 'ortak' ton, kao da sediš sa drugarom uz kafu i pričaš o kolima. Korisnik ti daje podatke o problemu (opis, dijagnostika, lampice) i autu (marka, model, godište, zapremina motora, snaga motora, vrsta goriva, vrsta menjača), a ti na osnovu toga pomažeš da otkrije šta nije u redu i šta da radi dalje.
+            Pravila za odgovore:
+                - Piši u Markdown formatu.
+                - Koristi nenumerisane liste (`-`) za moguće uzroke, korake ili savete.
+                - Ako imaš linkove, ubaci ih kao `[tekst](url)`.
+                - Odvajaj pasuse praznim redovima da bude lako za čitanje.
+                - Objasni stvari prosto, kao nekome ko nije majstor, ali sa dovoljno detalja da bude korisno.
+                - Fokusiraj se na praktične korake: šta korisnik može sam da proveri (npr. filter, svećice) ili šta da odnese majstoru.
+                - Ako nemaš dovoljno podataka, pitaj dodatna pitanja (npr. 'Kako auto vuče na leru?', 'Jel dimi iz auspuha?') i podseti korisnika da ti da više detalja o simptomima ili okolnostima.
+                - Ako je problem nejasan, podstakni korisnika da pojasni (npr. 'Daj mi još malo info, pa ćemo skontati šta je.').
+                - Vodi razgovor ka rešavanju problema i sledećim koracima, uvek ostavi prostor da te pitaju još nešto.
+                - Ako pitanje nije o kolima, kaži: 'To nije moj teren, ortak, pričajmo o kolima.'
+                - Ohrabri korisnika da nastavi sa pitanjima ako treba još pojašnjenja (npr. 'Ako šta zapne, pitaj me slobodno!').
+                - Ako korisnik pita gde da kupi delove, koristi samo sajtove prodajadelova.rs i autohub.rs za pretragu i predloge. Ne spominji druge sajtove osim ova dva.";
+    }
+
+    /**
      * Dodaje system poruku samo jednom po sesiji (ako je niste već dodali).
      */
     public function setSystemMessageOnce(string $message)
@@ -202,6 +223,24 @@ class OpenAiService
     }
 
     /**
+     * Proverava da li je domen relevantan za auto-delove
+     */
+    private function isRelevantDomain(string $url): bool
+    {
+        // Lista dozvoljenih domena za auto-delove
+        $allowedDomains = [
+            'prodajadelova.rs',
+            'autohub.rs',
+        ];
+
+        // Izvuci domen iz URL-a
+        $domain = parse_url($url, PHP_URL_HOST);
+
+        // Proveri da li je domen u listi dozvoljenih
+        return in_array($domain, $allowedDomains);
+    }
+
+    /**
      * Google Custom Search – dohvat linkova
      */
     protected function searchGoogle(string $query): string
@@ -214,11 +253,13 @@ class OpenAiService
             return '';
         }
 
+        // Ograničavamo pretragu samo na prodajadelova.rs i autohub.rs sa ključnom reči "auto delovi"
+        $enhancedQuery = $query . " auto delovi site:prodajadelova.rs | site:autohub.rs";
         $url = sprintf(
             'https://www.googleapis.com/customsearch/v1?key=%s&cx=%s&q=%s',
             urlencode($apiKey),
             urlencode($cx),
-            urlencode($query)
+            urlencode($enhancedQuery)
         );
 
         $ch = curl_init($url);
@@ -246,18 +287,17 @@ class OpenAiService
             return '';
         }
 
-        // Uzimamo samo prva 3 rezultata
-        $items = array_slice($data['items'], 0, 3);
+        // Uzimamo samo relevantne rezultate
         $resultLinks = [];
-        foreach ($items as $item) {
+        foreach (array_slice($data['items'], 0, 3) as $item) {
             $link = $item['link'] ?? '';
             $title = $item['title'] ?? '';
-            if ($link) {
+            if ($link && $this->isRelevantDomain($link)) {
                 $resultLinks[] = "- $title: $link";
             }
         }
 
-        return implode("\n", $resultLinks);
+        return !empty($resultLinks) ? implode("\n", $resultLinks) : '';
     }
 
     /**
@@ -271,40 +311,34 @@ class OpenAiService
         array $carForm = [],
         string $systemMessage = null
     ): ?string {
-        // 1) Ako hoćete da dodate system poruku
-        if ($systemMessage) {
-            $this->setSystemMessageOnce($systemMessage);
-        }
+        // Postavljamo podrazumevane sistemske instrukcije ako nisu prosleđene
+        $this->setSystemMessageOnce($systemMessage ?? $this->getDefaultSystemMessage());
 
-        // 2) Ako hoćete da dodate info o automobilu
+        // Dodajemo info o automobilu, ako postoji
         if (!empty($carForm)) {
             $this->addCarFormContext($carForm);
         }
 
-        // 3) Ako hoćete da dodate dijagnostiku/lampicu, jednom po sesiji
+        // Dodajemo dijagnostiku i lampicu, ako postoje
         $this->addDiagnoseContext($diagnose, $indicatorLight);
 
-        // 4) Korisnikovo pitanje
+        // Dodajemo novo pitanje korisnika
         if ($newQuestion) {
             $this->addMessage('user', $newQuestion);
         }
 
-        // 5) Provera za "gde mogu da kupim..."
+        // Provera za "gde mogu da kupim"
         $userIsAskingToBuy = $this->isAskingWhereToBuy($newQuestion);
 
-        // 6) Pošaljemo GPT-u
+        // Šaljemo upit ChatGPT-u
         $payload = $this->prepareApiRequest('gpt-3.5-turbo');
         $response = $this->sendApiRequest($payload);
 
-        // 7) Ako dobijemo odgovor, dopunimo ako se radi o kupovini
         if ($response && isset($response['choices'][0]['message']['content'])) {
             $assistantReply = $response['choices'][0]['message']['content'];
 
             if ($userIsAskingToBuy) {
-                // Napravimo query za Google, dopunjen podacima o automobilu ako postoje
                 $searchQuery = $newQuestion;
-
-                // Ako imamo sve ključeve, možemo ih dodati
                 if (!empty($carForm['brand'])) {
                     $searchQuery .= " {$carForm['brand']}";
                 }
@@ -328,21 +362,18 @@ class OpenAiService
                 }
 
                 $searchResults = $this->searchGoogle($searchQuery);
-                
                 if (!empty($searchResults)) {
                     $assistantReply .= "\n\nEvo nekoliko linkova gde možeš proveriti ponudu:\n" . $searchResults;
                 } else {
-                    $assistantReply .= "\n\nTrenutno nisam uspeo da pronađem konkretne linkove. Probaj da preciziraš deo ili brend.";
+                    $assistantReply .= "\n\nNisam uspeo da nađem tačan link sad, ali proveri na [ProdajaDelova](https://prodajadelova.rs) ili [AutoHub](https://autohub.rs).";
                 }
             }
 
-            // 8) Dodamo asistentov odgovor u session
             $this->addMessage('assistant', $assistantReply);
             return $assistantReply;
         }
 
-        // Ako nešto nije u redu
-        return null;
+        return "Ej, došlo je do greške u komunikaciji sa ChatGPT-om, probaj opet!";
     }
 
     /**
@@ -350,7 +381,7 @@ class OpenAiService
      */
     public function ask(string $prompt, array $carForm = []): string
     {
-        $this->addMessage('system', 'Ti si AutoMentor – virtualni asistent .Odgovaraj u Markdown formatu, koristi listu za nabrajanje, linkove u [tekst](url) formatu i podeli pasuse praznim redovima...');
+        $this->addMessage('system', $this->getDefaultSystemMessage());
         $this->addMessage('user', $prompt);
 
         $payload  = $this->prepareApiRequest('gpt-3.5-turbo');
@@ -390,7 +421,7 @@ class OpenAiService
                 if (!empty($searchResults)) {
                     $assistantReply .= "\n\nEvo nekoliko linkova gde možeš proveriti ponudu:\n" . $searchResults;
                 } else {
-                    $assistantReply .= "\n\nTrenutno nisam uspeo da pronađem konkretne linkove. Probaj da preciziraš deo ili brend.";
+                    $assistantReply .= "\n\nNisam uspeo da nađem tačan link sad, ali proveri na [ProdajaDelova](https://prodajadelova.rs) ili [AutoHub](https://autohub.rs).";
                 }
             }
 

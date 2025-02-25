@@ -30,8 +30,6 @@
                        class="input-field bg-gray-700" required>
             </div>
 
-
-
             <!-- Email -->
             <div>
                 <input type="email" name="email" placeholder="Email" value="{{ old('email') }}"
@@ -71,10 +69,15 @@
                 <input type="text" name="city" placeholder="Grad" value="{{ old('city') }}"
                        class="input-field bg-gray-700" required>
             </div>
-            <!-- Država -->
+            <!-- Država (Dropdown) -->
             <div>
-                <input type="text" name="country" placeholder="Država" value="{{ old('country') }}"
-                       class="input-field bg-gray-700" required>
+                <select name="country" class="input-field bg-gray-700" required>
+                    <option value="" disabled {{ old('country') ? '' : 'selected' }}>Izaberi državu</option>
+                    <option value="RS" {{ old('country') == 'RS' ? 'selected' : '' }}>Srbija</option>
+                    <option value="BA" {{ old('country') == 'BA' ? 'selected' : '' }}>Bosna i Hercegovina</option>
+                    <option value="HR" {{ old('country') == 'HR' ? 'selected' : '' }}>Hrvatska</option>
+                    <option value="ME" {{ old('country') == 'ME' ? 'selected' : '' }}>Crna Gora</option>
+                </select>
             </div>
         </div>
 
@@ -91,7 +94,7 @@
         </div>
         <div class="text-center">
             <button type="submit" class="btn-orange w-full my-6 mx-auto text-black hover:bg-orange-500">
-            Registruj se
+                Registruj se
             </button>
         </div>
     </form>

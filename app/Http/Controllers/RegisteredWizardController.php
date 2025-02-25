@@ -122,7 +122,6 @@ class RegisteredWizardController extends Controller
             $request->indicatorLight,
             $request->issueDescription, // user question
             $carForm,
-            "Ti si AutoMentor – virtualni asistent. Molim te analiziraj problem i daj savet...Odgovaraj u Markdown formatu, koristi listu za nabrajanje, linkove u [tekst](url) formatu i podeli pasuse praznim redovima"
         );
 
         // 6) Sačuvamo GPT odgovor u bazu

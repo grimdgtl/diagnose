@@ -98,7 +98,6 @@ class ChatController extends Controller
             null,               // indicatorLight
             $request->message,  // newQuestion
             $carForm,           // carForm array
-            "Ti si AutoMentor – virtualni asistent. Pomažeš vozačima da reše probleme na automobilu. Odgovaraj u Markdown formatu, koristi listu za nabrajanje, linkove u [tekst](url) formatu i podeli pasuse praznim redovima" 
         );
 
         // Snimamo odgovor (što nam je vratila handleUserQuestion)

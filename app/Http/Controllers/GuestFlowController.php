@@ -71,13 +71,17 @@ class GuestFlowController extends Controller
     ]);
 
     // 3) Formiranje prompta
-    $fullPrompt = "Opis problema: ".$validatedData['issueDescription']."\n".
-                  "Dijagnostika: ".($validatedData['diagnose'] ?? '')."\n".
-                  "Lampica: ".($validatedData['indicatorLight'] ?? '')."\n".
-                  "Auto (brand/model/year...): "
-                  .$validatedData['brand']." "
-                  .$validatedData['model']." "
-                  .$validatedData['year']." ...";
+    $fullPrompt = "Opis problema: " . $validatedData['issueDescription'] . "\n" .
+            "Dijagnostika: " . ($validatedData['diagnose'] ?? 'Nema podataka') . "\n" .
+            "Lampica: " . ($validatedData['indicatorLight'] ?? 'Nema podataka') . "\n" .
+            "Podaci o vozilu: " . 
+            $validatedData['brand'] . " " .
+            $validatedData['model'] . " " .
+            $validatedData['year'] . ", " .
+            "Zapremina motora: " . $validatedData['engine_capacity'] . ", " .
+            "Snaga motora: " . $validatedData['engine_power'] . ", " .
+            "Vrsta goriva: " . $validatedData['fuel_type'] . ", " .
+            "Vrsta menjača: " . $validatedData['transmission'];
 
     // 4) ChatGPT upit
     $chatGptResponse = (new OpenAiService())->ask($fullPrompt);

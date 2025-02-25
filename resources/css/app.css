@@ -478,6 +478,12 @@ p, a, label, span {
   color: var(--white);
   margin-right: auto;
 }
+
+.bubble.assistant p {
+  font-weight:300px;
+  margin-bottom: 15px;
+}
+
 .bubble.user {
   background-color: var(--orange);
   color: #fff;
