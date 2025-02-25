@@ -981,3 +981,10 @@ select.input-field:focus {
     margin-right: auto;
   }
 }
+
+.terms-and-privacy {
+  border-radius: 15px;
+  height: 88vh;
+  border: 2px solid var(--orange);
+  overflow-x: scroll;
+}
