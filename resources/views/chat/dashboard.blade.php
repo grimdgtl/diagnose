@@ -38,29 +38,11 @@
         @endforeach
     </div>
 
-    <!-- Forma za novo pitanje -->
+    <!-- Dinamički deo za formu i poruku -->
     @auth
-        @if(Auth::user()->num_of_questions_left > 0)
-            <form action="{{ route('chat.storeQuestion') }}" method="POST" class="chat-input" id="chat-form">
-                @csrf
-                <input type="hidden" name="chat_id" value="{{ $chat->id ?? '' }}" />
-                <input type="text" name="message" class="new-message-field" placeholder="Unesi novo pitanje"
-                       class="input-field flex-1 bg-black" />
-                <button type="submit" class="btn-orange send-message text-black hover:bg-orange-500">
-                    <i class="fa fa-paper-plane"></i>
-                </button>
-            </form>
-        @else
-            <div class="flex items-center justify-between mb-4">
-                <p class="text-red-500 mt-2">
-                Nemate više besplatnih pitanja. Kupite paket za više!
-                </p>
-                <a href="{{ route('profile.subscription') }}"
-                    class="btn-orange text-black px-4 py-2 rounded hover:bg-orange-500">
-                        Kupite još pitanja
-                </a>
-            </div>
-        @endif
+        <div id="chat-input-container">
+            <!-- Ovde će JavaScript ubaciti formu ili poruku -->
+        </div>
     @else
         <p class="mt-4 text-gray-400">
             Da biste postavili još pitanja, 
@@ -73,77 +55,90 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Selektujemo sve elemente koji imaju .markdown-content
+    // Obrada Markdown sadržaja
     document.querySelectorAll('.markdown-content').forEach(function(el) {
-        // 1) Dohvati originalni, HTML-escaped tekst iz data-content
         const originalText = el.dataset.content || '';
-        // 2) Marked će da parsira Markdown
         const html = marked.parse(originalText);
-        // 3) Ubacimo HTML nazad u element
         el.innerHTML = html;
     });
-});
 
-document.addEventListener('DOMContentLoaded', function() {
-    const chatForm = document.getElementById('chat-form');
     const chatContainer = document.getElementById('chat-container');
+    const chatInputContainer = document.getElementById('chat-input-container');
+    const questionsLeftSpan = document.getElementById('questions-left');
+    let initialQuestionsLeft = parseInt(questionsLeftSpan?.textContent.match(/\d+/)?.[0] || 0);
 
-    chatForm.addEventListener('submit', function(e) {
-    e.preventDefault(); // Sprečava standardni submit
+    // Funkcija za postavljanje forme ili poruke
+    function updateChatInput(questionsLeft) {
+        chatInputContainer.innerHTML = ''; // Očisti postojeći sadržaj
 
-    // Preuzmi referencu na input polje i njegovu vrednost
-    const messageField = chatForm.querySelector('input[name="message"]');
-    const userMessage = messageField.value;
-    
-    // Kreiraj FormData pre nego što se input očisti
-    const formData = new FormData(chatForm);
-    
-    // Sada očisti input polje
-    messageField.value = ''; 
-
-    // 1) Kreiraj korisničku poruku u DOM-u
-    addUserBubble(userMessage);
-
-    // 2) Kreiraj "assistant" bubble sa loader animacijom
-    const loaderBubble = addAssistantLoader();
-
-    // 3) Pošalji AJAX zahtev
-    fetch(chatForm.action, {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'
+        if (questionsLeft > 0) {
+            chatInputContainer.innerHTML = `
+                <form action="${chatFormAction}" method="POST" class="chat-input" id="chat-form">
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}" />
+                    <input type="hidden" name="chat_id" value="${chatId}" />
+                    <input type="text" name="message" class="new-message-field" placeholder="Unesi novo pitanje" />
+                    <button type="submit" class="btn-orange send-message text-black hover:bg-orange-500">
+                        <i class="fa fa-paper-plane"></i>
+                    </button>
+                </form>
+            `;
+            const chatForm = document.getElementById('chat-form');
+            chatForm.addEventListener('submit', handleFormSubmit);
+        } else {
+            chatInputContainer.innerHTML = `
+                <div class="flex items-center justify-between mb-4">
+                    <p class="text-red-500 mt-2">
+                        Nemate više besplatnih pitanja. Kupite paket za više!
+                    </p>
+                    <a href="${subscriptionUrl}" class="btn-orange text-black px-4 py-2 rounded hover:bg-orange-500">
+                        Kupite još pitanja
+                    </a>
+                </div>
+            `;
         }
-    })
-    .then(async (response) => {
-        if (!response.ok) {
-            throw await response.json();
-        }
-        return response.json();
-    })
-    .then(data => {
-        // 4) Zamenimo loaderBubble sadržajem formiranim odgovorom
-        if (data.success) {
-            // Koristi marked.js da parsira Markdown u HTML
-            loaderBubble.innerHTML = marked.parse(data.answer);
-            loaderBubble.classList.remove('typing');
+    }
 
-            // Ažuriraj broj preostalih pitanja, ako postoji element za to
-            const questionsLeftSpan = document.getElementById('questions-left');
-            if (questionsLeftSpan && data.questions_left !== undefined) {
-                questionsLeftSpan.textContent = data.questions_left;
+    // Funkcija za obradu submit-a forme
+    function handleFormSubmit(e) {
+        e.preventDefault();
+        const messageField = e.target.querySelector('input[name="message"]');
+        const userMessage = messageField.value;
+        const formData = new FormData(e.target);
+        messageField.value = '';
+
+        addUserBubble(userMessage);
+        const loaderBubble = addAssistantLoader();
+
+        fetch(e.target.action, {
+            method: 'POST',
+            body: formData,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(async (response) => {
+            if (!response.ok) {
+                throw await response.json();
             }
-        }
-    })
-    .catch(err => {
-        console.error("Greška:", err);
-        loaderBubble.textContent = "Dogodila se greška prilikom slanja poruke.";
-    });
-});
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                loaderBubble.innerHTML = marked.parse(data.answer);
+                loaderBubble.classList.remove('typing');
 
+                if (questionsLeftSpan && data.questions_left !== undefined) {
+                    questionsLeftSpan.innerHTML = `<b>Broj preostalih pitanja: ${data.questions_left}</b>`;
+                    updateChatInput(data.questions_left); // Ažuriraj formu ili poruku
+                }
+            }
+        })
+        .catch(err => {
+            console.error("Greška:", err);
+            loaderBubble.textContent = err.message || "Dogodila se greška prilikom slanja poruke.";
+            loaderBubble.classList.remove('typing');
+        });
+    }
 
-    // Pomoćne funkcije:
-
+    // Pomoćne funkcije
     function addUserBubble(message) {
         const userDiv = document.createElement('div');
         userDiv.classList.add('flex', 'justify-end', 'animate-fadeIn');
@@ -153,7 +148,6 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
         chatContainer.appendChild(userDiv);
-        // Scroll na dno
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
@@ -162,16 +156,15 @@ document.addEventListener('DOMContentLoaded', function() {
         assistantDiv.classList.add('flex', 'justify-start', 'animate-fadeIn');
         assistantDiv.innerHTML = `
             <div class="bubble assistant typing">
-                <div class='flex space-x-2 justify-center items-center'>
-                    <span class='sr-only'>Loading...</span>
-                    <div class='h-2 w-2 bg-white rounded-full animate-bounce [animation-delay:-0.3s]'></div>
-                    <div class='h-2 w-2 bg-white rounded-full animate-bounce [animation-delay:-0.15s]'></div>
-                    <div class='h-2 w-2 bg-white rounded-full animate-bounce'></div>
+                <div class="flex space-x-2 justify-center items-center">
+                    <span class="sr-only">Loading...</span>
+                    <div class="h-2 w-2 bg-white rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                    <div class="h-2 w-2 bg-white rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                    <div class="h-2 w-2 bg-white rounded-full animate-bounce"></div>
                 </div>
             </div>
         `;
         chatContainer.appendChild(assistantDiv);
-        // Dohvati sam element "assistant bubble" koji ćemo kasnije zameniti sadržajem
         const bubble = assistantDiv.querySelector('.assistant');
         chatContainer.scrollTop = chatContainer.scrollHeight;
         return bubble;
@@ -184,9 +177,13 @@ document.addEventListener('DOMContentLoaded', function() {
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;");
     }
+
+    // Inicijalizacija
+    const chatFormAction = '{{ route("chat.storeQuestion") }}';
+    const chatId = '{{ $chat->id ?? "" }}';
+    const subscriptionUrl = '{{ route("profile.subscription") }}';
+    updateChatInput(initialQuestionsLeft);
 });
 </script>
 
 @endsection
-
-
