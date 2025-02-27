@@ -86,8 +86,8 @@ document.addEventListener('DOMContentLoaded', function() {
             chatForm.addEventListener('submit', handleFormSubmit);
         } else {
             chatInputContainer.innerHTML = `
-                <div class="flex items-center justify-between mb-4">
-                    <p class="text-red-500 mt-2">
+                <div class="buy-questions flex items-center justify-between mb-4">
+                    <p class="text-white-500">
                         Nemate više besplatnih pitanja. Kupite paket za više!
                     </p>
                     <a href="${subscriptionUrl}" class="btn-orange text-black px-4 py-2 rounded hover:bg-orange-500">

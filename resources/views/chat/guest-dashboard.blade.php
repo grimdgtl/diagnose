@@ -28,8 +28,8 @@
         </div>
 
             <!-- Poziv na registraciju -->
-            <div class="flex justify-start mb-8">
-                <div class="bg-black w-full text-white p-4 items-center justify-between rounded-lg flex">
+            <div class="flex justify-start mb-8 border-orange radius-10">
+                <div class="bg-black radius-10 w-full register-for-more-questions text-white p-2 items-center justify-between rounded-lg flex">
                     <p class="uppercase font-black">Registruj se da bi dobio još 2 besplatna pitanja!</p>
                     <a href="{{ route('register') }}"
                        class="btn-orange text-black px-4 py-2 rounded hover:bg-orange-500">
