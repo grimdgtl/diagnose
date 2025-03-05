@@ -34,10 +34,10 @@ class IncrementUserQuestions
             return;
         }
 
-        if ($variantId == '681064' || $variantId == 681064) {
+        if ($variantId == '714137' || $variantId == 714137) {
             $user->num_of_questions_left += 20;
             $user->questions_expires_at = Carbon::now()->addDays(30); // Pitanja važe 30 dana
-        } elseif ($variantId == '681065' || $variantId == 681065) {
+        } elseif ($variantId == '714199' || $variantId == 714199) {
             $user->num_of_questions_left += 500;
             $user->questions_expires_at = Carbon::now()->addDays(30); // Pitanja važe 30 dana
         }

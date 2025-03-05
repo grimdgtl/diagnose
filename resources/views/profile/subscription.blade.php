@@ -43,10 +43,9 @@
             </ul>
             <!-- Direktan checkout link generisan u Lemon Squeezy dashboard-u -->
             <!-- Starter plan -->
-            <!--<x-lemon-button :href="$checkoutBasic" class="btn-orange">
+            <x-lemon-button :href="$checkoutBasic" class="btn-orange">
             Kupi Basic
-            </x-lemon-button>-->
-            <a href="#">USKORO</a>
+            </x-lemon-button>
         </div>
         <!-- Pro plan (unlimited pitanja) -->
         <div class="plan-box relative support-card">
@@ -68,10 +67,9 @@
             </ul>
             <!-- Direktan checkout link generisan u Lemon Squeezy dashboard-u -->
             <!-- Pro plan -->
-            <!--<x-lemon-button :href="$checkoutPro" class="btn-orange">
+            <x-lemon-button :href="$checkoutPro" class="btn-orange">
             Kupi Pro
-            </x-lemon-button>-->
-            <a href="#">USKORO</a>
+            </x-lemon-button>
         </div>
     </div>
 </div>
