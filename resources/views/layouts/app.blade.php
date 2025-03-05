@@ -29,6 +29,15 @@
 
     <!-- Alpine.js (po potrebi) -->
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-DE9LD0WHPE"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-DE9LD0WHPE');
+    </script>
     @lemonJS
 </head>
 <body class="bg-gray-900 text-white">
