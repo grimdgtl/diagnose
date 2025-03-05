@@ -14,6 +14,8 @@ class OpenAiService
 {
     protected $apiUrl;
     protected $apiKey;
+    protected $sonarApiKey;
+    protected $sonarApiUrl = 'https://api.perplexity.ai/chat/completions';
 
     // Session ključevi
     protected $sessionMessagesKey = 'chatgpt_messages';
@@ -25,6 +27,7 @@ class OpenAiService
     {
         $this->apiKey = env('OPENAI_API_KEY', 'YOUR_FALLBACK_API_KEY');
         $this->apiUrl = 'https://api.openai.com/v1/chat/completions';
+        $this->sonarApiKey = env('PERPLEXITY_API_KEY', 'YOUR_FALLBACK_PERPLEXITY_KEY');
 
         // Proveravamo da li već postoji niz poruka u session
         if (!Session::has($this->sessionMessagesKey)) {
@@ -37,15 +40,14 @@ class OpenAiService
      */
     private function getDefaultSystemMessage(): string
     {
-        return "Ti si iskusan srpski automehaničar, ekspert za automobile, mehaniku i auto elektriku – zovu te AutoMentor. Tvoj stil je jasan, jednostavan i prijateljski 'ortak' ton, kao da sediš sa drugarom uz kafu i pričaš o kolima. Korisnik ti daje podatke o problemu (opis, dijagnostika, lampice) i autu (marka, model, godište, zapremina motora, snaga motora, vrsta goriva, vrsta menjača), a ti na osnovu toga pomažeš da otkrije šta nije u redu i šta da radi dalje.
+        return "Ti si iskusan srpski automehaničar, ekspert za automobile, mehaniku i auto elektriku. Tvoj stil je jasan, jednostavan i prijateljski 'ortak' ton, kao da sediš sa drugarom uz kafu i pričaš o kolima. Korisnik ti daje podatke o problemu (opis, dijagnostika, lampice) i autu (marka, model, godište, zapremina motora, snaga motora, vrsta goriva, vrsta menjača), a ti na osnovu toga pomažeš da otkrije šta nije u redu i šta da radi dalje.
             Pravila za odgovore:
                 - Piši u Markdown formatu.
                 - Koristi nenumerisane liste (`-`) za moguće uzroke, korake ili savete.
                 - Ako imaš linkove, ubaci ih kao `[tekst](url)`.
-                - Odvajaj pasuse praznim redovima da bude lako za čitanje.
                 - Objasni stvari prosto, kao nekome ko nije majstor, ali sa dovoljno detalja da bude korisno.
                 - Fokusiraj se na praktične korake: šta korisnik može sam da proveri (npr. filter, svećice) ili šta da odnese majstoru.
-                - Ako nemaš dovoljno podataka, pitaj dodatna pitanja (npr. 'Kako auto vuče na leru?', 'Jel dimi iz auspuha?') i podseti korisnika da ti da više detalja o simptomima ili okolnostima.
+                - Ako nemaš dovoljno podataka, pitaj dodatna pitanja (npr. 'Kako auto vuče na leru?', 'Jel dimi iz auspuha?') i podseti korisnika da ti da više detalja o simptomima ili okolnostima. 
                 - Ako je problem nejasan, podstakni korisnika da pojasni (npr. 'Daj mi još malo info, pa ćemo skontati šta je.').
                 - Vodi razgovor ka rešavanju problema i sledećim koracima, uvek ostavi prostor da te pitaju još nešto.
                 - Ako pitanje nije o kolima, kaži: 'To nije moj teren, ortak, pričajmo o kolima.'
@@ -54,7 +56,7 @@ class OpenAiService
     }
 
     /**
-     * Dodaje system poruku samo jednom po sesiji (ako je niste već dodali).
+     * Dodaje system poruku samo jednom po sesiji (ako nije već dodata).
      */
     public function setSystemMessageOnce(string $message)
     {
@@ -70,7 +72,7 @@ class OpenAiService
      */
     public function addMessage(string $role, string $content): void
     {
-        if (!in_array($role, ['system','assistant','user'])) {
+        if (!in_array($role, ['system', 'assistant', 'user'])) {
             Log::warning("Invalid role: $role");
             return;
         }
@@ -229,71 +231,101 @@ class OpenAiService
     {
         // Lista dozvoljenih domena za auto-delove
         $allowedDomains = [
-            'prodajadelova.rs',
-            'autohub.rs',
+            '.rs', // Ograničavamo na sve .rs domene
         ];
 
         // Izvuci domen iz URL-a
         $domain = parse_url($url, PHP_URL_HOST);
 
-        // Proveri da li je domen u listi dozvoljenih
-        return in_array($domain, $allowedDomains);
+        // Proveri da li se domen završava na .rs
+        foreach ($allowedDomains as $allowed) {
+            if (str_ends_with($domain, $allowed)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
-     * Google Custom Search – dohvat linkova
+     * Pretraga delova putem Sonar API-ja (Perplexity) sa podacima o autu iz sesije
      */
-    protected function searchGoogle(string $query): string
+    protected function searchSonar(string $query): string
     {
-        $apiKey = env('GOOGLE_API_KEY');
-        $cx = env('GOOGLE_CX');
-
-        if (!$apiKey || !$cx) {
-            Log::warning("Google API key ili CX nije podešen u .env fajlu.");
+        if (!$this->sonarApiKey) {
+            Log::warning("Sonar API key nije podešen u .env fajlu.");
             return '';
         }
 
-        // Ograničavamo pretragu samo na prodajadelova.rs i autohub.rs sa ključnom reči "auto delovi"
-        $enhancedQuery = $query . " auto delovi site:prodajadelova.rs | site:autohub.rs";
-        $url = sprintf(
-            'https://www.googleapis.com/customsearch/v1?key=%s&cx=%s&q=%s',
-            urlencode($apiKey),
-            urlencode($cx),
-            urlencode($enhancedQuery)
-        );
+        // Dohvatamo samo marka, model, godište
+        $messages = $this->getMessages();
+        $carDetails = '';
+        foreach ($messages as $message) {
+            if ($message['role'] === 'system' && strpos($message['content'], 'Automobil je:') === 0) {
+                preg_match('/Automobil je: ([^,]+) ([^,]+), Godište: (\d{4})/', $message['content'], $matches);
+                if (count($matches) >= 4) {
+                    $carDetails = "{$matches[1]} {$matches[2]} {$matches[3]}"; // Npr. "Renault Megane 2016"
+                }
+                break;
+            }
+        }
 
-        $ch = curl_init($url);
+        // Skraćeni upit
+        $enhancedQuery = $carDetails ? "$carDetails $query" : $query;
+
+        $payload = [
+            'model' => 'sonar-pro',
+            'messages' => [
+                [
+                    'role' => 'system',
+                    'content' => 'Pretraži isključivo sajtove iz Srbije (.rs domeni) i vrati dostupne auto-delove kao listu linkova u formatu - [opis](url). Ne piši nikakav tekst, komentare ili objašnjenja. Ako nema linkova, vrati prazan string ("").'
+                ],
+                [
+                    'role' => 'user',
+                    'content' => $enhancedQuery
+                ]
+            ]
+        ];
+
+        $ch = curl_init($this->sonarApiUrl);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($ch);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'accept: application/json',
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . $this->sonarApiKey
+        ]);
 
+        $response = curl_exec($ch);
         if (curl_errno($ch)) {
             $error = curl_error($ch);
-            Log::error("searchGoogle cURL error: $error");
+            Log::error("Sonar API cURL error: $error");
             curl_close($ch);
             return '';
         }
-        
+
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        if ($httpCode !== 200) {
-            Log::warning("searchGoogle API returned HTTP code $httpCode");
-            return '';
-        }
+        Log::info("Sonar API response (HTTP $httpCode): $response");
 
         $data = json_decode($response, true);
-        if (!isset($data['items']) || !is_array($data['items'])) {
-            Log::info("searchGoogle: nema 'items' u rezultatu ili je format neispravan.");
+        if (!isset($data['choices'][0]['message']['content'])) {
+            Log::warning("Sonar API response missing 'choices' or invalid format.");
             return '';
         }
 
-        // Uzimamo samo relevantne rezultate
+        $content = $data['choices'][0]['message']['content'];
+        // Formatiraj odgovor kao listu linkova
+        $lines = explode("\n", $content);
         $resultLinks = [];
-        foreach (array_slice($data['items'], 0, 3) as $item) {
-            $link = $item['link'] ?? '';
-            $title = $item['title'] ?? '';
-            if ($link && $this->isRelevantDomain($link)) {
-                $resultLinks[] = "- $title: $link";
+        foreach ($lines as $line) {
+            if (preg_match('/\[(.*?)\]\((https?:\/\/[^\s]+)\)/', $line, $matches)) {
+                $title = $matches[1];
+                $url = $matches[2];
+                if ($this->isRelevantDomain($url)) {
+                    $resultLinks[] = "- $title: $url";
+                }
             }
         }
 
@@ -301,135 +333,71 @@ class OpenAiService
     }
 
     /**
-     * Jedan mogući "wizard" metod ako hoćete session-based kontekst
-     * (diagnose, lampica, carForm).
-     */
-    public function handleUserQuestion(
-        ?string $diagnose,
-        ?string $indicatorLight,
-        ?string $newQuestion,
-        array $carForm = [],
-        string $systemMessage = null
-    ): ?string {
-        // Postavljamo podrazumevane sistemske instrukcije ako nisu prosleđene
-        $this->setSystemMessageOnce($systemMessage ?? $this->getDefaultSystemMessage());
+ * Jedan mogući "wizard" metod ako hoćete session-based kontekst (diagnose, lampica, carForm).
+ */
+public function handleUserQuestion(
+    ?string $diagnose,
+    ?string $indicatorLight,
+    ?string $newQuestion,
+    array $carForm = [],
+    string $systemMessage = null
+): ?string {
+    // Postavljamo podrazumevane sistemske instrukcije ako nisu prosleđene
+    $this->setSystemMessageOnce($systemMessage ?? $this->getDefaultSystemMessage());
 
-        // Dodajemo info o automobilu, ako postoji
-        if (!empty($carForm)) {
-            $this->addCarFormContext($carForm);
-        }
-
-        // Dodajemo dijagnostiku i lampicu, ako postoje
-        $this->addDiagnoseContext($diagnose, $indicatorLight);
-
-        // Dodajemo novo pitanje korisnika
-        if ($newQuestion) {
-            $this->addMessage('user', $newQuestion);
-        }
-
-        // Provera za "gde mogu da kupim"
-        $userIsAskingToBuy = $this->isAskingWhereToBuy($newQuestion);
-
-        // Šaljemo upit ChatGPT-u
-        $payload = $this->prepareApiRequest('gpt-3.5-turbo');
-        $response = $this->sendApiRequest($payload);
-
-        if ($response && isset($response['choices'][0]['message']['content'])) {
-            $assistantReply = $response['choices'][0]['message']['content'];
-
-            if ($userIsAskingToBuy) {
-                $searchQuery = $newQuestion;
-                if (!empty($carForm['brand'])) {
-                    $searchQuery .= " {$carForm['brand']}";
-                }
-                if (!empty($carForm['model'])) {
-                    $searchQuery .= " {$carForm['model']}";
-                }
-                if (!empty($carForm['year'])) {
-                    $searchQuery .= " {$carForm['year']}";
-                }
-                if (!empty($carForm['engineCapacity'])) {
-                    $searchQuery .= " {$carForm['engineCapacity']}ccm";
-                }
-                if (!empty($carForm['enginePower'])) {
-                    $searchQuery .= " {$carForm['enginePower']}kW";
-                }
-                if (!empty($carForm['fuelType'])) {
-                    $searchQuery .= " {$carForm['fuelType']}";
-                }
-                if (!empty($carForm['transmission'])) {
-                    $searchQuery .= " {$carForm['transmission']}";
-                }
-
-                $searchResults = $this->searchGoogle($searchQuery);
-                if (!empty($searchResults)) {
-                    $assistantReply .= "\n\nEvo nekoliko linkova gde možeš proveriti ponudu:\n" . $searchResults;
-                } else {
-                    $assistantReply .= "\n\nNisam uspeo da nađem tačan link sad, ali proveri na [ProdajaDelova](https://prodajadelova.rs) ili [AutoHub](https://autohub.rs).";
-                }
-            }
-
-            $this->addMessage('assistant', $assistantReply);
-            return $assistantReply;
-        }
-
-        return "Ej, došlo je do greške u komunikaciji sa ChatGPT-om, probaj opet!";
+    // Dodajemo info o automobilu, ako postoji
+    if (!empty($carForm)) {
+        $this->addCarFormContext($carForm);
     }
 
-    /**
-     * Uprošćeni metod za slanje pitanja GPT-u, uz opcioni carForm.
-     */
-    public function ask(string $prompt, array $carForm = []): string
-    {
-        $this->addMessage('system', $this->getDefaultSystemMessage());
-        $this->addMessage('user', $prompt);
+    // Dodajemo dijagnostiku i lampicu, ako postoje
+    $this->addDiagnoseContext($diagnose, $indicatorLight);
 
-        $payload  = $this->prepareApiRequest('gpt-3.5-turbo');
-        $response = $this->sendApiRequest($payload);
+    // Dodajemo novo pitanje korisnika
+    if ($newQuestion) {
+        $this->addMessage('user', $newQuestion);
+    }
 
-        if ($response && isset($response['choices'][0]['message']['content'])) {
-            $assistantReply = $response['choices'][0]['message']['content'];
+    // Provera za "gde mogu da kupim"
+    $userIsAskingToBuy = $this->isAskingWhereToBuy($newQuestion);
 
-            // Ako korisnik pita "gde mogu da kupim", ubacujemo i podatke o kolima ako postoje
-            if ($this->isAskingWhereToBuy($prompt)) {
-                $searchQuery = $prompt;
+    // Pripremamo upit za ChatGPT
+    $payload = $this->prepareApiRequest('gpt-3.5-turbo');
+    $response = $this->sendApiRequest($payload);
 
-                if (!empty($carForm['brand'])) {
-                    $searchQuery .= " {$carForm['brand']}";
-                }
-                if (!empty($carForm['model'])) {
-                    $searchQuery .= " {$carForm['model']}";
-                }
-                if (!empty($carForm['year'])) {
-                    $searchQuery .= " {$carForm['year']}";
-                }
-                if (!empty($carForm['engineCapacity'])) {
-                    $searchQuery .= " {$carForm['engineCapacity']}ccm";
-                }
-                if (!empty($carForm['enginePower'])) {
-                    $searchQuery .= " {$carForm['enginePower']}kW";
-                }
-                if (!empty($carForm['fuelType'])) {
-                    $searchQuery .= " {$carForm['fuelType']}";
-                }
-                if (!empty($carForm['transmission'])) {
-                    $searchQuery .= " {$carForm['transmission']}";
-                }
+    if ($response && isset($response['choices'][0]['message']['content'])) {
+        $assistantReply = $response['choices'][0]['message']['content'];
 
-                $searchResults = $this->searchGoogle($searchQuery);
-
-                if (!empty($searchResults)) {
-                    $assistantReply .= "\n\nEvo nekoliko linkova gde možeš proveriti ponudu:\n" . $searchResults;
-                } else {
-                    $assistantReply .= "\n\nNisam uspeo da nađem tačan link sad, ali proveri na [ProdajaDelova](https://prodajadelova.rs) ili [AutoHub](https://autohub.rs).";
-                }
+        if ($userIsAskingToBuy) {
+            $searchQuery = $newQuestion;
+            if (!empty($carForm['brand'])) {
+                $searchQuery .= " {$carForm['brand']}";
+            }
+            if (!empty($carForm['model'])) {
+                $searchQuery .= " {$carForm['model']}";
+            }
+            if (!empty($carForm['year'])) {
+                $searchQuery .= " {$carForm['year']}";
+            }
+            if (!empty($carForm['engineCapacity'])) {
+                $searchQuery .= " {$carForm['engineCapacity']}ccm";
+            }
+            if (!empty($carForm['fuelType'])) {
+                $searchQuery .= " {$carForm['fuelType']}";
             }
 
-            // Snimamo odgovor i vraćamo
-            $this->addMessage('assistant', $assistantReply);
-            return $assistantReply;
+            $searchResults = $this->searchSonar($searchQuery);
+            if (!empty($searchResults)) {
+                $assistantReply = "Evo gde možeš da kupiš filter ulja za tvoj Renault Megane:\n" . $searchResults . "\n\nAko ti treba još pomoći, pitaj me slobodno!";
+            } else {
+                $assistantReply .= "\n\nNisam našao tačne linkove sad, ali proveri sajtove za auto-delove u Srbiji.";
+            }
         }
 
-        return "Došlo je do greške pri komunikaciji sa ChatGPT-om.";
+        $this->addMessage('assistant', $assistantReply);
+        return $assistantReply;
     }
+
+    return "Ej, došlo je do greške u komunikaciji sa ChatGPT-om, probaj opet!";
+}
 }

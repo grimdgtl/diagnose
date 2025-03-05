@@ -8,7 +8,7 @@
         <div class="flex items-center justify-between">
             <!-- Logo levo -->
             <a href="{{ route('dashboard') }}" class="flex items-center">
-                <img src="{{ asset('assets/images/logo-neon.png') }}" alt="Logo" class="h-14" />
+                <img src="{{ asset('assets/images/logo.png') }}" alt="Logo" class="h-14" />
                 <!-- Po želji text: <span class="text-orange font-bold ml-2">Dijagnoza</span> -->
             </a>
 

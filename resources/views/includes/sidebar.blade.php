@@ -5,7 +5,7 @@
         <div class="sidebar-logo">
             <!-- Logo slika -->
             <a href="{{ route('dashboard') }}" class="logo-img">
-                <img src="{{ asset('assets/images/logo-neon.png') }}">
+                <img src="{{ asset('assets/images/logo.png') }}">
             </a>
         </div>
 
@@ -50,13 +50,13 @@
             <div class="nav-button">
                 <a href="{{ route('profile.subscription') }}">
                     <i class="fas fa-suitcase"></i>
-                    <span class="link-text">Subscription</span>
+                    <span class="link-text">Kupi paket</span>
                 </a>
             </div>
             <div class="nav-button">
                 <a href="{{ route('support') }}">
                     <i class="fas fa-life-ring"></i>
-                    <span class="link-text">Support</span>
+                    <span class="link-text">Podrška</span>
                 </a>
             </div>
             <div class="nav-button">

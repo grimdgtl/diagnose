@@ -8,7 +8,7 @@
         <!-- Logo (levo) -->
         <div class="flex items-center">
             <a href="{{ route('dashboard') }}">
-                <img src="{{ asset('assets/images/logo-neon.png') }}" alt="Logo" class="h-12" />
+                <img src="{{ asset('assets/images/logo.png') }}" alt="Logo" class="h-12" />
             </a>
         </div>
 

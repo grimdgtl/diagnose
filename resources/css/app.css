@@ -1029,6 +1029,19 @@ select.input-field:focus {
   .register-for-more-questions p {
     margin-bottom: 10px;
   }
+  .verify-notice {
+    width: 95%;
+    transform: translateY(20%);
+    box-shadow: 0 0 10px var(--orange);
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .verify-notice h2 {
+    font-size: 1.5rem;
+  }
+  .verify-notice p {
+    font-weight: 300;
+  }
 }
 
 .terms-and-privacy {
