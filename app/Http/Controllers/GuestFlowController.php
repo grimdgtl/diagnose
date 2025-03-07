@@ -36,7 +36,7 @@ class GuestFlowController extends Controller
         'diagnose'         => 'nullable|string',
         'brand'            => 'required|string',
         'model'            => 'required|string',
-        'year'             => 'required|integer',
+        'year'            => 'required|integer',
         'engine_capacity'  => 'required|string',
         'engine_power'     => 'required|string',
         'fuel_type'        => 'required|string',
@@ -70,40 +70,41 @@ class GuestFlowController extends Controller
         'status'  => 'open',
     ]);
 
-    // 3) Formiranje prompta
-    $fullPrompt = "Opis problema: " . $validatedData['issueDescription'] . "\n" .
-            "Dijagnostika: " . ($validatedData['diagnose'] ?? 'Nema podataka') . "\n" .
-            "Lampica: " . ($validatedData['indicatorLight'] ?? 'Nema podataka') . "\n" .
-            "Podaci o vozilu: " . 
-            $validatedData['brand'] . " " .
-            $validatedData['model'] . " " .
-            $validatedData['year'] . ", " .
-            "Zapremina motora: " . $validatedData['engine_capacity'] . ", " .
-            "Snaga motora: " . $validatedData['engine_power'] . ", " .
-            "Vrsta goriva: " . $validatedData['fuel_type'] . ", " .
-            "Vrsta menjača: " . $validatedData['transmission'];
+    // 3) ChatGPT upit
+    $openAiService = new OpenAiService();
+    $chatGptResponse = $openAiService->handleUserQuestion(
+        $validatedData['diagnose'] ?? null,
+        $validatedData['indicatorLight'] ?? null,
+        $validatedData['issueDescription'],
+        [
+            'brand' => $validatedData['brand'],
+            'model' => $validatedData['model'],
+            'year' => $validatedData['year'],
+            'fuelType' => $validatedData['fuel_type'],
+            'engineCapacity' => $validatedData['engine_capacity'],
+            'enginePower' => $validatedData['engine_power'],
+            'transmission' => $validatedData['transmission'],
+        ]
+    );
 
-    // 4) ChatGPT upit
-    $chatGptResponse = (new OpenAiService())->ask($fullPrompt);
-
-    // 5) Snimamo odgovor u bazu, ne prikazujemo ga korisniku
+    // 4) Snimamo odgovor u bazu, ne prikazujemo ga korisniku
     TempResponse::create([
         'question_id' => $tempQuestion->id,
         'content'     => $chatGptResponse,
     ]);
 
-    // 6) Snimamo temp_id u session, radi gost daljeg pregleda
+    // 5) Snimamo temp_id u session, radi gost daljeg pregleda
     session(['temp_id' => $tempId]);
     Log::info("Temp ID in session: {$tempId}");
 
-    // 7) Bez prikaza poruka – samo redirect
+    // 6) Bez prikaza poruka – samo redirect
     if ($request->ajax() || $request->wantsJson()) {
-        // 7a) Ako je AJAX => vratimo samo URL; front da uradi window.location
+        // 6a) Ako je AJAX => vratimo samo URL; front da uradi window.location
         return response()->json([
             'redirectUrl' => route('dashboard'),
         ]);
     } else {
-        // 7b) Klasičan submit => direktan redirect
+        // 6b) Klasičan submit => direktan redirect
         return redirect()->route('dashboard');
     }
 }
