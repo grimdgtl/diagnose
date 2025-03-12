@@ -816,7 +816,7 @@ select.input-field:focus {
     padding: 0;
     margin-top: 5rem;
     min-height: unset;
-    height: unset;
+    height: 80vh;
   }
 
   .auth-form {
