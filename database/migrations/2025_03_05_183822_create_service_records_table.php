@@ -9,8 +9,8 @@ class CreateServiceRecordsTable extends Migration
     public function up()
     {
         Schema::create('service_records', function (Blueprint $table) {
-            $table->id(); // Ovo je BIGINT(20) unsigned za primarni ključ tabele service_records
-            $table->unsignedInteger('car_detail_id'); // Promenjeno sa foreignId na unsignedInteger da bude INT
+            $table->id();
+            $table->unsignedInteger('car_detail_id'); // Promenjeno sa foreignId na unsignedInteger
             $table->foreign('car_detail_id')
                   ->references('id')
                   ->on('car_details')

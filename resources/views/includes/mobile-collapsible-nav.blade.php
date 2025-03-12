@@ -8,7 +8,7 @@
         <div class="flex items-center justify-between">
             <!-- Logo levo -->
             <a href="{{ route('dashboard') }}" class="flex items-center">
-                <img src="{{ asset('assets/images/logo.png') }}" alt="Logo" class="h-14" />
+                <img src="{{ asset('assets/images/logo-small.png') }}" alt="Logo" class="h-14" />
                 <!-- Po želji text: <span class="text-orange font-bold ml-2">Dijagnoza</span> -->
             </a>
 
@@ -24,7 +24,7 @@
 
     <!-- 3) Navigacija koja se “collapsuje” unutar headera -->
     <!-- Kad je #mobile-menu-toggle:checked, menja se .collapse-nav (max-height) -->
-    <nav class="collapse-nav bg-black orange-shadow overflow-hidden">
+    <nav class="collapse-nav bg-black border-orange overflow-hidden">
         <!-- Isti linkovi kao u sidebaru -->
         @auth
             <div class="collapsible-link">
@@ -55,13 +55,19 @@
             </div>
 
             <div class="collapsible-link">
+                <a href="{{ route('service-book.index') }}">
+                    <i class="fas fa-book"></i> Servisna Knjiga
+                </a>
+            </div>
+
+            <div class="collapsible-link">
                 <a href="{{ route('profile.subscription') }}">
-                    <i class="fas fa-suitcase"></i> Subscription
+                    <i class="fas fa-suitcase"></i> Kupi pitanja
                 </a>
             </div>
             <div class="collapsible-link">
                 <a href="{{ route('support') }}">
-                    <i class="fas fa-life-ring"></i> Support
+                    <i class="fas fa-life-ring"></i> Pordrška
                 </a>
             </div>
             <div class="collapsible-link">

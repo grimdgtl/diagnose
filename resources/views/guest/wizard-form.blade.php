@@ -3,12 +3,12 @@
 @section('title', 'Unos problema i podataka o automobilu - Dva koraka')
 
 @section('content')
-<div class="box-height border-orange support-card p-12 my-11 mx-8 bg-black radius shadow-lg" x-data="{ step: 1 }">
+<div class="bg-black border-orange radius h-full main-child mobile-height" x-data="{ step: 1 }">
     <h1 class="text-3xl text-orange font-bold mb-4 text-center page-title">
         Dobrodošao na Dijagnozu
     </h1>
     <p class="mb-6 text-gray-400 text-center">
-        Ovo je dvostepni formular. Popuni korak 1, zatim pređi na korak 2.
+        Opisite problem koji imate sto detaljnije i pritisnite dugme "Dalje"
     </p>
 
     <div id="loader" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50 hidden">
@@ -29,13 +29,12 @@
         </div>
     @endif
 
-    <form id="guest-form" action="{{ route('guest.store-temp-data') }}" method="POST" class="space-y-6 default-width">
+    <form id="guest-form" action="{{ route('guest.store-temp-data') }}" method="POST" class="auth-form">
         @csrf
 
         <!-- STEP 1 -->
         <div x-show="step === 1" x-cloak>
-            <h2 class="text-xl font-semibold text-orange mb-2 text-center">Korak 1: Opis problema</h2>
-            <textarea id="issueDescription" name="issueDescription" rows="3"
+            <textarea id="issueDescription" name="issueDescription" rows="3" required=""
                       class="input-field bg-gray-700 mb-4"
                       placeholder="Detaljno opišite problem koji imate sa automobilom">{{ old('issueDescription') }}</textarea>
 
@@ -112,12 +111,12 @@
             </div>
 
             <div class="mt-6 flex items-center justify-center space-x-4">
+                <button type="submit" class="btn-orange px-4 py-2 text-black hover:bg-orange-500">
+                    Pošalji
+                </button>
                 <button type="button" class="btn-orange second-btn px-4 py-2 text-black hover:bg-orange-500"
                         @click="step = 1">
                     Nazad
-                </button>
-                <button type="submit" class="btn-orange px-4 py-2 text-black hover:bg-orange-500">
-                    Pošalji
                 </button>
             </div>
         </div>

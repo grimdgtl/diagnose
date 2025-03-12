@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="user-chat flex flex-col px-12 pt-12">
+<div class="chat">
     <div class="flex items-center justify-between chat-header">
         <h1 class="page-title mb-0"> DIJAGNOZA</h1>
     </div>
@@ -20,7 +20,7 @@
 
         @foreach($myResponses as $res)
             <!-- Levi bubble (assistant) -->
-            <div class="flex justify-start mb-2">
+            <div class="flex justify-start mb-2 sm:mr-6 md:mb-4 lg:ml-2 xl:m-2">
                 <div class="bubble assistant markdown-content animate-fadeIn"
                         data-content="{{ e($res->content) }}">
                     </div>
@@ -28,8 +28,8 @@
         </div>
 
             <!-- Poziv na registraciju -->
-            <div class="flex justify-start mb-8 border-orange radius-10">
-                <div class="bg-black radius-10 w-full register-for-more-questions text-white p-2 items-center justify-between rounded-lg flex">
+            <div class="flex justify-start">
+                <div class="bg-black w-full register-for-more-questions text-white p-2 items-center justify-between flex">
                     <p class="uppercase font-black">Registruj se da bi dobio još 2 besplatna pitanja!</p>
                     <a href="{{ route('register') }}"
                        class="btn-orange text-black px-4 py-2 rounded hover:bg-orange-500">

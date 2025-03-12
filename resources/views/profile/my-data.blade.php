@@ -2,9 +2,9 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="my-profile-data max-w-2xl support-card translate-y-1/4 mx-auto p-4  bg-gray-800 rounded-lg shadow-lg">
-    <div class="my-profile-data-head grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-        <h1 class="page-title text-2xl max-sm:text-left font-bold text-orange mb-4">Moji podaci</h1>
+<div class="h-full main-child bg-black radius-10 border-orange mobile-height">
+    <div class="justify-between flex auth-form mb-4">
+            <h1 class="font-black text-orange text-uppercase text-left second-title mb-4">Moji podaci</h1>
         <!-- Brisanje profila -->
         <form action="{{ route('profile.delete') }}" method="POST">
             @csrf
@@ -16,9 +16,11 @@
     </div>
 
     <!-- Forma za izmene podataka -->
-    <form action="{{ route('profile.update') }}" method="POST" class="bg-gray-700 p-3 rounded">
+    <form action="{{ route('profile.update') }}" method="POST" class="bg-gray-700 auth-form">
         @csrf
-
+        <div class="mb-4">
+            <p> Ako želite da promenite podatke, potrebno je da unesete nove podatke u polja forme i kliknete na dugme "Sačuvaj promene"</p>
+        </div>
         <!-- 1. red (ime/prezime) -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <!-- Ime -->

@@ -3,7 +3,7 @@
 @section('title', 'Unos problema i podataka o automobilu (registrovani)')
 
 @section('content')
-<div class="box-height p-12 my-11 mx-8 bg-black radius border-orange shadow-lg"
+<div class="bg-black border-orange radius h-full main-child mobile-height"
      x-data="{
          step: 1,
          carOption: 'existing',
@@ -11,11 +11,10 @@
      }"
 >
     <h1 class="text-3xl text-orange font-bold mb-4 text-center page-title">
-        Novi Chat - Registrovani korisnik
+        Novi Chat
     </h1>
-    <p class="mb-6 text-gray-400 text-center">
-        Dvostepni formular. Na drugom koraku možeš da izabereš postojeći auto iz garaže <br/>
-        ili da uneseš potpuno novi.
+    <p class="text-gray-400 text-center">
+        Dvostepni formular. Na drugom koraku možeš da izabereš postojeći auto iz garaže ili da uneseš potpuno novi.
     </p>
 
     {{-- PRIKAZ VALIDACIONIH GREŠAKA --}}
@@ -45,9 +44,8 @@
         @csrf
 
         {{-- STEP 1 --}}
-        <div x-show="step === 1" x-transition x-cloak>
-            <h2 class="text-xl font-semibold text-orange mb-2 text-center">Korak 1: Opis problema</h2>
-            <textarea id="issueDescription" name="issueDescription" rows="3"
+        <div x-show="step === 1" x-transition x-cloak>            
+            <textarea id="issueDescription" required name="issueDescription" rows="3"
                       class="input-field mb-4"
                       placeholder="Detaljno opišite problem koji imate sa automobilom">{{ old('issueDescription') }}</textarea>
 
@@ -70,12 +68,8 @@
 
         {{-- STEP 2 --}}
         <div x-show="step === 2" x-transition x-cloak>
-            <h2 class="text-xl font-semibold text-orange mb-2 text-center">
-                Korak 2: Podaci o automobilu
-            </h2>
-
             {{-- Odabir: postojeći ili novi auto --}}
-            <div class="flex items-center justify-center space-x-6 mb-4">
+            <div class="flex items-center justify-center space-x-6 mb-8">
                 <label class="flex items-center space-x-2 cursor-pointer">
                     <input type="radio" name="carOption" value="existing" 
                            class="hidden radio-custom"
@@ -94,11 +88,8 @@
 
             {{-- Postojeći auto --}}
             <div x-show="carOption === 'existing'" x-transition>
-                <label for="existing_car_id" class="block mb-2 text-gray-400">
-                    Izaberi auto iz svoje garaže:
-                </label>
                 <select id="existing_car_id" name="existing_car_id" class="input-field w-full">
-                    <option value="">-- Odaberi --</option>
+                    <option value="">-- Odaberi auto --</option>
                     @foreach($userCars as $car)
                         <option value="{{ $car->id }}" {{ old('existing_car_id') == $car->id ? 'selected' : '' }}>
                             {{ $car->brand }} - {{ $car->model }} ({{ $car->year }})

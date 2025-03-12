@@ -67,18 +67,17 @@ class AuthController extends Controller
      * Slanje reset linka na email.
      */
     public function sendResetLinkEmail(Request $request)
-    {
-        $request->validate(['email' => 'required|email']);
+{
+    $request->validate(['email' => 'required|email']);
 
-        // Slanje reset linka
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
+    $status = Password::sendResetLink(
+        $request->only('email')
+    );
 
-        return $status === Password::RESET_LINK_SENT
-                    ? back()->with(['status' => __($status)])
-                    : back()->withErrors(['email' => __($status)]);
-    }
+    return $status === Password::RESET_LINK_SENT
+                ? back()->with(['status' => 'Poslali smo vam link za resetovanje lozinke na email.'])
+                : back()->withErrors(['email' => __($status)]);
+}
 
     /**
      * Prikaz Reset Password forme.

@@ -1,16 +1,16 @@
 @extends('layouts.app')
 @section('content')
-<div class="subscription-wrapper m-12">
+<div class="h-full mobile-height main-child bg-black border-orange radius-10">
     <!-- Informacije o trenutnom paketu i preostalim pitanjima -->
-    <div class="mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 plan-grid">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:p-8 md:p-0">
         
         <!-- Blok s info o trenutnoj pretplati -->
-        <div class="current-sub-info support-card bg-gray-800 p-6 rounded-md shadow-lg">
+        <div class="bg-orange p-6 rounded-md shadow-lg">
             <div>
-                <h1 class="plan-page-title text-center mb-8">Dijagnoza paketi</h1>
+                <h1 class="text-white text-left mb-8">Dijagnoza paketi</h1>
             </div>
             <div>
-                <h2 class="text-xl font-semibold text-orange mb-2">Trenutno stanje</h2>
+                <h2 class="text-xl font-semibold text-white mb-2">Trenutno stanje</h2>
                 <p>
                     <strong>Paket: </strong>
                     {{ ucfirst($user->subscription_type ?? 'Nema aktivnog paketa') }}
@@ -40,6 +40,7 @@
                 <li>SAVETI ZA POPRAVKU</li>
                 <li>OKVIRNE CENE DELOVA</li>
                 <li>PREPORUKE SERVISA</li>
+                <li>Servisna knjiga</li>
             </ul>
             <!-- Direktan checkout link generisan u Lemon Squeezy dashboard-u -->
             <!-- Starter plan -->
@@ -64,6 +65,7 @@
                 <li>SAVETI ZA POPRAVKU</li>
                 <li>CENE DELOVA</li>
                 <li>PREPORUKE SERVISA</li>
+                <li>Servisna knjiga</li>
             </ul>
             <!-- Direktan checkout link generisan u Lemon Squeezy dashboard-u -->
             <!-- Pro plan -->

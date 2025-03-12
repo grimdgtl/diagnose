@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-2xl mx-auto space-y-6 my-12">
+<div class="h-full mobile-height main-child bg-black border-orange radius-10">
     <!-- Glavni kontejner sa gradient pozadinom -->
-    <div class="bg-black rate-form support-card from-gray-900 via-black to-gray-900 rounded-2xl p-6 relative overflow-hidden">
+    <div class="relative overflow-hidden">
         <!-- Dekorativni elementi -->
         <div class="absolute -top-20 -right-20 w-48 h-48 bg-orange-500/10 rounded-full blur-xl"></div>
         <div class="absolute -bottom-20 -left-20 w-48 h-48 bg-orange-500/10 rounded-full blur-xl"></div>
@@ -13,7 +13,7 @@
             <div class="inline-block bg-orange-500/20 p-4 rounded-2xl mb-4">
                 <i class="fas fa-hand-holding-star text-4xl text-orange-500"></i>
             </div>
-            <h1 class="text-3xl font-black bg-clip-text">
+            <h1 class="text-3xl page-title font-black bg-clip-text">
                 Vaše mišljenje nas pokreće!
             </h1>
         </div>
@@ -43,14 +43,10 @@
                             <button type="button"
                                     onclick="setRating({{ $i }})"
                                     class="star-button text-5xl transition-all duration-300 transform 
-                                           text-gray-600 hover:text-orange-400 hover:scale-125 
+                                           text-gray-600 hover:text-orange hover:scale-125 
                                            hover:rotate-12 hover:drop-shadow-[0_0_15px_rgba(255,92,0,0.4)]">
                                 &#9733;
                             </button>
-                            <span class="absolute -bottom-8 left-1/2 -translate-x-1/2 text-orange-500 
-                                      font-bold opacity-0 transition-opacity duration-200 text-sm">
-                                {{ $i }}.0
-                            </span>
                         </div>
                     @endfor
                 </div>

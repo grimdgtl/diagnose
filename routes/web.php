@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\SupportController;
 use LemonSqueezy\Laravel\Http\Controllers\WebhookController;
+use App\Http\Controllers\ServiceBookController;
 
 // ✅ GOST RUTE (Unos problema, registracija)
 Route::group([], function () {
@@ -95,4 +96,13 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/wizard-form-registered', [\App\Http\Controllers\RegisteredWizardController::class, 'storeData'])
         ->name('registered.store-data');
+});
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/service-book', [ServiceBookController::class, 'index'])->name('service-book.index');
+    Route::get('/service-book/{car_id}/create', [ServiceBookController::class, 'create'])->name('service-book.create');
+    Route::post('/service-book/store', [ServiceBookController::class, 'store'])->name('service-book.store');
+    Route::get('/service-book/{car_id}/export', [ServiceBookController::class, 'exportPdf'])->name('service-book.export');
+    Route::delete('/service-record/{id}', [ServiceBookController::class, 'destroy'])->name('service-record.destroy');
+    Route::get('/service-book/{car_id}/records', [ServiceBookController::class, 'show'])->name('service-book.show');
 });

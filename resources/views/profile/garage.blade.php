@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-7xl garage support-card bg-black mx-8 my-12 px-4 sm:px-6 lg:px-8 py-12">
+<div class="h-full mobile-height main-child bg-black border-orange radius-10">
     <!-- Hero sekcija -->
     <div class="text-center mb-12">
-        <h1 class="text-4xl font-black bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text">
+        <h1 class="text-4xl page-title font-black bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text">
             Moja garaža
         </h1>
-        <p class="mt-4 text-lg text-gray-300 max-w-2xl mx-auto">
+        <p class="mt-4 text-white">
             Ovo je vaša lična kolekcija automobila. Dodajte, upravljajte i pratite sve detalje o vašim vozilima na jednom mestu.
         </p>
     </div>
@@ -18,7 +18,7 @@
             @foreach($cars as $car)
                 <div class="garage-card relative bg-gray-900 rounded-xl border-2 border-orange-500/20 p-6 hover:border-orange-500/50 transition-all">
                     <!-- Akcije -->
-                    <div class="absolute top-4 right-4">
+                    <div class="absolute top-4 right-4 remove-car-icon">
                         <form action="{{ route('profile.garage.delete', $car->id) }}" method="POST">
                             @csrf
                             @method('DELETE')

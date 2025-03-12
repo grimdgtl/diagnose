@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="archive-chat max-w-3xl support-card  mx-auto p-4 my-12 bg-gray-800 rounded-lg shadow-lg">
-    <h1 class="text-2xl font-bold text-orange mb-4">Istorija chat-ova</h1>
+<div class="mx-auto p-4 my-12 bg-black border-orange radius-10">
+    <h1 class="text-2xl font-bold text-orange mb-4">Istorija problema</h1>
 
     @if($closedChats->count() > 0)
         <ul class="chat-row space-y-2">

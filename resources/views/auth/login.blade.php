@@ -2,8 +2,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-md mx-auto p-10 bg-black translate-y-1/4 rounded-lg shadow-lg">
-    <h2 class="text-2xl page-title font-black text-orange mb-4 text-center">Prijava</h2>
+<div class="border-orange bg-black radius h-full main-child shadow-lg">
+    <h2 class="text-2xl page-title font-black text-orange mb-4 text-center">Prijavi se</h2>
 
     @if ($errors->any())
         <div class="mb-4">
@@ -15,7 +15,7 @@
         </div>
     @endif
 
-    <form action="{{ route('login') }}" method="POST">
+    <form action="{{ route('login') }}" method="POST" class="auth-form-min">
         @csrf
         <div class="my-8">
             <input type="email" name="email" placeholder="Email" id="email" value="{{ old('email') }}" required

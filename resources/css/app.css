@@ -1,13 +1,13 @@
-/******************************************************************************
- *  1) TAILWIND IMPORTS
- ******************************************************************************/
+/********************************************************************************
+ * 1) TAILWIND IMPORTS
+ ********************************************************************************/
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/******************************************************************************
- *  2) GLOBALNE PROMENLJIVE & OSNOVNA PODEŠAVANJA
- ******************************************************************************/
+/********************************************************************************
+ * 2) GLOBALNE PROMENLJIVE & OSNOVNA PODEŠAVANJA
+ ********************************************************************************/
 :root {
     --black: #0a0a0a;
     --orange: #FF5C00;
@@ -31,10 +31,12 @@ html, body {
   font-family: 'Red Hat Display', sans-serif;
   background-color: var(--black);
   color: var(--white);
-  background-image: url('../images/app-background2.jpg');
+  background-image: url('../images/app-background.jpg');
   background-size: contain;
   background-position: center; 
   background-repeat: repeat;
+  height: 100%;
+  font-size: 16px;
 }
 
 *, *::before, *::after {
@@ -70,40 +72,38 @@ textarea:focus::placeholder {
     color: transparent;
 }
 
-/******************************************************************************
- *  3) LAYOUT: SIDEBAR & MAIN CONTENT
- ******************************************************************************/
+/********************************************************************************
+ * 3) LAYOUT: SIDEBAR & MAIN CONTENT
+ ********************************************************************************/
+/* Osnovni Layout */
 .layout-container {
   display: flex;
+  height: 100vh;
   min-height: 100vh;
+  padding: 2rem;
 }
 .nav-toggle-checkbox {
   display: none;
 }
 
-/* SIDEBAR (LEVO) */
+/* Sidebar (Levo) */
 #nav-bar {
-    position: fixed;
-    top: 6%;
-    left: 1%;
-    height: 90vh;
-
-    /* Otvoren => 250px */
-    width: var(--sidebar-width-open);
-    transition: width 0.3s ease-in-out;
-    border-radius: 15px;
-
-    background: var(--black);
-    border: 2px solid var(--orange);
-    overflow: hidden;
-    z-index: 1000;
-    user-select: none;
+  width: var(--sidebar-width-open);
+  transition: width 0.3s ease-in-out;
+  border-radius: 15px;
+  background: var(--black);
+  border: 2px solid var(--orange);
+  overflow: hidden;
+  z-index: 1000;
+  user-select: none;
+  height: 100%; /* Dodato */
 }
+
 .nav-toggle-checkbox:checked ~ #nav-bar {
   width: var(--sidebar-width-closed);
 }
 
-/* Logo + hamburger */
+/* Logo + Hamburger */
 #nav-header {
   display: flex;
   align-items: center;
@@ -124,9 +124,7 @@ textarea:focus::placeholder {
   transition: height 0.3s;
 }
 
-/******************************************************************************
- *  3.1) HAMBURGER ANIMACIJA
- ******************************************************************************/
+/* Hamburger Animacija */
 .hamburger-label {
   position: relative;
   width: 30px;
@@ -176,10 +174,6 @@ textarea:focus::placeholder {
   left: 0px;
 }
 
-/*transform into X */
-/*.nav-toggle-checkbox:checked ~ #nav-bar #nav-header .hamburger-line {
-  background: transparent;
-}*/
 .nav-toggle-checkbox:checked ~ #nav-bar #nav-header .hamburger-line::before {
   top: -5px;
   transform: rotate(0deg);
@@ -191,9 +185,7 @@ textarea:focus::placeholder {
   width: 100%;
 }
 
-/******************************************************************************
- *  4) SIDEBAR LINKOVI
- ******************************************************************************/
+/* Sidebar Linkovi */
 #nav-content {
   display: flex;
   flex-direction: column;
@@ -234,22 +226,31 @@ textarea:focus::placeholder {
   display: none;
 }
 
-/******************************************************************************
- *  5) MAIN CONTENT
- ******************************************************************************/
+/* Main Content */
 .main-content {
   flex: 1;
-  margin-left: var(--sidebar-width-open); 
   transition: margin-left 0.3s ease-in-out;
-  /*padding: 3rem 2rem;*/
-}
-.nav-toggle-checkbox:checked ~ .main-content {
-  margin-left: var(--sidebar-width-closed);
+  height: 100%;
+  flex-grow: 1;
+  overflow-y: auto;
+  min-height: 100%; /* Dodato */
+  padding-left: 2rem;
 }
 
-/******************************************************************************
- *  6) PODMENI (Moj Profil)
- ******************************************************************************/
+.main-child {
+  display: flex; /* Dodaj flexbox */
+  flex-direction: column; /* Sadržaj se ređa vertikalno */
+  align-items: center; /* Horizontalno centriranje (opcionalno) */
+  justify-content: center; /* Vertikalno centriranje */
+  min-height: 100%; /* Popuni visinu .main-content */
+  padding: 1rem; /* Prilagođeni padding */
+  margin: 0 auto; /* Centriraj horizontalno u odnosu na .main-content */
+}
+
+/********************************************************************************
+ * 4) PODMENI (MOJ PROFIL)
+ ********************************************************************************/
+/* Osnovni Podmeni */
 .profile-submenu-section {
   position: relative;
 }
@@ -284,10 +285,8 @@ textarea:focus::placeholder {
 #profile-submenu-checkbox:checked ~ .profile-submenu {
   display: block;
 }
-/******************************************************************************
- *  6.1) MOJI PODACI
- ******************************************************************************/
 
+/* Moji Podaci */
 .second-btn {
   background-color: var(--black) !important;
   min-width: 200px;
@@ -297,33 +296,7 @@ textarea:focus::placeholder {
   background-color: var(--orange) !important;
 }
 
-.my-profile-data-head {
-  display: flex;
-  justify-content: space-between;
-}
-
-.my-profile-data {
-  background-color: black;
-  box-shadow: 0 0 10px var(--orange);
-  border-radius: 15px;
-}
-
-/******************************************************************************
- *  6.2) MOJA GARAŽA
- ******************************************************************************/
-/* Garaža - Custom stilovi */
-.garage {
-  border-radius: 15px;
-  height: 88vh;
-  border: 2px solid var(--orange);
-}
-
-.garage-grid {
-    display: grid;
-    gap: 1.5rem;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-}
-
+/* Moja Garaža */
 .garage-card {
     background: #1a1a1a;
     border-radius: 15px;
@@ -360,11 +333,9 @@ textarea:focus::placeholder {
 .car-card {
   background-color: var(--gray);
   box-shadow: 0 0 10px var(--orange);
-
 }
-/******************************************************************************
- *  6.3) MOJA ISTORIJA
- ******************************************************************************/
+
+/* Moja Istorija */
 .archive-chat {
   background-color: black;
   box-shadow: 0 0 10px var(--orange);
@@ -375,85 +346,29 @@ textarea:focus::placeholder {
   border-top: 2px solid var(--orange);
 }
 
-/******************************************************************************
- *  6.3) MOJA ISTORIJA
- ******************************************************************************/
+/* Oceni App */
 .rate-form {
   box-shadow: 0 0 10px var(--orange); 
 }
 
-/******************************************************************************
- *  8) OSTALI GLOBALNI STILOVI (Naslovi, input polja, dugmad...)
- ******************************************************************************/
-h1, .page-title {
-  text-shadow: 0 0 10px rgba(255,92,0,0.8);
-  text-transform: uppercase;
-  text-align: center;
-  color: var(--orange);
-  font-weight: 900;
-  /*margin-bottom: 1rem;*/
-  font-size: 2rem;
-}
-
-h2, h3 {
-  color: var(--orange);
-}
-p, a, label, span {
-  font-size: 1rem;
-  line-height: 1.4;
-  color: var(--white);
-}
-.btn-orange {
-  background-color: var(--orange);
-  border: 2px solid var(--orange);
-  border-radius: 5px;
-  box-shadow: 0 0 10px var(--orange);
-  color: var(--white);
-  cursor: pointer;
-  display: inline-block;
-  transition: 0.2s;
-  /*padding: 0.5rem 1rem;*/
-  padding: 0.5rem;
-  text-transform: uppercase;
-  font-weight: 900;
-  width: 100%;
-  max-width: 200px;
-  text-align: center;
-}
-.btn-orange:hover {
+/********************************************************************************
+ * 5) CHAT STILOVI
+ ********************************************************************************/
+.chat {
+  height: calc(100vh - 4rem); /* 100vh minus padding .layout-container (2rem gore + 2rem dole) */
+  display: flex;
+  flex-direction: column;
   background-color: var(--black);
-  text-decoration: none;
-}
-
-/* Input polja */
-.input-field {
-  display: block;
-  width: 100%;
-  padding: 0.75rem;
   border: 2px solid var(--orange);
   border-radius: 10px;
-  background-color: var(--gray);
-  color: var(--white);
-  font-size: 1rem;
-  /*margin-bottom: 1rem;*/
-  outline: none;
-  box-shadow: none;
-}
-
-/******************************************************************************
- *  9) CHAT STILOVI
- ******************************************************************************/
-.user-chat {
-  min-height: 80vh;
+  overflow: hidden; /* Sprečava prelivanje */
 }
 
 .chat-header {
   background-color: var(--black);
   padding: 0.25rem 1rem;
-  border: 2px solid var(--orange);
-  border-bottom: 0px;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+  border-bottom: 2px solid var(--orange);
+  flex-shrink: 0; /* Sprečava smanjivanje visine */
 }
 
 .chat-container {
@@ -461,10 +376,11 @@ p, a, label, span {
   padding: 1rem;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
-  border: 2px solid var(--orange);
-  min-height: 70vh;
   overflow-y: auto;
-  max-height: 70vh;
+  flex: 1; /* Popuni preostali prostor */
+  min-height: 0; /* Potrebno za skrolovanje unutar flex-a */
+  max-height: 60vh;
+  max-height: 67vh;
 }
 .bubble {
   max-width: 60%;
@@ -534,46 +450,37 @@ p, a, label, span {
   margin-bottom:0;
 }
 
-/******************************************************************************
- *  SUBSCRIPTION (IDENTIČAN IZGLED KAO NA SLICI)
- ******************************************************************************/
-/* Omotač za ceo subscription deo */
-.subscription-wrapper {
-  /* mozes dodati background transparent ili #1a1a1a, 
-     jer se možda naslanja na glavni .main-content? */
+.register-for-more-questions {
+  border-top: 2px solid var(--orange);
+  flex-shrink: 0; /* Sprečava smanjivanje visine */
+  padding: 0.5rem 1rem;
 }
 
-/* Glavni naslov “ODABERI PAKET” */
-.plan-page-title {
-  font-size: 2rem;            /* velika slova */
-  font-weight: 900;
-  color: var(--orange);
-  text-transform: uppercase;
-  text-shadow: 0 0 15px rgba(255,92,0,0.8);
-  text-align: left;
-}
-
-/* Tekst ispod naslova */
-.plan-subtext {
-  color: #ccc;
-  font-size: 1.1rem;
-  line-height: 1.6;
-}
-
-/* Kartice raspored (2 kolone na MD +) */
-.plan-grid {
-  /* mozes i ovde definisati gap, npr. gap: 2rem; */
-}
-
-/* Blok sa info o trenutnom paketu */
-.current-sub-info {
-  box-shadow: 0 0 15px rgba(255,92,0,0.4);
-  text-align: left;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(255,92,0,0.4);
+#chat-input-container {
+  border-top: 2px solid var(--orange);
+  padding: 1rem;
+  position: absolute;
+  bottom: 0%;
+  width: 100%;
   background-color: var(--black);
 }
 
+/********************************************************************************
+ * 6) AUTH FORM
+ ********************************************************************************/
+.auth-form {
+  width: 100%;
+  max-width: 70%;
+}
+
+.auth-form-min {
+  width: 100%;
+  max-width: 40%;
+}
+
+/********************************************************************************
+ * 7) SUBSCRIPTION
+ ********************************************************************************/
 /* Jedna kartica (starter/pro) */
 .plan-box {
   background: #000; /* ili #1a1a1a */
@@ -584,8 +491,8 @@ p, a, label, span {
   transition: all 0.3s ease;
   min-height: 60vh;
   box-shadow: 0 0 15px rgba(255,92,0,0.4);
-
 }
+
 .plan-box:hover {
   transform: translateY(-4px);
   box-shadow: 0 0 30px 3px var(--orange);
@@ -608,7 +515,7 @@ p, a, label, span {
 /* Naziv plana (npr. “Starter”) */
 .plan-name {
   font-size: 1.8rem;
-  font-weight: 700;
+  font-weight: 900;
   text-transform: uppercase;
   color: #fff;
   margin-bottom: 1rem;
@@ -658,15 +565,9 @@ p, a, label, span {
   width: auto; /* mozes i 100% */
 }
 
-/* Po želji da bullet items imaju • 
-.plan-features li::before {
-  content: "• ";
-  color: var(--orange);
-} */
-
-/******************************************************************************
- *  CUSTOM RADIO BUTTONS
- ******************************************************************************/
+/********************************************************************************
+ * 8) CUSTOM RADIO BUTTONS
+ ********************************************************************************/
 .radio-custom-display {
     display: inline-block;
     width: 18px;
@@ -698,9 +599,9 @@ p, a, label, span {
     transform: translate(-50%, -50%);
 }
 
-/******************************************************************************
- *  DROPDOWN STILIZACIJA
- ******************************************************************************/
+/********************************************************************************
+ * 9) DROPDOWN STILIZACIJA
+ ********************************************************************************/
 select.input-field {
     appearance: none;
     background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FF5C00'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
@@ -775,35 +676,26 @@ select.input-field:focus {
   box-shadow: 0 0 10px var(--orange);
 }
 
-
-/* =============================================
-   MOBILE NAV SPECIFIČNI STILOVI
-============================================= */
-
-/* 
-   Sakrij kada je veći od “md” breakpoints 
-   (ovo se već radi i klasa 'block md:hidden' 
-   u Blade-u, ali možemo i ovde ako želimo).
-*/
-@media (min-width: 768px) {
-  .mobile-nav-collapsible {
-    display: none;
-  }
-}
-
+/********************************************************************************
+ * 10) MOBILE NAV SPECIFIČNI STILOVI
+ ********************************************************************************/
+/* Osnovni Stilovi */
 .mobile-nav-collapsible {
-    position: fixed;
-    width: 98%;
-    z-index: 1000;
-    margin-top: 4px;
-    left:1%;
+  position: fixed;
+  width: 96%;
+  z-index: 1000;
+  left: 2%;
 }
 
 .mobile-header {
-    z-index: 1000;
-    position: relative;
-    margin: 4px;
-    border-radius: 15px;
+  z-index: 1000;
+  position: relative;
+  margin: 4px;
+  border-radius: 15px;
+}
+
+.mobile-header img {
+  height: 2.5rem;
 }
 
 /* Hamburger (3 linije) */
@@ -819,25 +711,21 @@ select.input-field:focus {
   transition: all 0.3s ease-in-out;
 }
 
-/* Collapsible nav je isprva sakriven: max-height: 0 */
+/* Collapsible Nav */
 .collapse-nav {
   max-height: 0;
   transition: max-height 0.4s ease;
-  margin-top: -5rem;
-  padding-top: 5rem;
+  margin-top: -4rem;
+  padding-top: 4rem;
   border-radius: 15px;
 }
 
-/* 
-   Kad checkbox #mobile-menu-toggle:checked,
-   nav “otvori” do neke visine (npr. 400px). 
-   Ili stavi veliki broj tipa 9999px.
-*/
+/* Otvaranje Collapsible Nav */
 #mobile-menu-toggle:checked ~ .collapse-nav {
   max-height: 600px; /* prilagodi */
 }
 
-/* Stilovi linkova unutar collapse nav */
+/* Stilovi Linkova unutar Collapse Nav */
 .collapsible-link {
   /*border-bottom: 1px solid #222;*/
 }
@@ -853,7 +741,7 @@ select.input-field:focus {
 }
 
 .collapsible-link a svg {
-    height: 1.75rem;
+    height: 1.25rem;
     margin-right: 15px;
 }
 
@@ -861,7 +749,7 @@ select.input-field:focus {
   background-color: #1c1c1c;
 }
 
-/* Submeni (Moj Profil) - ako želiš “accordion” */
+/* Submeni (Moj Profil) - Accordion */
 .submenu-section {
   position: relative;
 }
@@ -879,7 +767,7 @@ select.input-field:focus {
   font-weight: 400;
   border-bottom: 1px solid #222;
 }
-/* Kad je #mobile-profile-submenu:checked => prikaži submenu */
+/* Prikaz Submenija */
 #mobile-profile-submenu:checked ~ .submenu-items {
   display: block;
 }
@@ -902,85 +790,233 @@ select.input-field:focus {
     background-color: #fff !important;
 }
 
+/* Media Queries za Mobile Nav */
+@media (min-width: 768px) {
+  .mobile-nav-collapsible {
+    display: none;
+  }
+}
 
 @media (max-width: 768px) {
+  html,body {
+    background: var(--black);
+    overflow: hidden;
+  }
+
+  .layout-container {
+    padding: 0;
+    height: 100vh;
+    min-height: unset;
+    width: 96%;
+    margin-left: 2%;
+    overflow-y: scroll;
+  }
+
+  .main-content {
+    padding: 0;
+    margin-top: 5rem;
+    min-height: unset;
+    height: unset;
+  }
+
+  .auth-form {
+    max-width: 100%;
+  }
+
+  .second-btn {
+    min-width: unset;
+  }
+
+  .chat-container {
+    min-height: unset !important;
+  }
+
   #nav-bar {
     display: none;
   }
+
+  .chat {
+    min-height: 100%;
+    height: 100%;
+  }
+
+  .chat-input button {
+    max-width: 60px;
+  }
+
+  .mobile-height {
+    height: unset;
+  }
+
+  .archived-chat {
+    padding: 0;
+  }
+
+  p {
+    font-size: 14px !important;
+  }
+
+  .second-title {
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+    max-width: 100px;
+    margin-bottom: 0;
+  }
+
+  .remove-car-icon {
+    top: 7%;
+    right: 3%;
+  }
+
+  .garage-card span {
+    font-size: 14px;
+  }
+
+  .garage-card h2 {
+    font-size: 1rem;
+    font-weight: 900;
+  }
+
+  .star-button {
+    font-size: 2rem;
+  }
+
+  .default-width {
+    margin: 0.5rem auto;
+  }
+
+  #wizardForm label {
+    text-align: center;
+  }
+
+  #wizardForm span {
+    font-size: 14px;
+    text-align: left;
+  }
+
+  .chat-row li {
+    display: block;
+  } 
+
+  .chat-row li a {
+    margin-top: 10px;
+  }
+
+  .back-button {
+    position: fixed;
+    bottom: 1%;
+    width: 89%;
+    background-color: var(--black);
+    padding-bottom: 1rem;
+  }
+
+  .terms-privacy label span {
+    font-size: 14px;
+  }
+
+  .terms-privacy label a {
+    font-size: 14px;
+  }
+
+  .input-field {
+    font-size: 14px !important;
+  }
+
+  .btn-orange {
+    font-size: 14px;
+  }
+
+  .page-title {
+    font-size: 1.5rem !important;
+    line-height: 1.5rem;
+  }
+
   #questions-left {
     width: 100%;
+    font-size: 14px;
   }
-  .main-content {
-    margin-left: 0rem;
-    margin-top: 1rem;
-  }
-  .box-height {
-    height: auto;
-    min-height: fit-content;
-    margin: 6rem auto 0 auto;
-  }
-  .user-chat {
-    margin-top: 4.5rem;
-    padding-top: 0rem;
-    padding-left: 0rem;
-    padding-right: 0rem;
-    width: 98%;
-    margin-left: auto;
-    margin-right: auto;
-    box-shadow: 0 0 8px rgba(255,92,0,0.6);
-  }
+
   .chat-container {
     min-height: 73vh;
     margin-bottom: 0.5rem;
     border: none;
   }
-  .user-chat h1 {
-    display: none;
+
+  .chat-input-container {
+    position: fixed;
+    width: 95%;
   }
+
+  #chat-input-container {
+    border-top: 2px solid var(--orange);
+    padding: 0.5rem;
+    position: absolute;
+    bottom: 0%;
+    width: 100%;
+    background-color: var(--black);
+  }
+
+  .chat-input input {
+    font-size: 14px;
+  }
+
   .send-message {
     max-width: 70px;
   }
+
   .chat-header {
     border: none;
+    padding: 0.5rem;
   }
+
+  .chat-header h1 {
+    display: none;
+  }
+
   .chat-header span {
     margin-top: 0.25rem;
     margin-bottom: 0.25rem;
   }
+
   .submenu-label svg {
-    height: 2rem;
+    height: 1.25rem;
     margin-right: 15px;
   }
+
   .bubble {
-    max-width: 75%;
+    max-width: 90%;
+    font-size: 14px;
+    font-weight: 300;
   }
+
   .nav-toggle-checkbox:checked ~ .main-content {
     margin-left: 0;
   }
-  .chat-input {
-    position: fixed;
-    width: 98%;
-    bottom: 1%;
-  }
+
   .my-profile-data {
     transform: translateY(17%);
   }
+
   .garage {
     height: min-content;
     margin-top: 6rem;
     border: none;
   }
+
   .archive-chat {
     margin-top: 6rem;
   }
+
   .support-application-form {
     padding-left: 0;
     padding-right: 0;
   }
+
   .support-application {
     padding-left: 0;
     padding-right: 0;
   }
+
   .support-card {
     margin-left: auto;
     margin-right: auto;
@@ -988,19 +1024,24 @@ select.input-field:focus {
     box-shadow: 0 0 10px var(--orange);
     border-width: 0;
   }
+
   .first-card {
     margin-top: 3rem;
   }
+
   .rate-form {
     margin-top: 6rem;
   }
+
   .current-sub-info {
     margin-top: 3rem;
   }
+
   .subscription-wrapper {
     margin-left: auto;
     margin-right: auto;
   }
+
   .buy-questions {
     position: fixed;
     bottom: 1%;
@@ -1013,22 +1054,25 @@ select.input-field:focus {
     display: block;
     border: none;
   }
+
   .buy-questions p {
     margin-bottom: 10px;
   }
+
   .register-for-more-questions  {
-  display: block;
-  text-align: center;
-  position: fixed;
-  width: 98%;
-  margin: 0 auto;
-  box-shadow: 0 0 10px var(--orange);
-  bottom: 1%;
-  padding: 5% 0;
+    display: block;
+    text-align: center;
+    position: fixed;
+    width: 96%;
+    border:2px solid var(--orange);
+    bottom: 0;
+    left: 2%;
   }
+
   .register-for-more-questions p {
     margin-bottom: 10px;
   }
+
   .verify-notice {
     width: 95%;
     transform: translateY(20%);
@@ -1036,17 +1080,207 @@ select.input-field:focus {
     padding-left: 1rem;
     padding-right: 1rem;
   }
+
   .verify-notice h2 {
     font-size: 1.5rem;
   }
+
   .verify-notice p {
     font-weight: 300;
   }
 }
 
+/********************************************************************************
+ * 11) TERMS AND CONDITIONS & PRIVACY
+ ********************************************************************************/
 .terms-and-privacy {
   border-radius: 15px;
   height: 88vh;
   border: 2px solid var(--orange);
   overflow-x: scroll;
+}
+
+/********************************************************************************
+ * 12) SERVICE BOOK
+ ********************************************************************************/
+/* Prilagođena tema za Flatpickr */
+.flatpickr-calendar {
+    background: var(--black); /* Crna pozadina */
+    border: 1px solid var(--orange); /* Narandžasta ivica */
+    border-radius: 8px; /* Zaokruženi uglovi, u skladu sa 'radius' klasom */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.flatpickr-day {
+    background: var(--black); /* Crna pozadina dana */
+    color: var(--white); /* Bela boja teksta */
+    border: none;
+}
+
+.flatpickr-day:hover,
+.flatpickr-day:focus {
+    background: var(--orange); /* Narandžasta boja prilikom hovera */
+    color: var(--white); /* Bela boja teksta prilikom hovera */
+}
+
+.flatpickr-day.selected {
+    background: var(--orange); /* Narandžasta boja za izabrani dan */
+    color: var(--white); /* Bela boja teksta za izabrani dan */
+}
+
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+    background: var(--black); /* Crna pozadina za dropdown meseca */
+    color: var(--white); /* Bela boja teksta */
+}
+
+.flatpickr-current-month .flatpickr-monthDropdown-months:hover {
+    background: var(--orange); /* Narandžasta boja prilikom hovera */
+    color: var(--white);
+}
+
+.flatpickr-weekday {
+    background: var(--black); /* Crna pozadina za dane u nedelji */
+    color: var(--white); /* Bela boja teksta */
+}
+
+.flatpickr-next-month,
+.flatpickr-prev-month {
+    fill: var(--white); /* Bela boja strelica */
+}
+
+.flatpickr-next-month:hover svg,
+.flatpickr-prev-month:hover svg {
+    fill: var(--orange); /* Narandžasta boja strelica prilikom hovera */
+}
+
+.flatpickr-calendar {
+    font-size: 1.125rem; /* Veći font */
+    padding: 1rem;
+}
+
+.service {
+  margin: 3rem auto;
+  border-radius: 15px;
+  height: 88vh;
+  border: 2px solid var(--orange);
+  padding: 1rem;
+  max-width: 94%;
+}
+
+/********************************************************************************
+ * 13) OSTALI GLOBALNI STILOVI (Naslovi, input polja, dugmad...)
+ ********************************************************************************/
+h1, .page-title {
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--orange);
+  font-weight: 900;
+  /*margin-bottom: 1rem;*/
+  font-size: 2rem;
+}
+
+h2, h3 {
+  color: var(--orange);
+}
+p, a, label, span {
+  font-size: 1rem;
+  line-height: 1.4;
+  color: var(--white);
+}
+.btn-orange {
+  background-color: var(--orange);
+  border: 2px solid var(--orange);
+  border-radius: 5px;
+  box-shadow: 0 0 10px var(--orange);
+  color: var(--white);
+  cursor: pointer;
+  display: inline-block;
+  transition: 0.2s;
+  /*padding: 0.5rem 1rem;*/
+  padding: 0.5rem;
+  text-transform: uppercase;
+  font-weight: 900;
+  width: 100%;
+  max-width: 200px;
+  text-align: center;
+}
+.btn-orange:hover {
+  background-color: var(--black);
+  text-decoration: none;
+}
+
+/* Input polja */
+.input-field {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid var(--orange);
+  border-radius: 10px;
+  background-color: var(--gray);
+  color: var(--white);
+  font-size: 1rem;
+  /*margin-bottom: 1rem;*/
+  outline: none;
+  box-shadow: none;
+}
+/********************************************************************************
+ * 14) SERVICE RECORD STYLES
+ ********************************************************************************/
+/********************************************************************************
+ * 14) SERVICE RECORD STYLES
+ ********************************************************************************/
+.service-record-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1a1a1a;
+    border: 2px solid var(--orange);
+    border-radius: 15px;
+    padding: 1rem;
+    color: var(--white);
+}
+
+.service-record-card .details {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.service-record-card .details .info {
+    display: block;
+}
+
+.service-record-card .details .info .description,
+.service-record-card .details .info .mileage {
+    color: #60a5fa; /* Blue shade */
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.9rem;
+}
+
+.service-record-card .details .info .service-date {
+    color: #a0a0a0;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.9rem;
+}
+
+.service-record-card .details .info .notes {
+    color: #facc15; /* Yellow shade */
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+}
+
+.service-record-card .price {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.service-record-card i {
+    font-size: 1rem; /* Prilagođena veličina ikona */
 }

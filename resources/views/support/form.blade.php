@@ -1,18 +1,18 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-7xl mx-auto my-12 px-4 sm:px-6 lg:px-8 support-application">
+<div class="h-full mobile-height main-child bg-black border-orange radius-10 overflow-scroll">
 
     <!-- FAQ sekcija -->
-    <div class="grid lg:grid-cols-1 gap-8 mb-8">
-        <div class="bg-black p-8 rounded-2xl first-card support-card border-orange-500/30">
+    <div class="overflow-scroll w-full lg:p-4 md:p-0">
+        <div class="border-orange bg-orange radius-10 lg:p-8 md:p-4">
             <div class="flex items-center gap-4">
-                    <div class="pl-4 pr-4 bg-orange-500/10 rounded-xl">
-                        <i class="fas fa-lightbulb text-3xl text-orange-500"></i>
-                    </div>
-                    <h2 class="text-2xl font-bold text-orange-500">Često postavljana pitanja:</h2>
+                <div class="lg:pl-4 lg:pr-4 md:pl-0 md:pr-0 rounded-xl">
+                    <i class="fas fa-lightbulb text-3xl"></i>
                 </div>
-            <div class="grid md:grid-cols-2 gap-4 pl-16">
+                <h2 class="lg:text-2xl md:text-xl font-bold text-white font-black">Često postavljana pitanja:</h2>
+            </div>
+            <div class="grid md:grid-cols-2 gap-4 lg:pl-16 md:pl-0">
                 @foreach($faqs as $faq)
                     <div class="group relative bg-gray-800 rounded-xl p-2 hover:bg-gray-700 transition-colors cursor-pointer"
                          x-data="{ open: false }"
@@ -39,16 +39,16 @@
         </div>
     <!-- Glavni sadržaj -->
         <!-- Kontakt sekcija -->
-        <div class="bg-black from-gray-900 to-black p-8 rounded-2xl support-card border-orange-500/30 relative overflow-hidden">
+        <div class="border-orange radius-10 lg:p-8 md:p-4 bg-orange relative mt-8"> 
             <div class="absolute -top-20 -right-20 w-48 h-48 bg-orange-500/10 rounded-full blur-xl"></div>
             
             <div class="relative space-y-6">
-                <div class="flex justify-between items-end">
+                <div class="lg:flex md:block justify-between items-end">
                     <div class="flex items-center gap-4">
-                        <div class="pl-4 pr-4 bg-orange-500/10 rounded-xl">
+                        <div class="lg:pl-4 lg:pr-4 md:pl-0 md:pr-0 bg-orange rounded-xl">
                             <i class="fas fa-headset text-3xl text-orange-500"></i>
                         </div>
-                        <h2 class="text-2xl font-bold text-orange-500">Direktni Kontakt</h2>
+                        <h2 class="lg:text-2xl md:text-xl font-black text-white">Direktni Kontakt</h2>
                     </div>
                     <!-- Status podrške -->
                     <div class="bg-gray-800 rounded-xl">
@@ -65,7 +65,7 @@
                 </div>    
 
                 <!-- Email sekcija -->
-                <div class="group relative pl-20 bg-gray-800 rounded-xl hover:bg-gray-700 transition-colors cursor-pointer" 
+                <div class="relative pl-4 cursor-pointer" 
                      onclick="copyEmail()"
                      data-tippy-content="Klikni za kopiranje">
                     <div class="flex items-center gap-4">
@@ -84,15 +84,15 @@
         </div>
 
         <!-- Forma za podršku -->
-        <div class="support-form bg-black p-8 support-card rounded-2xl border-orange-500/30 relative">
-            <div class="absolute -bottom-20 -left-20 w-48 h-48 bg-orange-500/10 rounded-full blur-xl"></div>
+        <div class="radius-10 lg:p-8 md:p-4 mt-8 relative">
+            
                 <div class="flex items-center gap-4">
-                    <div class="pl-4 pr-4 bg-orange-500/10 rounded-xl">
+                    <div class="p-2 bg-orange rounded-xl">
                         <i class="fas fa-envelope-open-text text-3xl text-orange-500"></i>
                     </div>
-                    <h2 class="text-2xl font-bold text-orange-500">Prijavi problem</h2>
+                    <h2 class="lg:text-2xl md:text-xl font-bold text-orange-500">Prijavi problem</h2>
                 </div>
-            <form action="{{ route('support.submit') }}" method="POST" class="space-y-6 pl-20 support-aplication-form" id="supportForm">
+            <form action="{{ route('support.submit') }}" method="POST" class="space-y-6 lg:pl-20 md:pl-4 support-aplication-form" id="supportForm">
                 @csrf
                 
                 <div class="grid md:grid-cols-2 gap-4">

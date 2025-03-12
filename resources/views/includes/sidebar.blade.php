@@ -5,7 +5,7 @@
         <div class="sidebar-logo">
             <!-- Logo slika -->
             <a href="{{ route('dashboard') }}" class="logo-img">
-                <img src="{{ asset('assets/images/logo.png') }}">
+                <img src="{{ asset('assets/images/logo-small.png') }}">
             </a>
         </div>
 
@@ -48,9 +48,16 @@
             </div>
 
             <div class="nav-button">
+                <a href="{{ route('service-book.index') }}">
+                    <i class="fas fa-book"></i> <!-- FontAwesome ikonica za knjigu -->
+                    <span class="link-text">Servisna Knjiga</span>
+                </a>
+            </div>
+
+            <div class="nav-button">
                 <a href="{{ route('profile.subscription') }}">
                     <i class="fas fa-suitcase"></i>
-                    <span class="link-text">Kupi paket</span>
+                    <span class="link-text">Kupi pitanja</span>
                 </a>
             </div>
             <div class="nav-button">

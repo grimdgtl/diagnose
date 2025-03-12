@@ -2,7 +2,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-md mx-auto p-10 bg-black translate-y-1/4 rounded-lg shadow-lg">
+<div class="h-full main-child mx-auto p-10 bg-black border-orange radius-10 shadow-lg">
     <h2 class="text-2xl page-title font-black text-orange mb-4 text-center">Resetovanje Šifre</h2>
 
     @if ($errors->any())
@@ -15,7 +15,7 @@
         </div>
     @endif
 
-    <form action="{{ route('password.update') }}" method="POST">
+    <form action="{{ route('password.update') }}" method="POST" class="auth-form-min">
         @csrf
 
         <input type="hidden" name="token" value="{{ $token }}">

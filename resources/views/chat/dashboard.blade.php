@@ -4,52 +4,54 @@
 @section('title','Dijagnoza - Dashboard')
 
 @section('content')
-<div class="user-chat flex flex-col px-12 pt-12">
+<div class="chat relative">
+    <div class="flex flex-col">
+    
+        <!-- Gornja traka: naslov i broj preostalih pitanja -->
+        <div class="flex items-center justify-between chat-header">
+            <h1 class="page-title">
+                DIJAGNOZA
+            </h1>
+            @auth
+                <span id="questions-left" class="bg-orange text-white px-3 py-1 rounded-md shadow-lg">
+                    <b>Broj preostalih pitanja: {{ Auth::user()->num_of_questions_left }}</b>
+                </span>
+            @endauth
+        </div>
 
-    <!-- Gornja traka: naslov i broj preostalih pitanja -->
-    <div class="flex items-center justify-between chat-header">
-        <h1 class="page-title">
-            DIJAGNOZA
-        </h1>
-        @auth
-            <span id="questions-left" class="bg-orange text-white px-3 py-1 rounded-md shadow-lg">
-                <b>Broj preostalih pitanja: {{ Auth::user()->num_of_questions_left }}</b>
-            </span>
-        @endauth
-    </div>
-
-    <!-- Chat prikaz -->
-    <div class="chat-container flex-1 overflow-y-auto mb-4" id="chat-container">
-        @foreach($questions as $q)
-            <!-- Desna poruka (user) -->
-            <div class="flex justify-end animate-fadeIn">
-                <div class="bubble user">
-                    {{ $q->issueDescription }}
-                </div>
-            </div>
-            <!-- Odgovori (assistant) -->
-            @foreach($q->responses as $resp)
-                <div class="flex justify-start animate-fadeIn mb-2">
-                    <div class="bubble assistant markdown-content"
-                        data-content="{{ e($resp->content) }}">
+        <!-- Chat prikaz -->
+        <div class="chat-container flex-1 overflow-y-auto mb-4" id="chat-container">
+            @foreach($questions as $q)
+                <!-- Desna poruka (user) -->
+                <div class="flex justify-end animate-fadeIn">
+                    <div class="bubble user">
+                        {{ $q->issueDescription }}
                     </div>
                 </div>
+                <!-- Odgovori (assistant) -->
+                @foreach($q->responses as $resp)
+                    <div class="flex justify-start animate-fadeIn mb-2">
+                        <div class="bubble assistant markdown-content"
+                            data-content="{{ e($resp->content) }}">
+                        </div>
+                    </div>
+                @endforeach
             @endforeach
-        @endforeach
-    </div>
-
-    <!-- Dinamički deo za formu i poruku -->
-    @auth
-        <div id="chat-input-container">
-            <!-- Ovde će JavaScript ubaciti formu ili poruku -->
         </div>
-    @else
-        <p class="mt-4 text-gray-400">
-            Da biste postavili još pitanja, 
-            <a href="{{ route('register.form') }}" class="text-orange hover:underline">registrujte se</a>.
-        </p>
-    @endauth
 
+        <!-- Dinamički deo za formu i poruku -->
+        @auth
+            <div id="chat-input-container">
+                <!-- Ovde će JavaScript ubaciti formu ili poruku -->
+            </div>
+        @else
+            <p class="mt-4 text-gray-400">
+                Da biste postavili još pitanja, 
+                <a href="{{ route('register.form') }}" class="text-orange hover:underline">registrujte se</a>.
+            </p>
+        @endauth
+
+    </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
@@ -86,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
             chatForm.addEventListener('submit', handleFormSubmit);
         } else {
             chatInputContainer.innerHTML = `
-                <div class="buy-questions flex items-center justify-between mb-4">
+                <div class="buy-questions flex items-center justify-between">
                     <p class="text-white-500">
                         Nemate više besplatnih pitanja. Kupite paket za više!
                     </p>

@@ -2,8 +2,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-3xl mx-auto p-6 bg-black rounded-lg mt-12 shadow-lg">
-    <h1 class="text-3xl text-orange font-bold my-8 text-center">Registracija</h1>
+<div class="bg-black border-orange h-full mobile-height main-child radius sm:pb-8">
+    <h1 class="page-title text-orange font-black my-8 text-center">Registracija</h1>
 
     @if ($errors->any())
         <div class="mb-4 text-red-500">
@@ -15,7 +15,7 @@
         </div>
     @endif
 
-    <form action="{{ route('register') }}" method="POST" class="px-6">
+    <form action="{{ route('register') }}" method="POST" class="auth-form">
         @csrf
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -82,7 +82,7 @@
         </div>
 
         <!-- Uslovi korišćenja -->
-        <div class="mt-2 text-center">
+        <div class="mt-2 text-center terms-privacy">
             <label class="inline-flex items-center">
                 <input type="checkbox" name="terms" required class="form-checkbox text-orange mr-2">
                 <span class="text-sm ">
