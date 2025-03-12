@@ -4,10 +4,10 @@
 <div class="h-full mobile-height main-child bg-black border-orange radius-10">
 
     <!-- FAQ sekcija -->
-    <div class="w-full lg:p-4 md:p-0">
-        <div class="border-orange bg-orange radius-10 lg:p-8 md:p-4">
+    <div class="overflow-y-scroll overflow-x-hidden w-full lg:p-4 md:p-0">
+        <div class="lg:bg-orange md:bg-black radius-10 lg:p-8 md:p-4">
             <div class="flex items-center gap-4">
-                <div class="lg:pl-4 lg:pr-4 md:pl-0 md:pr-0 rounded-xl">
+                <div class="px-4 py-2 bg-orange rounded-xl">
                     <i class="fas fa-lightbulb text-3xl"></i>
                 </div>
                 <h2 class="lg:text-2xl md:text-xl font-bold text-white font-black">Često postavljana pitanja:</h2>
@@ -18,8 +18,8 @@
                          x-data="{ open: false }"
                          @click="open = !open">
                         <div class="flex justify-between items-center">
-                            <h3 class="text-lg font-medium text-white">{{ $faq['question'] }}</h3>
-                            <i class="fas fa-chevron-down text-white-500 transition-transform" 
+                            <h3 class="lg:text-lg md:text-base font-medium text-white">{{ $faq['question'] }}</h3>
+                            <i class="fas fa-chevron-down text-white-500 transition-transform p-2 radius-10 bg-orange" 
                                :class="{ 'rotate-180': open }"></i>
                         </div>
                         <div class="overflow-hidden transition-all duration-300 ease-out"
@@ -39,20 +39,18 @@
         </div>
     <!-- Glavni sadržaj -->
         <!-- Kontakt sekcija -->
-        <div class="border-orange radius-10 lg:p-8 md:p-4 bg-orange relative mt-8"> 
-            <div class="absolute -top-20 -right-20 w-48 h-48 bg-orange-500/10 rounded-full blur-xl"></div>
-            
+        <div class="lg:bg-orange md:bg-black radius-10 bg-black relative lg:p-8 md:p-4 mt-8"> 
             <div class="relative space-y-6">
                 <div class="lg:flex md:block justify-between items-end">
                     <div class="flex items-center gap-4">
-                        <div class="lg:pl-4 lg:pr-4 md:pl-0 md:pr-0 bg-orange rounded-xl">
+                        <div class="p-2 bg-orange rounded-xl">
                             <i class="fas fa-headset text-3xl text-orange-500"></i>
                         </div>
                         <h2 class="lg:text-2xl md:text-xl font-black text-white">Direktni Kontakt</h2>
                     </div>
                     <!-- Status podrške -->
-                    <div class="bg-gray-800 rounded-xl">
-                        <div class="flex items-center gap-4 mb-2">
+                    <div class="lg:pl-2 mt-4 bg-gray-800 rounded-xl">
+                        <div class="flex items-center gap-2 mb-2 pl-12">
                             <div class="flex-shrink-0">
                                 <div class="h-2 w-2 bg-green-500 rounded-full animate-pulse"></div>
                             </div>
@@ -65,10 +63,10 @@
                 </div>    
 
                 <!-- Email sekcija -->
-                <div class="relative pl-4 cursor-pointer" 
+                <div class="relative pl-12 cursor-pointer" 
                      onclick="copyEmail()"
                      data-tippy-content="Klikni za kopiranje">
-                    <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-4 pl-4">
                         <div>
                             <p class="text-sm text-gray-400">E-mail za podršku:</p>
                             <p id="email" class="text-lg font-medium text-orange-400 transition-colors">
