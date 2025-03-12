@@ -695,7 +695,7 @@ select.input-field:focus {
 }
 
 .mobile-header img {
-  height: 2.5rem;
+  height: 3rem;
 }
 
 /* Hamburger (3 linije) */
@@ -715,8 +715,8 @@ select.input-field:focus {
 .collapse-nav {
   max-height: 0;
   transition: max-height 0.4s ease;
-  margin-top: -4rem;
-  padding-top: 4rem;
+  margin-top: -4.5rem;
+  padding-top: 4.5rem;
   border-radius: 15px;
 }
 
@@ -1044,7 +1044,7 @@ select.input-field:focus {
 
   .buy-questions {
     position: fixed;
-    bottom: 1%;
+    bottom: 0%;
     width: 98%;
     padding: 10px;
     text-align: center;
@@ -1052,7 +1052,7 @@ select.input-field:focus {
     border-radius: 15px;
     box-shadow: 0 0 10px var(--orange);
     display: block;
-    border: none;
+    left: 2%;
   }
 
   .buy-questions p {

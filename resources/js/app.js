@@ -75,3 +75,19 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+  function adjustChatContainerHeight() {
+    const chatContainer = document.querySelector('.chat-container');
+    const viewportHeight = window.innerHeight; // Stvarna visina viewport-a
+    const headerHeight = document.querySelector('.chat-header').offsetHeight;
+    const inputHeight = document.querySelector('#chat-input-container').offsetHeight;
+
+    // Prilagodi visinu chat-container-a
+    chatContainer.style.maxHeight = `${viewportHeight - headerHeight - inputHeight}px`;
+  }
+
+  // Pozovi funkciju na učitavanje stranice i pri promeni veličine prozora
+  adjustChatContainerHeight();
+  window.addEventListener('resize', adjustChatContainerHeight);
+});
+
