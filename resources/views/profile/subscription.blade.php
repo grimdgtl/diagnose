@@ -23,6 +23,13 @@
                     {{ $user->num_of_questions_left }}
                     @endif
                 </p>
+                <!-- Dodavanje datuma isteka -->
+                @if($user->subscription_type && $user->lemonSqueezyCustomer?->trial_ends_at)
+                <p>
+                    <strong>Vazi do: </strong>
+                    {{ $user->lemonSqueezyCustomer->trial_ends_at->format('d.m.Y.') }}
+                </p>
+                @endif
             </div>
         </div>
         
