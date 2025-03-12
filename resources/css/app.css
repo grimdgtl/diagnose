@@ -810,6 +810,7 @@ select.input-field:focus {
     width: 96%;
     margin-left: 2%;
     overflow-y: scroll;
+    overflow-x: hidden;
   }
 
   .main-content {
@@ -817,6 +818,8 @@ select.input-field:focus {
     margin-top: 5rem;
     min-height: unset;
     height: 80vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
   }
 
   .auth-form {

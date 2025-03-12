@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="h-full mobile-height main-child bg-black border-orange radius-10 overflow-scroll">
+<div class="h-full mobile-height main-child bg-black border-orange radius-10">
 
     <!-- FAQ sekcija -->
-    <div class="overflow-scroll w-full lg:p-4 md:p-0">
+    <div class="w-full lg:p-4 md:p-0">
         <div class="border-orange bg-orange radius-10 lg:p-8 md:p-4">
             <div class="flex items-center gap-4">
                 <div class="lg:pl-4 lg:pr-4 md:pl-0 md:pr-0 rounded-xl">
