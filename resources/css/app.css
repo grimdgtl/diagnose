@@ -381,6 +381,7 @@ textarea:focus::placeholder {
   min-height: 0; /* Potrebno za skrolovanje unutar flex-a */
   max-height: 60vh;
   max-height: 67vh;
+  padding-bottom: 4rem;
 }
 .bubble {
   max-width: 60%;
@@ -836,6 +837,7 @@ select.input-field:focus {
 
   .chat-container {
     min-height: unset !important;
+    padding-bottom: 6rem;
   }
 
   #nav-bar {
