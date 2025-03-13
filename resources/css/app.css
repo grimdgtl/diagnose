@@ -826,6 +826,10 @@ select.input-field:focus {
     max-width: 100%;
   }
 
+  .auth-form-min {
+    max-width: 100%;
+  }
+
   .second-btn {
     min-width: unset;
   }
