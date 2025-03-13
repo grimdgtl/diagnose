@@ -45,9 +45,9 @@
             <ul class="plan-features">
                 <li>20 PITANJA</li>
                 <li>SAVETI ZA POPRAVKU</li>
+                <li>Servisna knjiga</li>
                 <li>OKVIRNE CENE DELOVA</li>
                 <li>PREPORUKE SERVISA</li>
-                <li>Servisna knjiga</li>
             </ul>
             <!-- Direktan checkout link generisan u Lemon Squeezy dashboard-u -->
             <!-- Starter plan -->
@@ -68,11 +68,11 @@
                 <span class="plan-interval">Mesečno</span>
             </div>
             <ul class="plan-features">
-                <li>NEOGRANIČEN BROJ PITANJA</li>
+                <li>500 PITANJA</li>
                 <li>SAVETI ZA POPRAVKU</li>
+                <li>Servisna knjiga</li>
                 <li>CENE DELOVA</li>
                 <li>PREPORUKE SERVISA</li>
-                <li>Servisna knjiga</li>
             </ul>
             <!-- Direktan checkout link generisan u Lemon Squeezy dashboard-u -->
             <!-- Pro plan -->
