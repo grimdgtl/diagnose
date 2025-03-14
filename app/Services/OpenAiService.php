@@ -154,7 +154,7 @@ class OpenAiService
     /**
      * Formira payload za ChatGPT API
      */
-    public function prepareApiRequest(string $model = 'gpt-3.5-turbo'): array
+    public function prepareApiRequest(string $model = 'gpt-4o-mini'): array
     {
         $messages = $this->getMessages();
         return [
@@ -363,7 +363,7 @@ public function handleUserQuestion(
     $userIsAskingToBuy = $this->isAskingWhereToBuy($newQuestion);
 
     // Pripremamo upit za ChatGPT
-    $payload = $this->prepareApiRequest('gpt-3.5-turbo');
+    $payload = $this->prepareApiRequest('gpt-4o-mini');
     $response = $this->sendApiRequest($payload);
 
     if ($response && isset($response['choices'][0]['message']['content'])) {
