@@ -7,8 +7,8 @@
     <h1 class="text-3xl text-orange font-bold mb-4 text-center page-title">
         Dobrodošao na Dijagnozu
     </h1>
-    <p class="mb-6 text-gray-400 text-center">
-        Opisite problem koji imate sto detaljnije i pritisnite dugme "Dalje"
+    <p class="mb-6 text-gray-400 text-center max-w-2xl">
+        Dijagnoza je tvoj novi, lični, virtuelni auto-mehaničar koji može da ti pomogne da rešiš svaki problem sa tvojim autom. Jesi li spreman da uštediš vreme i novac, a da pritom dobiješ savete od pravog stručnjaka?
     </p>
 
     <div id="loader" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50 hidden">

@@ -1293,3 +1293,159 @@ p, a, label, span {
 .service-record-card i {
     font-size: 1rem; /* Prilagođena veličina ikona */
 }
+
+/********************************************************************************
+ * 15) REGISTER POPUP STILOVI
+ ********************************************************************************/
+.register-popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.register-popup-content {
+    position: relative;
+    background-color: var(--black);
+    border: 2px solid var(--orange);
+    border-radius: 15px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    font-family: 'Red Hat Display', sans-serif;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: var(--white);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-btn:hover {
+    color: var(--orange);
+}
+
+.popup-logo {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    height: 40px;
+}
+
+.register-popup-content h2 {
+    color: var(--orange);
+    font-size: 1.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+    margin-top: 2rem;
+}
+
+.timer-text {
+    color: var(--white);
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.timer-text span {
+    color: var(--orange);
+    font-weight: 700;
+}
+
+.progress-bar {
+    position: relative;
+    width: 100%;
+    height: 10px;
+    background-color: #252525;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    background-color: var(--orange);
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--white);
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.benefits-title {
+    color: var(--white);
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.benefits-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem;
+    color: var(--white);
+    font-size: 0.9rem;
+}
+
+.benefits-list li {
+    margin-bottom: 0.5rem;
+    position: relative;
+    padding-left: 1.5rem; /* Prostor za bullet */
+}
+
+.centered-benefits {
+    text-align: center; /* Centriranje teksta */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centriranje liste */
+}
+
+.centered-benefits li {
+    display: inline-block; /* Omogućava centriranje svakog elementa */
+    text-align: left; /* Tekst unutar li elementa ostaje poravnat levo */
+}
+
+.benefits-list li::before {
+    content: "•"; /* Narandžasti bullet */
+    position: absolute;
+    left: 4%;
+    color: var(--orange); /* Narandžasta boja bullet-a */
+    font-size: 2rem; /* Veličina bullet-a */
+    line-height: 1.5; /* Poravnanje bullet-a sa tekstom */
+}
+
+.discount-text {
+    color: var(--white);
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.popup-btn {
+    display: inline-block;
+    width: 100%;
+    max-width: 200px;
+    padding: 0.75rem;
+    font-size: 1rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
