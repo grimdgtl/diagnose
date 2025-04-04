@@ -19,5 +19,9 @@
         Ukoliko link ne radi, kopirajte ovu adresu u svoj browser:<br>
         {{ $link }}
     </p>
+    <p>
+        Kao poseban poklon za tebe, evo tvog koda za <b>20% popusta</b> na bilo koji paket pitanja:<br>
+        Unesi kod <b><span style="color: #FF5C00">GEDORA20</span></b> na stranici za plaćanje nakon što odabereš željeni paket i otključaj <b>20% popusta</b> kao pravi automehaničar!
+    </p>
 </body>
 </html>
