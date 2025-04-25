@@ -121,17 +121,17 @@
         @else
             <div class="collapsible-link">
                 <a href="{{ route('home') }}">
-                    <i class="fas fa-diagnoses"></i> Početna
+                    <i class="fas fa-home"></i> Početna
                 </a>
             </div>
             <div class="collapsible-link">
                 <a href="{{ route('guest.wizard-form') }}">
-                    <i class="fas fa-sign-in-alt"></i> Virtuelni Mehaničar
+                    <i class="fas fa-diagnoses"></i> Virtuelni Mehaničar
                 </a>
             </div>
             <div class="collapsible-link">
                 <a href="{{ route('advisor.guest.wizard') }}">
-                    <i class="fas fa-sign-in-alt"></i> Savetnik za Kupovinu
+                    <i class="fas fa-car-side"></i> Savetnik za Kupovinu
                 </a>
             </div>
             <div class="collapsible-link">

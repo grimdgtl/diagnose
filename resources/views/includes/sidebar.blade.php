@@ -130,7 +130,7 @@
             </div>
             <div class="nav-button">
                 <a href="{{ route('advisor.guest.wizard') }}">
-                    <i class="fas fa-diagnoses"></i>
+                    <i class="fas fa-car-side"></i>
                     <span class="link-text">Savetnik za Kupovinu</span>
                 </a>
             </div>
