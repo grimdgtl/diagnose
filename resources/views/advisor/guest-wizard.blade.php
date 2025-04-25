@@ -2,9 +2,9 @@
 
 @section('content')
 <div class="bg-black border-orange radius h-full main-child mobile-height">
-    <h1 class="page-title mb-4">Dodaj vozilo - Gost verzija</h1>
+    <h1 class="page-title mb-4">Savetnik za kupovinu automobila</h1>
     <p class="mb-6 text-gray-400 text-center max-w-2xl">
-        Unesite podatke o vozilu o kojem želite da saznate više informacija. Možete dodati do 3 vozila.
+        Unesite podatke o vozilu o kojem želite da saznate više informacija. Možete uporediti najvise 3 vozila.
     </p>
     
     <div class="flex items-center justify-between auth-form mb-4">

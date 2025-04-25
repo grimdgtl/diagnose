@@ -3,7 +3,7 @@
 @section('content')
 <div class="chat relative">
     <div class="chat-header flex items-center justify-between">
-        <h1 class="page-title">SAVETNIK - Gost Chat</h1>
+        <h1 class="page-title">SAVETNIK</h1>
         <a href="{{ route('advisor.guest.wizard') }}" class="btn-orange">Novi upit</a>
     </div>
 
