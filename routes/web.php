@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\GuestFlowController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\RegistrationController;
@@ -10,10 +11,18 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\SupportController;
 use LemonSqueezy\Laravel\Http\Controllers\WebhookController;
 use App\Http\Controllers\ServiceBookController;
+use App\Http\Controllers\AdvisorController;
+use App\Http\Controllers\AdvisorChatController;
+use App\Http\Controllers\AdvisorHistoryController;
+use App\Http\Controllers\GuestAdvisorController;  // NOVO: Kontroler za guest savetnika
+
+
+// Početna ruta za sve – vraća home.blade.php
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // ✅ GOST RUTE (Unos problema, registracija)
 Route::group([], function () {
-    Route::get('/', [GuestFlowController::class, 'showWizardForm'])->name('guest.wizard-form');
+    Route::get('dijagnoza-form', [GuestFlowController::class, 'showWizardForm'])->name('guest.wizard-form');
     Route::post('/wizard-form', [GuestFlowController::class, 'storeTempData'])->name('guest.store-temp-data');
     Route::post('/submit-temp-data', [GuestFlowController::class, 'storeTempData'])->name('guest.submit-temp-data');
 
@@ -105,4 +114,49 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/service-book/{car_id}/export', [ServiceBookController::class, 'exportPdf'])->name('service-book.export');
     Route::delete('/service-record/{id}', [ServiceBookController::class, 'destroy'])->name('service-record.destroy');
     Route::get('/service-book/{car_id}/records', [ServiceBookController::class, 'show'])->name('service-book.show');
+});
+
+
+/* --------------------------------------------------------------
+ |  POLOVNJACI (advisor) – sve unutar prefixa /advisor
+ |-------------------------------------------------------------- */
+Route::prefix('advisor')->name('advisor.')->group(function () {
+
+    /* javni landing */
+    Route::get('/', [AdvisorController::class, 'landing'])->name('landing');
+
+    /* sve ispod zahtijeva login */
+    Route::middleware('auth')->group(function () {
+
+        /* wizard */
+        Route::get ('/wizard', [AdvisorController::class, 'showWizard'])->name('wizard');
+        Route::post('/wizard', [AdvisorController::class, 'storeVehicle'])->name('wizard.store');
+        Route::post('/wizard/start', [AdvisorController::class, 'startChat'])->name('wizard.start');
+        Route::post('/wizard/clear', [AdvisorController::class, 'clearVehicles'])->name('wizard.clear');
+
+        /* aktivni chat */
+        Route::get ('/chat/{purchaseChat}', [AdvisorChatController::class, 'show'])->name('chat');
+        Route::post('/chat/{purchaseChat}/message', [AdvisorChatController::class, 'store'])->name('chat.message');
+        Route::post('/chat/{purchaseChat}/archive', [AdvisorChatController::class, 'archive'])->name('chat.archive');
+        Route::get ('/chat/{purchaseChat}/export', [AdvisorChatController::class, 'export'])->name('chat.export');
+
+        /* prečica iz side‑bara */
+        Route::get('/chat-or-wizard', [AdvisorController::class, 'chatOrWizard'])->name('chatOrWizard');
+
+        /* istorija (arhiva) */
+        Route::get('/history', [AdvisorHistoryController::class, 'index'])->name('history');
+        Route::get('/history/{purchaseChat}', [AdvisorHistoryController::class, 'show'])->name('history.show');
+    });
+});
+
+
+/* --------------------------------------------------------------
+ |  GOST SAJETNIK (guest advisor) – unutar prefiksa /advisor, bez auth middleware
+ |-------------------------------------------------------------- */
+Route::prefix('advisor')->name('advisor.guest.')->group(function () {
+    Route::get('/guest-wizard', [GuestAdvisorController::class, 'showWizard'])->name('wizard');
+    Route::post('/guest-wizard', [GuestAdvisorController::class, 'storeVehicle'])->name('wizard.store');
+    Route::post('/guest-wizard/clear', [GuestAdvisorController::class, 'clearVehicles'])->name('wizard.clear');
+    Route::post('/guest-wizard/start', [GuestAdvisorController::class, 'startChat'])->name('wizard.start');
+    Route::get('/guest/chat/{chatId}', [GuestAdvisorController::class, 'showChat'])->name('chat');
 });

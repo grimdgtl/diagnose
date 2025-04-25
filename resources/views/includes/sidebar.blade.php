@@ -4,7 +4,7 @@
         <!-- Logo sekcija -->
         <div class="sidebar-logo">
             <!-- Logo slika -->
-            <a href="{{ route('dashboard') }}" class="logo-img">
+            <a href="{{ route('home') }}" class="logo-img">
                 <img src="{{ asset('assets/images/logo-small.png') }}">
             </a>
         </div>
@@ -19,16 +19,64 @@
     <div id="nav-content">
         @auth
             <div class="nav-button">
-                <a href="{{ route('dashboard') }}">
-                    <i class="fas fa-diagnoses"></i>
-                    <span class="link-text">Dijagnoza</span>
+                <a href="{{ route('home') }}">
+                    <i class="fas fa-home"></i>
+                    <span class="link-text">Početna</span>
                 </a>
+            </div>
+            <!-- Dijagnoza sa podmenijem -->
+            <div class="nav-button dijagnoza-submenu-section">
+                <input type="checkbox" id="dijagnoza-submenu" hidden>
+                <label for="dijagnoza-submenu" class="dijagnoza-menu-label">
+                    <i class="fas fa-diagnoses"></i>
+                    <span class="link-text">Virtuelni mehaničar</span>
+                </label>
+                <div class="dijagnoza-submenu">
+                    <a href="{{ route('dashboard') }}">Aktivni Chat</a>
+                    <a href="{{ route('chat.new') }}">Novi Chat</a>
+                    <a href="{{ route('profile.history') }}">Istorija</a>
+                    <a href="{{ route('profile.garage') }}">Moja Garaža</a>
+                </div>
+            </div>
+
+            <!-- Savetnik sa podmenijem -->
+            <div class="nav-button advisor-submenu-section">
+                <input type="checkbox" id="used-cars-submenu" hidden>
+                <label for="used-cars-submenu" class="advisor-menu-label">
+                    <i class="fas fa-car-side"></i>
+                    <span class="link-text">Savetnik za kupovinu</span>
+                </label>
+                <div class="advisor-submenu">
+                    @php
+                        // pokušaj da preuzmeš model/id iz URI-ja
+                        $currentChat = request()->route('purchaseChat');
+                    @endphp
+
+                    {{-- Prikaži link “Novo poređenje” samo ako je chat otvoren --}}
+                    @if($currentChat)
+                        <form id="archive-form"
+                            action="{{ route('advisor.chat.archive', $currentChat) }}"
+                            method="POST"
+                            style="display:none">
+                            @csrf
+                        </form>
+                        <a href="#"
+                            onclick="event.preventDefault(); document.getElementById('archive-form').submit();"
+                            class="submenu-link">
+                            Novo poređenje
+                        </a>
+                    @endif
+
+                    {{-- Uvek dostupni ostali linkovi --}}
+                    <a href="{{ route('advisor.chatOrWizard') }}">Aktivni Chat</a>
+                    <a href="{{ route('advisor.history') }}">Istorija</a>
+                </div>
             </div>
 
             <div class="nav-button">
-                <a href="{{ route('chat.new') }}">
-                    <i class="fas fa-comments"></i>
-                    <span class="link-text">Novi Chat</span>
+                <a href="{{ route('service-book.index') }}">
+                    <i class="fas fa-book"></i> <!-- FontAwesome ikonica za knjigu -->
+                    <span class="link-text">Servisna Knjiga</span>
                 </a>
             </div>
 
@@ -40,24 +88,15 @@
                     <span class="link-text">Moj Profil</span>
                 </label>
                 <div class="profile-submenu">
-                    <a href="{{ route('profile.my-data') }}">Moji podaci</a>
-                    <a href="{{ route('profile.garage') }}">Moja garaža</a>
-                    <a href="{{ route('profile.history') }}">Istorija</a>
-                    <a href="{{ route('profile.showRateForm') }}">Oceni app</a>
+                    <a href="{{ route('profile.my-data') }}">Moji Podaci</a>
+                    <a href="{{ route('profile.showRateForm') }}">Oceni Aplikaciju</a>
                 </div>
-            </div>
-
-            <div class="nav-button">
-                <a href="{{ route('service-book.index') }}">
-                    <i class="fas fa-book"></i> <!-- FontAwesome ikonica za knjigu -->
-                    <span class="link-text">Servisna Knjiga</span>
-                </a>
             </div>
 
             <div class="nav-button">
                 <a href="{{ route('profile.subscription') }}">
                     <i class="fas fa-suitcase"></i>
-                    <span class="link-text">Kupi pitanja</span>
+                    <span class="link-text">Kupi tokene</span>
                 </a>
             </div>
             <div class="nav-button">
@@ -78,9 +117,21 @@
             </div>
         @else
             <div class="nav-button">
-                <a href="{{ route('dashboard') }}">
+                <a href="{{ route('home') }}">
+                    <i class="fas fa-home"></i>
+                    <span class="link-text">Početna</span>
+                </a>
+            </div>
+            <div class="nav-button">
+                <a href="{{ route('guest.wizard-form') }}">
                     <i class="fas fa-diagnoses"></i>
-                    <span class="link-text">Dijagnoza</span>
+                    <span class="link-text">Virtuelni Mehaničar</span>
+                </a>
+            </div>
+            <div class="nav-button">
+                <a href="{{ route('advisor.guest.wizard') }}">
+                    <i class="fas fa-diagnoses"></i>
+                    <span class="link-text">Savetnik za Kupovinu</span>
                 </a>
             </div>
             <div class="nav-button">

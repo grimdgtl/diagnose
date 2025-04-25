@@ -5,7 +5,7 @@
 
 @section('content')
 <div class="chat relative">
-    <div class="flex flex-col">
+    <div class="flex flex-col h-full">
     
         <!-- Gornja traka: naslov i broj preostalih pitanja -->
         <div class="flex items-center justify-between chat-header">
@@ -14,36 +14,46 @@
             </h1>
             @auth
                 <span id="questions-left" class="bg-orange text-white px-3 py-1 rounded-md shadow-lg">
-                    <b>Broj preostalih pitanja: {{ Auth::user()->num_of_questions_left }}</b>
+                    <b>Broj preostalih tokena: {{ Auth::user()->num_of_questions_left }}</b>
                 </span>
             @endauth
         </div>
 
-        <!-- Chat prikaz -->
-        <div class="chat-container flex-1 overflow-y-auto mb-4" id="chat-container">
-            @foreach($questions as $q)
-                <!-- Desna poruka (user) -->
-                <div class="flex justify-end animate-fadeIn">
-                    <div class="bubble user">
-                        {{ $q->issueDescription }}
-                    </div>
-                </div>
-                <!-- Odgovori (assistant) -->
-                @foreach($q->responses as $resp)
-                    <div class="flex justify-start animate-fadeIn mb-2">
-                        <div class="bubble assistant markdown-content"
-                            data-content="{{ e($resp->content) }}">
+        <!-- Chat prikaz ili poruka kad nema aktivnog chata -->
+        <div id="chat-container"
+             class="chat-container flex-1 overflow-y-auto mb-4 @unless($chat) flex items-center justify-center @endunless">
+            @if($chat)
+                @foreach($questions as $q)
+                    <!-- Desna poruka (user) -->
+                    <div class="flex justify-end animate-fadeIn">
+                        <div class="bubble user">
+                            {{ $q->issueDescription }}
                         </div>
                     </div>
+                    <!-- Odgovori (assistant) -->
+                    @foreach($q->responses as $resp)
+                        <div class="flex justify-start animate-fadeIn mb-2">
+                            <div class="bubble assistant markdown-content"
+                                 data-content="{{ e($resp->content) }}">
+                            </div>
+                        </div>
+                    @endforeach
                 @endforeach
-            @endforeach
+            @else
+                <div class="flex flex-col items-center justify-center">
+                    <p class="text-gray-400 mb-4">Ne postoji aktivan chat.</p>
+                    <a href="{{ route('chat.new') }}" class="btn-orange px-6 py-2">
+                        Novi Chat
+                    </a>
+                </div>
+            @endif
         </div>
 
         <!-- Dinamički deo za formu i poruku -->
         @auth
-            <div id="chat-input-container">
-                <!-- Ovde će JavaScript ubaciti formu ili poruku -->
-            </div>
+            @if($chat)
+                <div id="chat-input-container"></div>
+            @endif
         @else
             <p class="mt-4 text-gray-400">
                 Da biste postavili još pitanja, 
@@ -53,139 +63,129 @@
 
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Obrada Markdown sadržaja
-    document.querySelectorAll('.markdown-content').forEach(function(el) {
-        const originalText = el.dataset.content || '';
-        const html = marked.parse(originalText);
-        el.innerHTML = html;
+    // Parsiranje inicijalnih odgovora
+    document.querySelectorAll('.markdown-content').forEach(el => {
+        const txt = el.dataset.content || '';
+        if (txt) el.innerHTML = marked.parse(txt);
     });
 
-    const chatContainer = document.getElementById('chat-container');
+    @auth
+    @if($chat)
+    const chatContainer      = document.getElementById('chat-container');
     const chatInputContainer = document.getElementById('chat-input-container');
-    const questionsLeftSpan = document.getElementById('questions-left');
-    let initialQuestionsLeft = parseInt(questionsLeftSpan?.textContent.match(/\d+/)?.[0] || 0);
+    const questionsLeftSpan  = document.getElementById('questions-left');
+    let initialQuestionsLeft = parseInt(questionsLeftSpan.textContent.match(/\d+/)?.[0] || 0);
 
-    // Funkcija za postavljanje forme ili poruke
+    const chatFormAction  = '{{ route("chat.storeQuestion") }}';
+    const chatId          = '{{ $chat->id }}';
+    const subscriptionUrl = '{{ route("profile.subscription") }}';
+
     function updateChatInput(questionsLeft) {
-        chatInputContainer.innerHTML = ''; // Očisti postojeći sadržaj
-
+        chatInputContainer.innerHTML = '';
         if (questionsLeft > 0) {
             chatInputContainer.innerHTML = `
                 <form action="${chatFormAction}" method="POST" class="chat-input" id="chat-form">
-                    <input type="hidden" name="_token" value="{{ csrf_token() }}" />
-                    <input type="hidden" name="chat_id" value="${chatId}" />
-                    <input type="text" name="message" class="new-message-field" placeholder="Unesi novo pitanje" />
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="chat_id" value="${chatId}">
+                    <input type="text" name="message" class="new-message-field" placeholder="Unesi novo pitanje">
                     <button type="submit" class="btn-orange send-message text-black hover:bg-orange-500">
                         <i class="fa fa-paper-plane"></i>
                     </button>
                 </form>
             `;
-            const chatForm = document.getElementById('chat-form');
-            chatForm.addEventListener('submit', handleFormSubmit);
+            document.getElementById('chat-form')
+                    .addEventListener('submit', handleFormSubmit);
         } else {
             chatInputContainer.innerHTML = `
                 <div class="buy-questions flex items-center justify-between">
-                    <p class="text-white-500">
-                        Nemate više besplatnih pitanja. Kupite paket za više!
-                    </p>
-                    <a href="${subscriptionUrl}" class="btn-orange text-black px-4 py-2 rounded hover:bg-orange-500">
-                        Kupite još pitanja
-                    </a>
+                    <p class="text-white-500">Nemate više besplatnih tokena.</p>
+                    <a href="${subscriptionUrl}" class="btn-orange text-black px-4 py-2 rounded hover:bg-orange-500">Kupite još tokena</a>
                 </div>
             `;
         }
     }
 
-    // Funkcija za obradu submit-a forme
-    function handleFormSubmit(e) {
+    async function handleFormSubmit(e) {
         e.preventDefault();
-        const messageField = e.target.querySelector('input[name="message"]');
-        const userMessage = messageField.value;
-        const formData = new FormData(e.target);
-        messageField.value = '';
+        const form = e.target;
+        const field = form.querySelector('input[name="message"]');
+        const text = field.value.trim();
+        if (!text) return;
 
-        addUserBubble(userMessage);
-        const loaderBubble = addAssistantLoader();
+        // Kreiraj podatke pre brisanja vrednosti
+        const payload = new URLSearchParams();
+        payload.append('_token', '{{ csrf_token() }}');
+        payload.append('chat_id', chatId);
+        payload.append('message', text);
 
-        fetch(e.target.action, {
-            method: 'POST',
-            body: formData,
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        })
-        .then(async (response) => {
-            if (!response.ok) {
-                throw await response.json();
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                loaderBubble.innerHTML = marked.parse(data.answer);
-                loaderBubble.classList.remove('typing');
+        // Clear polje
+        field.value = '';
 
-                if (questionsLeftSpan && data.questions_left !== undefined) {
-                    questionsLeftSpan.innerHTML = `<b>Broj preostalih pitanja: ${data.questions_left}</b>`;
-                    updateChatInput(data.questions_left); // Ažuriraj formu ili poruku
-                }
-            }
-        })
-        .catch(err => {
-            console.error("Greška:", err);
-            loaderBubble.textContent = err.message || "Dogodila se greška prilikom slanja poruke.";
-            loaderBubble.classList.remove('typing');
-        });
-    }
-
-    // Pomoćne funkcije
-    function addUserBubble(message) {
+        // Prikaži user bubble
         const userDiv = document.createElement('div');
-        userDiv.classList.add('flex', 'justify-end', 'animate-fadeIn');
-        userDiv.innerHTML = `
-            <div class="bubble user">
-                ${escapeHtml(message)}
-            </div>
-        `;
+        userDiv.className = 'flex justify-end animate-fadeIn';
+        userDiv.innerHTML = `<div class="bubble user">${escapeHtml(text)}</div>`;
         chatContainer.appendChild(userDiv);
         chatContainer.scrollTop = chatContainer.scrollHeight;
-    }
 
-    function addAssistantLoader() {
-        const assistantDiv = document.createElement('div');
-        assistantDiv.classList.add('flex', 'justify-start', 'animate-fadeIn');
-        assistantDiv.innerHTML = `
+        // Prikaži loader
+        const loaderDiv = document.createElement('div');
+        loaderDiv.className = 'flex justify-start animate-fadeIn mb-2';
+        loaderDiv.innerHTML = `
             <div class="bubble assistant typing">
                 <div class="flex space-x-2 justify-center items-center">
-                    <span class="sr-only">Loading...</span>
-                    <div class="h-2 w-2 bg-white rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                    <div class="h-2 w-2 bg-white rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                    <div class="h-2 w-2 bg-white rounded-full animate-bounce" style="animation-delay:-0.3s"></div>
+                    <div class="h-2 w-2 bg-white rounded-full animate-bounce" style="animation-delay:-0.15s"></div>
                     <div class="h-2 w-2 bg-white rounded-full animate-bounce"></div>
                 </div>
-            </div>
-        `;
-        chatContainer.appendChild(assistantDiv);
-        const bubble = assistantDiv.querySelector('.assistant');
+            </div>`;
+        chatContainer.appendChild(loaderDiv);
         chatContainer.scrollTop = chatContainer.scrollHeight;
-        return bubble;
+        const bubble = loaderDiv.querySelector('.bubble');
+
+        try {
+            const response = await fetch(chatFormAction, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: payload
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                const msg = data.errors?.message?.[0] || data.message || 'Greška pri slanju poruke.';
+                throw new Error(msg);
+            }
+            const answer = data.answer || '';
+            bubble.innerHTML = marked.parse(answer);
+            bubble.classList.remove('typing');
+
+            if (data.questions_left !== undefined) {
+                questionsLeftSpan.innerHTML = `<b>Broj preostalih tokena: ${data.questions_left}</b>`;
+                updateChatInput(data.questions_left);
+            }
+        } catch (err) {
+            bubble.textContent = err.message;
+            bubble.classList.remove('typing');
+        }
     }
 
-    function escapeHtml(text) {
-        return text
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;");
+    function escapeHtml(str) {
+        return str.replace(/&/g,'&amp;')
+                  .replace(/</g,'&lt;')
+                  .replace(/>/g,'&gt;')
+                  .replace(/"/g,'&quot;');
     }
 
-    // Inicijalizacija
-    const chatFormAction = '{{ route("chat.storeQuestion") }}';
-    const chatId = '{{ $chat->id ?? "" }}';
-    const subscriptionUrl = '{{ route("profile.subscription") }}';
+    // Pokreni inicijalno
     updateChatInput(initialQuestionsLeft);
+    @endif
+    @endauth
 });
 </script>
-
 @endsection

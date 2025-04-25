@@ -111,12 +111,12 @@
             </div>
 
             <div class="mt-6 flex items-center justify-center space-x-4">
-                <button type="submit" class="btn-orange px-4 py-2 text-black hover:bg-orange-500">
-                    Pošalji
-                </button>
                 <button type="button" class="btn-orange second-btn px-4 py-2 text-black hover:bg-orange-500"
                         @click="step = 1">
                     Nazad
+                </button>
+                <button type="submit" class="btn-orange px-4 py-2 text-black hover:bg-orange-500">
+                    Pošalji
                 </button>
             </div>
         </div>

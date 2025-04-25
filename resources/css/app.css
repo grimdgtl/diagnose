@@ -21,7 +21,7 @@
     --background: #1a202c;
 
     /* Širina sidebara: otvoren/zatvoren */
-    --sidebar-width-open: 250px;
+    --sidebar-width-open: 275px;
     --sidebar-width-closed: 60px;
 }
 
@@ -541,7 +541,8 @@ textarea:focus::placeholder {
 }
 .plan-interval {
   font-size: 1rem;
-  color: #aaa;
+  color: var(--orange);
+  margin-top: -0.8rem;
   margin-left: 0.25rem;
 }
 
@@ -760,7 +761,6 @@ select.input-field:focus {
 .submenu-items {
   display: none;
   background-color: #0a0a0a;
-  border-left: 2px solid var(--orange);
   padding-left: 1rem;
 }
 .submenu-items a {
@@ -785,6 +785,108 @@ select.input-field:focus {
 }
 
 #mobile-profile-submenu:checked ~ .hamburger-line:after {
+    transform: rotate(-45deg) !important;
+    width: 100% !important;
+    top:0 !important;
+    background-color: #fff !important;
+}
+
+/* Submeni (Dijagnoza) - Accordion */
+.collapsible-link a, .dijagnoza-submenu-label {
+  display: flex;
+  align-items: center;
+  padding: 1rem 2rem;
+  color: var(--white);
+  text-decoration: none;
+  font-weight: 900;
+  text-transform: uppercase;
+  transition: background 0.2s;
+}
+
+.dijagnoza-submenu-section {
+  position: relative;
+}
+.dijagnoza-submenu-label {
+  cursor: pointer;
+}
+.dijagnoza-submenu-items {
+  display: none;
+  background-color: #0a0a0a;
+  padding-left: 1rem;
+}
+.dijagnoza-submenu-items a {
+  text-transform: none;
+  font-weight: 400;
+  border-bottom: 1px solid #222;
+}
+/* Prikaz Submenija */
+#mobile-dijagnoza-submenu:checked ~ .dijagnoza-submenu-items {
+  display: block;
+}
+
+#mobile-dijagnoza-submenu:checked ~ .hamburger-line:before {
+    transform: rotate(45deg) !important;
+    width: 100% !important;
+    top:0 !important;
+    background-color: #fff !important;
+}
+
+#mobile-dijagnoza-submenu:checked ~ .hamburger-line {
+    background-color: transparent !important;
+}
+
+#mobile-dijagnoza-submenu:checked ~ .hamburger-line:after {
+    transform: rotate(-45deg) !important;
+    width: 100% !important;
+    top:0 !important;
+    background-color: #fff !important;
+}
+
+/* Submeni (Advisor) - Accordion */
+.collapsible-link a, .advisor-submenu-label {
+  display: flex;
+  align-items: center;
+  padding: 1rem 2rem;
+  color: var(--white);
+  text-decoration: none;
+  font-weight: 900;
+  text-transform: uppercase;
+  transition: background 0.2s;
+}
+
+.advisor-submenu-section {
+  position: relative;
+}
+.advisor-submenu-label {
+  cursor: pointer;
+}
+.advisor-submenu-items {
+  display: none;
+  background-color: #0a0a0a;
+  padding-left: 1rem;
+}
+.advisor-submenu-items a {
+  text-transform: uppercase ;
+  font-weight: 900;
+  border-bottom: 1px solid #222;
+}
+/* Prikaz Submenija */
+#mobile-advisor-submenu:checked ~ .advisor-submenu-items {
+  display: block;
+}
+
+#mobile-advisor-submenu:checked ~ .hamburger-line:before {
+    transform: rotate(45deg) !important;
+    width: 100% !important;
+    top:0 !important;
+    background-color: #fff !important;
+}
+
+#mobile-advisor-submenu:checked ~ .hamburger-line {
+    background-color: transparent !important;
+}
+
+#mobile-advisor-submenu:checked ~ .hamburger-line:after {
     transform: rotate(-45deg) !important;
     width: 100% !important;
     top:0 !important;
@@ -988,6 +1090,16 @@ select.input-field:focus {
   }
 
   .submenu-label svg {
+    height: 1.25rem;
+    margin-right: 15px;
+  }
+
+  .dijagnoza-submenu-label svg {
+    height: 1.25rem;
+    margin-right: 15px;
+  }
+
+  .advisor-submenu-label svg {
     height: 1.25rem;
     margin-right: 15px;
   }
@@ -1448,4 +1560,118 @@ p, a, label, span {
     font-size: 1rem;
     font-weight: 900;
     text-transform: uppercase;
+}
+
+/* ------------- ADVISOR TABLE -------------- */
+.advisor-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.advisor-table th,
+.advisor-table td {
+    border: 1px solid var(--orange);
+    padding: .5rem;
+}
+@media (max-width: 480px) {
+    .advisor-table table { display:block; overflow-x:auto; }
+}
+
+/*-------Advisor sub menu-------*/
+.advisor-submenu-section {
+  position: relative;
+}
+.advisor-menu-label {
+  cursor: pointer;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  padding: 0.8rem 1rem;
+  transition: background 0.2s;
+}
+.advisor-menu-label:hover {
+  background: #1c1c1c;
+}
+.advisor-submenu {
+  display: none;
+  background-color: #0a0a0a; 
+  margin-left: 1rem;
+  border-left: 2px solid var(--orange);
+}
+.advisor-submenu a {
+  display: block;
+  color: var(--white);
+  padding: 0.5rem 1.5rem;
+  text-decoration: none;
+  border-bottom: 1px solid #222;
+  font-family: 'Red Hat Display', sans-serif;
+}
+.advisor-submenu a:hover {
+  background-color: #1c1c1c;
+}
+#used-cars-submenu:checked ~ .advisor-submenu {
+  display: block;
+}
+/*----------------------------*/
+
+/*-------Dijagnoza sub menu-------*/
+.dijagnoza-submenu-section {
+  position: relative;
+}
+.dijagnoza-menu-label {
+  cursor: pointer;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  padding: 0.8rem 1rem;
+  transition: background 0.2s;
+}
+.dijagnoza-menu-label:hover {
+  background: #1c1c1c;
+}
+.dijagnoza-submenu {
+  display: none;
+  background-color: #0a0a0a; 
+  margin-left: 1rem;
+  border-left: 2px solid var(--orange);
+}
+.dijagnoza-submenu a {
+  display: block;
+  color: var(--white);
+  padding: 0.5rem 1.5rem;
+  text-decoration: none;
+  border-bottom: 1px solid #222;
+  font-family: 'Red Hat Display', sans-serif;
+}
+.dijagnoza-submenu a:hover {
+  background-color: #1c1c1c;
+}
+#dijagnoza-submenu:checked ~ .dijagnoza-submenu {
+  display: block;
+}
+/*----------------------------*/
+
+#chatInput {
+  border-top: 2px solid var(--orange);
+  padding: 1rem;
+  position: absolute;
+  bottom: 0%;
+  width: 100%;
+  background-color: var(--black);
+}
+
+.homepage h1 {
+  line-height: 2rem;
+}
+
+.homepage h2 {
+  line-height: 2rem;
+  color: var(--orange);
+}
+
+.homepage-card {
+  flex-direction: column;
+}
+
+.white {
+  color: #fff;
 }

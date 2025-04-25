@@ -28,14 +28,61 @@
         <!-- Isti linkovi kao u sidebaru -->
         @auth
             <div class="collapsible-link">
-                <a href="{{ route('dashboard') }}">
-                    <i class="fas fa-diagnoses"></i> Dijagnoza
+                <a href="{{ route('home') }}">
+                    <i class="fas fa-home"></i> Početna
                 </a>
+            </div>
+            
+            <!-- Dijagnoza sa podmenijem: moze i ovde “checkbox hack” 2. nivo, ali da pojednostavimo: 
+                 samo linkovi ispod. Ili isprobaj “accordions”. -->
+            <div class="collapsible-link submenu-section">
+                <input type="checkbox" id="mobile-dijagnoza-submenu" class="hidden" />
+                <label for="mobile-dijagnoza-submenu" class="dijagnoza-submenu-label">
+                    <i class="fas fa-diagnoses"></i> Virtuelni mehaničar
+                </label>
+                <div class="dijagnoza-submenu-items">
+                    <a href="{{ route('dashboard') }}">Aktivni Chat</a>
+                    <a href="{{ route('chat.new') }}">Novi Chat</a>
+                    <a href="{{ route('profile.history') }}">Istorija</a>
+                    <a href="{{ route('profile.garage') }}">Moja Garaža</a>
+                </div>
+            </div>
+
+            <!-- Advisor sa podmenijem: moze i ovde “checkbox hack” 2. nivo, ali da pojednostavimo: 
+                 samo linkovi ispod. Ili isprobaj “accordions”. -->
+            <div class="collapsible-link submenu-section">
+                <input type="checkbox" id="mobile-advisor-submenu" class="hidden" />
+                <label for="mobile-advisor-submenu" class="advisor-submenu-label">
+                    <i class="fas fa-car-side"></i> Savetnik za kupovinu
+                </label>
+                <div class="advisor-submenu-items">
+                    @php
+                        // pokušaj da preuzmeš model/id iz URI-ja
+                        $currentChat = request()->route('purchaseChat');
+                    @endphp
+
+                    {{-- Prikaži link “Novo poređenje” samo ako je chat otvoren --}}
+                    @if($currentChat)
+                        <form id="archive-form"
+                            action="{{ route('advisor.chat.archive', $currentChat) }}"
+                            method="POST"
+                            style="display:none">
+                            @csrf
+                        </form>
+                        <a href="#"
+                            onclick="event.preventDefault(); document.getElementById('archive-form').submit();"
+                            class="submenu-link">
+                            Novo poređenje
+                        </a>
+                    @endif
+                    <a href="{{ route('advisor.chatOrWizard') }}">Aktivni Chat</a>
+                    <a href="{{ route('advisor.history') }}">Istorija</a>
+                </div>
             </div>
 
             <div class="collapsible-link">
-                <a href="{{ route('chat.new') }}">
-                    <i class="fas fa-comments"></i> Novi Chat
+                <a href="{{ route('service-book.index') }}">
+                    <i class="fas fa-book"></i> Servisna Knjiga
                 </a>
             </div>
 
@@ -48,21 +95,13 @@
                 </label>
                 <div class="submenu-items">
                     <a href="{{ route('profile.my-data') }}">Moji podaci</a>
-                    <a href="{{ route('profile.garage') }}">Moja garaža</a>
-                    <a href="{{ route('profile.history') }}">Istorija</a>
                     <a href="{{ route('profile.showRateForm') }}">Oceni app</a>
                 </div>
             </div>
 
             <div class="collapsible-link">
-                <a href="{{ route('service-book.index') }}">
-                    <i class="fas fa-book"></i> Servisna Knjiga
-                </a>
-            </div>
-
-            <div class="collapsible-link">
                 <a href="{{ route('profile.subscription') }}">
-                    <i class="fas fa-suitcase"></i> Kupi pitanja
+                    <i class="fas fa-suitcase"></i> Kupi tokene
                 </a>
             </div>
             <div class="collapsible-link">
@@ -81,8 +120,18 @@
             </div>
         @else
             <div class="collapsible-link">
-                <a href="{{ route('dashboard') }}">
-                    <i class="fas fa-diagnoses"></i> Dijagnoza
+                <a href="{{ route('home') }}">
+                    <i class="fas fa-diagnoses"></i> Početna
+                </a>
+            </div>
+            <div class="collapsible-link">
+                <a href="{{ route('guest.wizard-form') }}">
+                    <i class="fas fa-sign-in-alt"></i> Virtuelni Mehaničar
+                </a>
+            </div>
+            <div class="collapsible-link">
+                <a href="{{ route('advisor.guest.wizard') }}">
+                    <i class="fas fa-sign-in-alt"></i> Savetnik za Kupovinu
                 </a>
             </div>
             <div class="collapsible-link">

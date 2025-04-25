@@ -1,18 +1,18 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 
-return new class extends Migration
+class CreateLemonSqueezyOrdersTable extends Migration
 {
     public function up()
     {
         Schema::create('lemon_squeezy_orders', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('billable_type');
-            $table->string('billable_id');
-            $table->uuidMorphs('billable'); // Umesto $table->morphs('billable');
+            // Definiši kolone za "billable_type" i "billable_id" samo jednom
+            $table->string('billable_type');           // ostavljamo kao varchar(255) po potrebi
+            $table->string('billable_id');             // koristi string; ako treba drugačiji tip, prilagodi ovde
             $table->string('lemon_squeezy_id');
             $table->string('customer_id');
             $table->char('identifier', 36);
@@ -29,13 +29,8 @@ return new class extends Migration
             $table->string('receipt_url')->nullable();
             $table->boolean('refunded');
             $table->timestamp('refunded_at')->nullable();
-
-            // Evo ispravljene kolone
             $table->timestamp('ordered_at')->nullable();
-            // ili
-            // $table->timestamp('ordered_at')->useCurrent();
 
-            // U slučaju da želiš klasične timestamps:
             $table->timestamps();
         });
     }
@@ -44,4 +39,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('lemon_squeezy_orders');
     }
-};
+}

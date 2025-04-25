@@ -134,6 +134,16 @@ class RegistrationController extends Controller
             Log::warning("No temp_id in session after email verification.");
         }
 
+        if (session()->has('advisor_temp_id')) {
+            $advisorTempId = session('advisor_temp_id');
+            Log::info("Advisor Temp ID found in session: {$advisorTempId}");
+            $this->migrateTempAdvisorDataToReal($advisorTempId, $user->id);
+            session()->forget('advisor_temp_id');
+        } else {
+            Log::warning("No advisor_temp_id in session after email verification.");
+        }
+
+
         auth()->login($user);
 
         return redirect()->route('dashboard')->with('success', 'Email verifikovan, dobrodošli!');
@@ -216,5 +226,57 @@ class RegistrationController extends Controller
         $tempUser->delete();
 
         Log::info("Migration completed for temp_id: {$tempId}, user_id: {$userId}");
+    }
+
+    public function migrateTempAdvisorDataToReal($tempId, $userId)
+    {
+        Log::info("Starting advisor migration for temp_id: {$tempId}, user_id: {$userId}");
+    
+        // Dohvati tempAdvisorUser
+        $tempAdvisorUser = \App\Models\TempAdvisorUser::find($tempId);
+        if (!$tempAdvisorUser) {
+            Log::warning("Nema tempAdvisorUser za temp_id={$tempId}. Nema šta da migrira");
+            return;
+        }
+    
+        // Dohvati temp chat i poruke
+        $tempAdvisorChat = \App\Models\TempAdvisorChat::where('temp_id', $tempId)->first();
+        $tempAdvisorMessages = \App\Models\TempAdvisorMessage::where('chat_id', $tempAdvisorChat ? $tempAdvisorChat->id : null)->get();
+    
+        // Kreiraj stalni PurchaseChat (postojeći model)
+        $chat = \App\Models\PurchaseChat::create([
+            'user_id' => $userId,
+            'status'  => 'active',
+        ]);
+    
+        // Migriraj poruke
+        foreach ($tempAdvisorMessages as $tempMsg) {
+            \App\Models\PurchaseMessage::create([
+                'purchase_chat_id' => $chat->id,
+                'role'             => $tempMsg->role,
+                'content'          => $tempMsg->content,
+            ]);
+        }
+    
+        // Ako je uneseno više vozila (više od 1), kreiraj ComparisonSet
+        if (\App\Models\TempAdvisorVehicle::where('temp_id', $tempId)->count() > 1) {
+            $set = \App\Models\ComparisonSet::create([
+                'user_id' => $userId,
+            ]);
+            \App\Models\ComparisonSetItem::create([
+                'comparison_set_id' => $set->id,
+                'purchase_chat_id'  => $chat->id,
+            ]);
+        }
+    
+        // Očisti temp tabele
+        \App\Models\TempAdvisorMessage::where('chat_id', $tempAdvisorChat ? $tempAdvisorChat->id : null)->delete();
+        if ($tempAdvisorChat) {
+            $tempAdvisorChat->delete();
+        }
+        \App\Models\TempAdvisorVehicle::where('temp_id', $tempId)->delete();
+        $tempAdvisorUser->delete();
+    
+        Log::info("Advisor migration completed for temp_id: {$tempId}, user_id: {$userId}");
     }
 }

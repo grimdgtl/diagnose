@@ -8,7 +8,7 @@
     
     <title>Diagnose App</title>
     <!-- Uključivanje CSS i JS preko Vite -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css'])
 
     <!-- Statički Open Graph tagovi -->
     <meta property="og:title" content="Dijagnoza">
