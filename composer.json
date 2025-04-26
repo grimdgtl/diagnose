@@ -14,7 +14,8 @@
         "laravel/framework": "^11.31",
         "laravel/tinker": "^2.9",
         "laravel/ui": "^4.6",
-        "lemonsqueezy/laravel": "*"
+        "lemonsqueezy/laravel": "*",
+        "spatie/laravel-sitemap": "^7.3"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

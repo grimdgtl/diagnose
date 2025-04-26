@@ -7,6 +7,22 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
     <title>Diagnose App</title>
+    <meta name="description" content="Vaš virtuelni AI mehaničar i savetnik za kupovinu polovnih automobila: 24/7 dijagnostika kvarova, detaljni saveti i upoređivanje vozila.">
+    <meta name="robots" content="index, follow">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "url": "https://dijagnoza.com",
+      "name": "Dijagnoza",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://dijagnoza.com/pretraga?upit={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
     <!-- Uključivanje CSS i JS preko Vite -->
     @vite(['resources/css/app.css'])
 
@@ -17,6 +33,15 @@
     <meta property="og:url" content="https://dijagnoza.com">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Dijagnoza APP">
+
+    <link rel="dns-prefetch" href="//www.googletagmanager.com">
+    <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+
+    <link rel="icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
 
     <!-- Google Fonts (Red Hat Display) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

@@ -964,7 +964,7 @@ select.input-field:focus {
   }
 
   p {
-    font-size: 14px !important;
+    font-size: 16px !important;
   }
 
   .second-title {
@@ -980,7 +980,7 @@ select.input-field:focus {
   }
 
   .garage-card span {
-    font-size: 14px;
+    font-size: 16px;
   }
 
   .garage-card h2 {
@@ -1001,7 +1001,7 @@ select.input-field:focus {
   }
 
   #wizardForm span {
-    font-size: 14px;
+    font-size: 16px;
     text-align: left;
   }
 
@@ -1022,15 +1022,15 @@ select.input-field:focus {
   }
 
   .terms-privacy label span {
-    font-size: 14px;
+    font-size: 16px;
   }
 
   .terms-privacy label a {
-    font-size: 14px;
+    font-size: 16px;
   }
 
   .input-field {
-    font-size: 14px !important;
+    font-size: 16px !important;
   }
 
   .btn-orange {
@@ -1068,7 +1068,7 @@ select.input-field:focus {
   }
 
   .chat-input input {
-    font-size: 14px;
+    font-size: 16px;
   }
 
   .send-message {
@@ -1106,7 +1106,7 @@ select.input-field:focus {
 
   .bubble {
     max-width: 90%;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 300;
   }
 

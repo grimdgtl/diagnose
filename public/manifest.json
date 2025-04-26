@@ -1,0 +1,23 @@
+{
+  "name": "Dijagnoza App",
+  "short_name": "Dijagnoza",
+  "description": "Jedina dijagnoza koja ti je stvarno potrebna",
+  "start_url": "/?utm_source=homescreen",
+  "display": "standalone",
+  "background_color": "#1F2937",
+  "theme_color": "#1F2937",
+  "icons": [
+    "icons": [
+    {
+      "src": "/icons/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+  ]
+}
