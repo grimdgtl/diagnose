@@ -1,2 +1,18 @@
 User-agent: *
+# dozvoljeno crawl-ovanje svega javnog
 Disallow:
+
+# blokiraj autentikacione i privatne rute
+Disallow: /login
+Disallow: /register
+Disallow: /logout
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /subscription
+Disallow: /advisor/*   # chat i wizard za prijavljene
+Disallow: /api/
+
+# pokaži gde je sitemap
+Sitemap: https://dijagnoza.com/sitemap.xml
