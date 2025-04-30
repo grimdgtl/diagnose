@@ -1209,6 +1209,14 @@ select.input-field:focus {
   .verify-notice p {
     font-weight: 300;
   }
+  .homepage-card h1 {
+    text-align: center;
+  }
+
+  .homepage-card p {
+    text-align: center;
+  }
+
 }
 
 /********************************************************************************
