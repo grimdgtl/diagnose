@@ -15,7 +15,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'       # ili verzija koju koristiš
+          php-version: '8.4'       # ili verzija koju koristiš
           extensions: intl, mbstring, pdo_mysql, zip
           ini-values: post_max_size=256M, max_execution_time=180
           tools: composer:v2
