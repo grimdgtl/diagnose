@@ -24,52 +24,48 @@ class GrimPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        return $panel
-            ->default()
-            ->id('grim')
-            ->path('grim')
-            ->login()
-            ->colors([
-                'primary' => Color::Amber,
-            ])
-            // Resources u app/Filament/Resources
-            ->discoverResources(
-                in: app_path('Filament/Resources'),
-                for: 'App\\Filament\\Resources',
-            )
-            // Pages iz app/Filament/Pages
-            ->discoverPages(
-                in: app_path('Filament/Pages'),
-                for: 'App\\Filament\\Pages',
-            )
-            // sad REGISTRUJ samo svoje Dashboard i Health
-            ->pages([
-                Dashboard::class,
-                Health::class,
-            ])
-            // Widget-e ne registruj globalno – oni ulaze iz samog Dashboard i Health
-            ->discoverWidgets(
-                in: app_path('Filament/Widgets'),
-                for: 'App\\Filament\\Widgets',
-            )
-            ->middleware([
-                EncryptCookies::class,
-                AddQueuedCookiesToResponse::class,
-                StartSession::class,
-                AuthenticateSession::class,
-                ShareErrorsFromSession::class,
-                VerifyCsrfToken::class,
-                SubstituteBindings::class,
-                DisableBladeIconComponents::class,
-                DispatchServingFilamentEvent::class,
-            ])
-            ->authMiddleware([
-                Authenticate::class,
-            ]);
-
-            ->authorize(fn (): bool => 
-                auth()->check()
-                && auth()->user()->email === 'dev@dijagnoza.com'
-            );
+     return $panel
+        ->default()
+        ->id('grim')
+        ->path('grim')
+        ->login()
+        ->colors([
+            'primary' => Color::Amber,
+        ])
+        ->discoverResources(
+            in: app_path('Filament/Resources'),
+            for: 'App\\Filament\\Resources',
+        )
+        ->discoverPages(
+            in: app_path('Filament/Pages'),
+            for: 'App\\Filament\\Pages',
+        )
+        ->pages([
+            Dashboard::class,
+            Health::class,
+        ])
+        ->discoverWidgets(
+            in: app_path('Filament/Widgets'),
+            for: 'App\\Filament\\Widgets',
+        )
+        ->middleware([
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartSession::class,
+            AuthenticateSession::class,
+            ShareErrorsFromSession::class,
+            VerifyCsrfToken::class,
+            SubstituteBindings::class,
+            DisableBladeIconComponents::class,
+            DispatchServingFilamentEvent::class,
+        ])
+        ->authMiddleware([
+            Authenticate::class,
+        ])
+        // ← chain authorize here before the semicolon
+        ->authorize(fn (): bool =>
+            auth()->check()
+            && auth()->user()->email === 'dev@dijagnoza.com'
+        );
     }
 }
