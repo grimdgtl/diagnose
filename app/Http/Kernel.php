@@ -47,9 +47,11 @@ class Kernel extends HttpKernel
         'auth' => \App\Http\Middleware\Authenticate::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'filament.admin' => \App\Http\Middleware\EnsureAdminEmail::class,
     ];
 
     protected $commands = [
         \App\Console\Commands\GenerateSitemap::class,
     ];
 }
+

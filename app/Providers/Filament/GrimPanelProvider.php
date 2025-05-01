@@ -16,7 +16,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
-// Your pages
+// tvoje stranice
 use App\Filament\Pages\Dashboard;
 use App\Filament\Pages\Health;
 
@@ -61,15 +61,7 @@ class GrimPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                \App\Http\Middleware\EnsureAdminEmail::class, // <<< ovde
             ]);
-    }
-
-    /**
-     * Return true only for the one admin email.
-     */
-    public static function canAccess(): bool
-    {
-        return auth()->check()
-            && auth()->user()->email === 'dev@dijagnoza.com';
     }
 }
