@@ -12,21 +12,13 @@ jobs:
       - name: Checkout repo  
         uses: actions/checkout@v3
 
-+     # 1) Install PHP + intl on the runner
--     - name: Set up PHP
--       uses: webfactory/ssh-agent@v0.5.3
--       with:
--         php-version: '8.4'  
--         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}     # ili verzija koju koristiš
--         extensions: intl, mbstring, pdo_mysql, zip
--         ini-values: post_max_size=256M, max_execution_time=180
--         tools: composer:v2
-+     - name: Set up PHP
-+       uses: shivammathur/setup-php@v2
-+       with:
-+         php-version: '8.3'            # or whatever your lock file needs
-+         extensions: intl, mbstring, pdo_mysql, zip
-+         ini-values: post_max_size=256M, max_execution_time=180
+      # 1) Install PHP + intl on the runner
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'            # or whatever your lock file needs
+          extensions: intl, mbstring, pdo_mysql, zip
+          ini-values: post_max_size=256M, max_execution_time=180
 
       # 2) Install Node.js dependencies & build assets
       - uses: actions/setup-node@v3
