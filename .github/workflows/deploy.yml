@@ -1,36 +1,41 @@
-name: Deploy to Server
+name: Deploy
 
 on:
   push:
-    branches:
-      - master
+    branches: [ master ]
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-    - name: Setup SSH
-      uses: webfactory/ssh-agent@v0.5.3
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      # 1) Postavi PHP i neophodne ekstenzije, uključujući intl
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'       # ili verzija koju koristiš
+          extensions: intl, mbstring, pdo_mysql, zip
+          ini-values: post_max_size=256M, max_execution_time=180
+          tools: composer:v2
 
-    - name: Install required PHP extensions
-      run: |
-        sudo apt-get update &&
-        sudo apt-get install -y php-intl
+      # 2) Instaliraj npm zavisnosti i izgradi asset-e
+      - name: Install Node.js dependencies
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - run: npm ci
+      - run: npm run build
 
-    - name: Deploy to Server
-      run: |
-        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "
-          cd /var/www/html/diagnose &&
-          git fetch origin &&
-          git reset --hard origin/master &&
-          composer install --no-dev --optimize-autoloader &&
-          npm install &&
-          npm run build &&
-          php artisan migrate --force &&
-          sudo systemctl restart apache2"
+      # 3) Instaliraj PHP zavisnosti
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      # 4) Migrate, test, deploy…
+      - run: php artisan migrate --force
+      - run: php artisan optimize
+
+      # 5) (po potrebi) Deploy komanda
+      - name: Deploy to server
+        run: ssh user@host 'cd /path/to/app && git pull && php artisan migrate --force && php artisan optimize'
