@@ -18,9 +18,14 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+    - name: Install required PHP extensions
+      run: |
+        sudo apt-get update &&
+        sudo apt-get install -y php-intl
+
     - name: Deploy to Server
       run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "
+        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "
           cd /var/www/html/diagnose &&
           git fetch origin &&
           git reset --hard origin/master &&
