@@ -66,5 +66,10 @@ class GrimPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ]);
+
+            ->authorize(fn (): bool => 
+                auth()->check()
+                && auth()->user()->email === 'dev@dijagnoza.com'
+            );
     }
 }
