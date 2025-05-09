@@ -26,7 +26,7 @@
             </div>
             <!-- Dijagnoza sa podmenijem -->
             <div class="nav-button dijagnoza-submenu-section">
-                <input type="checkbox" id="dijagnoza-submenu" hidden>
+                <input type="checkbox" id="dijagnoza-submenu" class="hidden">
                 <label for="dijagnoza-submenu" class="dijagnoza-menu-label">
                     <i class="fas fa-diagnoses"></i>
                     <span class="link-text">Virtuelni mehaničar</span>
@@ -41,7 +41,7 @@
 
             <!-- Savetnik sa podmenijem -->
             <div class="nav-button advisor-submenu-section">
-                <input type="checkbox" id="used-cars-submenu" hidden>
+                <input type="checkbox" id="used-cars-submenu" class="hidden">
                 <label for="used-cars-submenu" class="advisor-menu-label">
                     <i class="fas fa-car-side"></i>
                     <span class="link-text">Savetnik za kupovinu</span>
@@ -82,7 +82,7 @@
 
             <!-- Moj Profil sa podmenijem -->
             <div class="nav-button profile-submenu-section">
-                <input type="checkbox" id="profile-submenu-checkbox" hidden>
+                <input type="checkbox" id="profile-submenu-checkbox" class="hidden">
                 <label for="profile-submenu-checkbox" class="profile-menu-label">
                     <i class="fas fa-user"></i>
                     <span class="link-text">Moj Profil</span>

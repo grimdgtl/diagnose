@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
 use App\Models\TempAdvisorUser;
 use App\Models\TempAdvisorVehicle;
 use App\Models\TempAdvisorChat;
@@ -13,17 +12,11 @@ use App\Services\AdvisorAiService;
 
 class GuestAdvisorController extends Controller
 {
-    /**
-     * Prikazuje guest verziju wizard-a za savetnika.
-     */
     public function showWizard()
     {
         return view('advisor.guest-wizard');
     }
 
-    /**
-     * Čuva podatke o vozilu u temp_advisor_vehicles.
-     */
     public function storeVehicle(Request $request)
     {
         $data = $request->validate([
@@ -37,93 +30,132 @@ class GuestAdvisorController extends Controller
             'transmission'    => 'required|string',
         ]);
 
-        // Dohvati ili kreiraj temp_id u sesiji (koristimo ključ "advisor_temp_id" da bude izolovano od dijagnoze)
         $tempId = session('advisor_temp_id');
-        if (!$tempId) {
+        if (! $tempId || ! TempAdvisorUser::where('temp_id', $tempId)->exists()) {
             $tempId = (string) Str::uuid();
-            TempAdvisorUser::create(['temp_id' => $tempId]);
+            TempAdvisorUser::create([
+                'temp_id'    => $tempId,
+                'created_at' => now(),
+            ]);
             session(['advisor_temp_id' => $tempId]);
         }
 
-        // Proveri broj postojećih vozila (maks 3)
-        $vehicleCount = TempAdvisorVehicle::where('temp_id', $tempId)->count();
-        if ($vehicleCount >= 3) {
-            return response()->json(['error' => 'Maksimalno 3 vozila.'], 400);
+        $count = TempAdvisorVehicle::where('temp_id', $tempId)->count();
+        if ($count > 3) {
+            return response()->json(['error' => 'Možete uneti maksimalno 3 vozila.'], 400);
         }
 
-        // Čuvanje vozila
         TempAdvisorVehicle::create(array_merge($data, [
             'temp_id'    => $tempId,
             'created_at' => now(),
         ]));
 
-        $vehicleCount++;
-
-        return response()->json(['count' => $vehicleCount]);
+        return response()->json(['count' => $count + 1]);
     }
 
-    /**
-     * Briše sva vozila za trenutnog temp korisnika.
-     */
     public function clearVehicles()
     {
-        $tempId = session('advisor_temp_id');
-        if ($tempId) {
+        if ($tempId = session('advisor_temp_id')) {
             TempAdvisorVehicle::where('temp_id', $tempId)->delete();
         }
         return response()->json(['count' => 0]);
     }
 
-    /**
-     * Kreira temp chat, poziva AdvisorAiService za početnu analizu i vraća URL ka guest chatu.
-     */
     public function startChat(AdvisorAiService $ai)
     {
         $tempId = session('advisor_temp_id');
-        if (!$tempId) {
+        if (! $tempId) {
             return response()->json(['error' => 'Nema podataka o vozilima.'], 400);
         }
 
-        // Dohvati vozila uneta za ovog temp korisnika
-        $vehicles = TempAdvisorVehicle::where('temp_id', $tempId)->get()->toArray();
-        if (empty($vehicles)) {
+        $vehiclesRaw = TempAdvisorVehicle::where('temp_id', $tempId)->get()->toArray();
+        if (empty($vehiclesRaw)) {
             return response()->json(['error' => 'Nema vozila.'], 400);
         }
 
-        // Kreiraj temp chat
+        $vehicles = collect($vehiclesRaw)
+            ->unique(fn($v) => implode('|', [
+                $v['brand'], $v['model'], $v['year'], $v['mileage'],
+                $v['engine_capacity'], $v['engine_power'],
+                $v['fuel_type'], $v['transmission'],
+            ]))
+            ->values()
+            ->toArray();
+
         $tempChat = TempAdvisorChat::create([
             'temp_id'    => $tempId,
             'status'     => 'open',
             'created_at' => now(),
         ]);
 
-        // Pozovi AI servis za početnu analizu – metoda getInitialAnalysisForGuest() već
-        // snima korisničku poruku i odgovor asistenta u bazu
-        $reply = $ai->getInitialAnalysisForGuest($tempChat, $vehicles);
+        $ai->getInitialAnalysisForGuest($tempChat, $vehicles);
 
-        // Ukloni dupliranje: Nema potrebe ponovo snimati odgovor asistenta ovde,
-        // jer je on već unesen u getInitialAnalysisForGuest()
-
-        // Opcionalno: obriši vozila iz temp tabele nakon pokretanja chata
         TempAdvisorVehicle::where('temp_id', $tempId)->delete();
 
         return response()->json([
-            'redirectUrl' => route('advisor.guest.chat', $tempChat->id)
+            'redirectUrl' => route('advisor.guest.chat', $tempChat->id),
         ]);
     }
 
-    /**
-     * Prikazuje guest chat (privremeni chat) sa svim porukama.
-     */
     public function showChat($chatId)
     {
         $tempChat = TempAdvisorChat::findOrFail($chatId);
-        $messages = TempAdvisorMessage::where('chat_id', $tempChat->id)
-                        ->orderBy('id')->get();
+        $messages = TempAdvisorMessage::where('chat_id', $chatId)
+                                      ->orderBy('id')
+                                      ->get();
 
-        // Pošto gost ima samo jedan besplatan upit, prikazaćemo dugme za registraciju ispod odgovora
-        $promptRegistration = true;
+        $userCount        = $messages->where('role', 'user')->count();
+        $promptRegistration = $userCount >= 2;
 
-        return view('advisor.guest-chat', compact('tempChat', 'messages', 'promptRegistration'));
+        return view('advisor.guest-chat', compact(
+            'tempChat', 'messages', 'promptRegistration'
+        ));
+    }
+
+    public function storeGuestFollowup(
+        Request $request,
+        $chatId,
+        AdvisorAiService $ai
+    ) {
+        $data = $request->validate(['message' => 'required|string']);
+        $chat = TempAdvisorChat::findOrFail($chatId);
+
+        // 1) Snimi samo user poruku
+        TempAdvisorMessage::create([
+            'chat_id'    => $chat->id,
+            'role'       => 'user',
+            'content'    => $data['message'],
+            'created_at' => now(),
+        ]);
+
+        // 2) Pozovi servis koji **sam** snimi assistant odgovor
+        $reply = $ai->followUpGuest($chat, $data['message']);
+
+        // 3) Brojač user poruka
+        $userCount = TempAdvisorMessage::where('chat_id', $chat->id)
+                                       ->where('role', 'user')
+                                       ->count();
+
+        // 4) Priprema HTML
+        $q = e($data['message']);
+        $r = e($reply);
+
+        $questionHtml = <<<HTML
+<div class="flex justify-end mb-2">
+  <div class="bubble user animate-fadeIn">{$q}</div>
+</div>
+HTML;
+
+        $responseHtml = <<<HTML
+<div class="flex justify-start mb-2">
+  <div class="bubble assistant animate-fadeIn markdown-content" data-content="{$r}"></div>
+</div>
+HTML;
+
+        return response()->json([
+            'questionHtml' => $questionHtml,
+            'responseHtml' => $responseHtml,
+            'userCount'    => $userCount,
+        ]);
     }
 }

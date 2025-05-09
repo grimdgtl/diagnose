@@ -10,101 +10,136 @@ use Barryvdh\DomPDF\Facade\PDF;
 
 class ServiceBookController extends Controller
 {
-    public function index()
+    /* -----------------------------------------------------------------
+     |  GARAŽA / SERVISNA KNJIGA – HOME
+     |----------------------------------------------------------------- */
+    public function index(Request $request)
     {
         $user = Auth::user();
         $cars = CarDetail::where('user_id', $user->id)->get();
-    
-        if ($cars->isEmpty()) {
-            return redirect()->route('garage.index')->with('error', 'Nemate dodatih automobila. Dodajte automobil da biste koristili servisnu knjigu.');
+
+        /* ------------------------------------------------------------
+         |  1)  Ako korisnik eksplicitno traži  ?add=1
+         |      šaljemo ga u "Moja garaža" sa otvorenom formom.
+         * ----------------------------------------------------------- */
+        if ($request->boolean('add')) {
+            return redirect()->route('profile.garage', ['add' => 1]);
         }
-    
+
+        /* ------------------------------------------------------------
+         |  2)  Nema nijednog vozila ➜ samo info poruka + CTA ka garaži
+         * ----------------------------------------------------------- */
+        if ($cars->isEmpty()) {
+            return view('service-book.index', compact('cars')); // view će sam prikazati poruku
+        }
+
+        /* ------------------------------------------------------------
+         |  3)  Postoje vozila ➜ lista automobila za izbor
+         * ----------------------------------------------------------- */
         return view('service-book.index', compact('cars'));
     }
 
+    /* -----------------------------------------------------------------
+     |  DODAVANJE VOZILA (koristi se i iz garaže i iz servisne knjige)
+     |----------------------------------------------------------------- */
+    public function storeGarageCar(Request $request)
+    {
+        $user = Auth::user();
+
+        $data = $request->validate([
+            'brand'           => 'required|string',
+            'model'           => 'required|string',
+            'year'            => 'required|integer',
+            'mileage'         => 'required|integer|min:0',
+            'engine_capacity' => 'required|string',
+            'engine_power'    => 'required|numeric',
+            'fuel_type'       => 'required|string',
+            'transmission'    => 'required|string',
+        ]);
+
+        CarDetail::create($data + ['user_id' => $user->id]);
+
+        /* Vraćamo korisnika na Moja garaža da odmah vidi novo vozilo */
+        return redirect()
+            ->route('profile.garage')
+            ->with('success', 'Vozilo je uspešno dodato u garažu.');
+    }
+
+    /* -----------------------------------------------------------------
+     |  SERVISNI ZAPISI
+     |----------------------------------------------------------------- */
     public function create($car_id)
     {
         $user = Auth::user();
-        $car = CarDetail::findOrFail($car_id);
-
-        if ($car->user_id !== $user->id) {
-            abort(403, 'Nemate dozvolu za ovaj automobil.');
-        }
+        $car  = CarDetail::findOrFail($car_id);
+        abort_unless($car->user_id === $user->id, 403);
 
         $cars = CarDetail::where('user_id', $user->id)->get();
+
         return view('service-book.create', compact('car', 'cars'));
     }
 
     public function store(Request $request)
     {
-        $user = Auth::user();
         $request->validate([
             'car_detail_id' => 'required|exists:car_details,id',
-            'service_date' => 'required|date',
-            'description' => 'required|string',
-            'mileage' => 'required|integer',
-            'cost' => 'nullable|numeric',
-            'notes' => 'nullable|string',
+            'service_date'  => 'required|date',
+            'description'   => 'required|string',
+            'mileage'       => 'required|integer',
+            'cost'          => 'nullable|numeric',
+            'notes'         => 'nullable|string',
         ]);
 
-        ServiceRecord::create([
-            'car_detail_id' => $request->car_detail_id,
-            'service_date' => $request->service_date,
-            'description' => $request->description,
-            'mileage' => $request->mileage,
-            'cost' => $request->cost,
-            'notes' => $request->notes,
-        ]);
+        ServiceRecord::create($request->only([
+            'car_detail_id',
+            'service_date',
+            'description',
+            'mileage',
+            'cost',
+            'notes',
+        ]));
 
-        return redirect()->route('service-book.index', $request->car_detail_id)->with('success', 'Servisni zapis uspešno dodat.');
-    }
-
-    public function exportPdf($car_id)
-    {
-        $user = Auth::user();
-        if ($user->num_of_questions_left <= 0) {
-            return redirect()->route('subscriptions.purchase')->with('error', 'Nemate preostalih pitanja. Molimo vas da kupite paket da biste nastavili koristiti servisnu knjigu.');
-        }
-
-        $car = CarDetail::findOrFail($car_id);
-        if ($car->user_id !== $user->id) {
-            abort(403, 'Nemate dozvolu za ovaj automobil.');
-        }
-
-        $serviceRecords = ServiceRecord::where('car_detail_id', $car_id)->orderBy('service_date', 'desc')->get();
-
-        $pdf = PDF::loadView('service-book.pdf', compact('car', 'serviceRecords'))
-            ->setPaper('a4', 'portrait')
-            ->setOptions(['margin_top' => 0, 'margin_bottom' => 0, 'margin_left' => 0, 'margin_right' => 0]);
-
-        return $pdf->download('servisna-knjiga-' . $car->brand . '-' . $car->model . '.pdf');
-    }
-
-    public function destroy($id)
-    {
-        $record = ServiceRecord::findOrFail($id);
-        $carId = $record->car_detail_id;
-
-        if ($record->carDetail->user_id !== Auth::id()) {
-            abort(403, 'Nemate dozvolu za brisanje ovog zapisa.');
-        }
-
-        $record->delete();
-
-        return redirect()->route('service-book.index', $carId)->with('success', 'Servisni zapis uspešno obrisan.');
+        return redirect()
+            ->route('service-book.show', $request->car_detail_id)
+            ->with('success', 'Servisni zapis uspešno dodat.');
     }
 
     public function show($car_id)
     {
         $user = Auth::user();
-        $car = CarDetail::findOrFail($car_id);
-    
-        if ($car->user_id !== $user->id) {
-            abort(403, 'Nemate dozvolu za ovaj automobil.');
-        }
-    
-        $serviceRecords = ServiceRecord::where('car_detail_id', $car_id)->orderBy('service_date', 'desc')->get();
-    
+        $car  = CarDetail::findOrFail($car_id);
+        abort_unless($car->user_id === $user->id, 403);
+
+        $serviceRecords = ServiceRecord::where('car_detail_id', $car_id)
+                                       ->orderBy('service_date', 'desc')
+                                       ->get();
+
         return view('service-book.records', compact('car', 'serviceRecords'));
+    }
+
+    public function exportPdf($car_id)
+    {
+        $user = Auth::user();
+        $car  = CarDetail::findOrFail($car_id);
+        abort_unless($car->user_id === $user->id, 403);
+
+        $serviceRecords = ServiceRecord::where('car_detail_id', $car_id)
+                                       ->orderBy('service_date', 'desc')
+                                       ->get();
+
+        $pdf = PDF::loadView('service-book.pdf', compact('car', 'serviceRecords'))
+                  ->setPaper('a4', 'portrait');
+
+        return $pdf->download("servisna-knjiga-{$car->brand}-{$car->model}.pdf");
+    }
+
+    public function destroy($id)
+    {
+        $record = ServiceRecord::findOrFail($id);
+        abort_unless($record->carDetail->user_id === Auth::id(), 403);
+
+        $record->delete();
+
+        return back()->with('success', 'Servisni zapis obrisan.');
     }
 }

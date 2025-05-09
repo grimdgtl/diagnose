@@ -72,6 +72,20 @@ textarea:focus::placeholder {
     color: transparent;
 }
 
+/* >>> UGASI PLAVI TAILWIND RING & VRATI NARANDŽASTI BORDER <<< */
+.input-field:focus,
+input:focus,
+textarea:focus,
+select:focus {
+  /* skini indigo ring koji forms plugin ubaci */
+  --tw-ring-shadow: 0 0 #0000 !important;
+  --tw-ring-color : transparent !important;
+
+  /* zadrži tvoj narandžasti sjaj i border */
+  border-color : var(--orange) !important;
+  box-shadow   : 0 0 10px var(--orange);
+}
+
 /********************************************************************************
  * 3) LAYOUT: SIDEBAR & MAIN CONTENT
  ********************************************************************************/
@@ -302,7 +316,15 @@ textarea:focus::placeholder {
     border-radius: 15px;
     border: 2px solid rgba(255, 92, 0, 0.1);
     transition: all 0.3s ease;
-    overflow: hidden;
+    width: 30%;
+}
+
+.garage-card-list {
+  display: flex;
+}
+
+.add-car {
+  max-width: 100px !important;
 }
 
 .garage-card:hover {
@@ -464,6 +486,21 @@ textarea:focus::placeholder {
   bottom: 0%;
   width: 100%;
   background-color: var(--black);
+}
+
+#guest-chat-input-area {
+  border-top: 2px solid var(--orange);
+  padding: 1rem 1rem 0 1rem;
+  position: absolute;
+  bottom: 0%;
+  width: 100%;
+  background-color: var(--black);
+}
+
+#guest-register-cta {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 }
 
 /********************************************************************************
@@ -731,6 +768,7 @@ select.input-field:focus {
 .collapsible-link {
   /*border-bottom: 1px solid #222;*/
 }
+
 .collapsible-link a, .submenu-label {
   display: flex;
   align-items: center;
@@ -977,6 +1015,14 @@ select.input-field:focus {
   .remove-car-icon {
     top: 7%;
     right: 3%;
+  }
+
+  .garage-card {
+    width: 100%;
+  }
+
+  .garage-card-list {
+    display: block;
   }
 
   .garage-card span {
@@ -1352,9 +1398,7 @@ p, a, label, span {
   outline: none;
   box-shadow: none;
 }
-/********************************************************************************
- * 14) SERVICE RECORD STYLES
- ********************************************************************************/
+
 /********************************************************************************
  * 14) SERVICE RECORD STYLES
  ********************************************************************************/
@@ -1467,11 +1511,11 @@ p, a, label, span {
 
 .register-popup-content h2 {
     color: var(--orange);
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: 900;
     text-transform: uppercase;
     margin-bottom: 1rem;
-    line-height: 1.4;
+    line-height: 1.2;
     margin-top: 2rem;
 }
 
@@ -1545,13 +1589,14 @@ p, a, label, span {
     text-align: left; /* Tekst unutar li elementa ostaje poravnat levo */
 }
 
-.benefits-list li::before {
-    content: "•"; /* Narandžasti bullet */
+.benefits-list li p::before {
+    /*content: "•";*/
+    content: "➙";
     position: absolute;
-    left: 4%;
+    left: -5%;
     color: var(--orange); /* Narandžasta boja bullet-a */
     font-size: 2rem; /* Veličina bullet-a */
-    line-height: 1.5; /* Poravnanje bullet-a sa tekstom */
+    line-height: 0.7; /* Poravnanje bullet-a sa tekstom */
 }
 
 .discount-text {
@@ -1619,6 +1664,14 @@ p, a, label, span {
 #used-cars-submenu:checked ~ .advisor-submenu {
   display: block;
 }
+
+#chatFooter {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 1rem;
+  border-top: 2px solid var(--orange);
+}
 /*----------------------------*/
 
 /*-------Dijagnoza sub menu-------*/
@@ -1682,4 +1735,9 @@ p, a, label, span {
 
 .white {
   color: #fff;
+}
+
+.service-home {
+  max-height: 70vh;
+  overflow-x: scroll;
 }

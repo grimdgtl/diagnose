@@ -1,30 +1,23 @@
-import defaultTheme from 'tailwindcss/defaultTheme';
-import forms from '@tailwindcss/forms';
-
+import forms from '@tailwindcss/forms'; // више не треба
 /** @type {import('tailwindcss').Config} */
-
 export default {
   content: [
-    "./resources/**/*.blade.php",
-    "./resources/**/*.js",
-    "./resources/**/*.vue",
-    // ili bilo koje putanje koje koristiš...
+    './resources/views/**/*.blade.php',
+    './resources/js/**/*.vue',
+    './resources/**/*.php',
   ],
   theme: {
     extend: {
       colors: {
-        // Možeš definisati custom boje prema svojim varijablama
-        black: "#0a0a0a",
-        orange: "#FF5C00",
-        white: "#ffffff",
-        gray: "#121212",
-      },
-      fontFamily: {
-        'red-hat': ['"Red Hat Display"', 'sans-serif'],
+        orange: '#FF5C00',
+        black:  '#0a0a0a',
+        gray:   '#121212',
+        white:  '#ffffff',
       },
     },
   },
   plugins: [
-    //require('@skeletonlabs/skeleton/tailwind/skeleton.cjs'),
-    ],
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/typography'),
+  ],
 };

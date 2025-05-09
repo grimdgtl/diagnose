@@ -23,11 +23,18 @@
     </div>
 
     <!-- ---------------- Poruke ----------------- -->
-    <div id="chatBody" class="chat-container">
+    <div id="chatBody" class="chat-container pb-1">
         @foreach ($purchaseChat->messages as $m)
+            {{-- Ako je to prva poruka i uopšte nije odgovor asistenta, preskoči je --}}
+            @if($loop->first && $m->role === 'user')
+                @continue
+            @endif
+
             <div class="flex {{ $m->role == 'user' ? 'justify-end' : 'justify-start' }}">
-                <div class="bubble {{ $m->role == 'user' ? 'user' : 'assistant advisor-table markdown-content' }}"
-                     data-content="{{ e($m->content) }}">
+                <div
+                    class="bubble {{ $m->role == 'user' ? 'user' : 'assistant advisor-table markdown-content' }}"
+                    data-content="{{ e($m->content) }}"
+                >
                     @if ($m->role == 'user')
                         {{ $m->content }}
                     @endif

@@ -2,6 +2,16 @@
 
 @section('content')
 <div class="bg-black border-orange radius h-full main-child mobile-height">
+    
+    <div id="loader" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50 hidden">
+      <div class="text-center">
+        <img class="pulse" src="{{ asset('assets/images/logo-neon.png') }}">
+        <p class="text-white uppercase font-black">
+          Treba mi 10s da razmislim, molim sačekajte...
+        </p>
+      </div>
+    </div>
+
     <h1 class="page-title mb-4">Savetnik za kupovinu automobila</h1>
     <p class="mb-6 text-gray-400 text-center max-w-2xl">
         Unesite podatke o vozilu o kojem želite da saznate više informacija. Možete uporediti najvise 3 vozila.
@@ -138,5 +148,34 @@ startBtn.addEventListener('click', async () => {
         alert(e.message);
     }
 });
+
+startBtn.addEventListener('click', async () => {
+  // 1) Prikaži loader
+  document.getElementById('loader').classList.remove('hidden');
+  
+  try {
+    const data = serialize(form);
+    const filled = Object.values(data).some(v => v.trim() !== '');
+    if (filled) {
+      const d = await saveCar(data);
+      updateCounter(d.count);
+    }
+
+    const res = await fetch('{{ route("advisor.guest.wizard.start") }}', {
+      method: 'POST',
+      headers: {'X-CSRF-TOKEN': csrf, 'Accept':'application/json'}
+    });
+    if (!res.ok) throw new Error(await res.text() || 'Neuspešan start');
+    const j = await res.json();
+
+    // 2) Redirect
+    window.location = j.redirectUrl;
+  } catch (e) {
+    // 3) Sakrij loader ako je greška
+    document.getElementById('loader').classList.add('hidden');
+    alert(e.message);
+  }
+});
+
 </script>
 @endsection
