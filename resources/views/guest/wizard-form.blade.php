@@ -124,52 +124,36 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('guest-form');
+document.addEventListener('DOMContentLoaded', () => {
+    const form   = document.getElementById('guest-form');
     const loader = document.getElementById('loader');
 
-    form.addEventListener('submit', function(e) {
-        e.preventDefault(); // sprečava klasičan reload
-
-        // 1) Pokaži loader
+    form.addEventListener('submit', async e => {
+        e.preventDefault();
         loader.classList.remove('hidden');
 
-        // 2) Formiraj formData
-        const formData = new FormData(form);
+        try {
+            const res = await fetch(form.action, {
+                method : 'POST',
+                body   : new FormData(form),
+                headers: { 'X-Requested-With' : 'XMLHttpRequest' }
+            });
 
-        // 3) Pošalji AJAX zahteve
-        fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest', // da Laravel zna da je AJAX
+            if (res.status === 403) {
+                const j = await res.json();
+                window.location = j.redirectUrl;
+                return;
             }
-        })
-        .then(async (response) => {
-            // ako želimo JSON
-            if (!response.ok) {
-                // 4xx ili 5xx greška
-                throw await response.json();
-            }
-            return response.json();
-        })
-        .then(data => {
-            //console.log("ODGOVOR:", data);
-            // Ovde možeš prikazati data.response ili slično
-            //alert("Odgovor ChatGPT-a: " + data.response);
-            window.location = data.redirectUrl;
-        })
-        .catch(errData => {
-            console.error("Greška:", errData);
-            if (errData && errData.errors) {
-                // Ako postoji validaciona greška ili slično
-                alert("Došlo je do greške u validaciji.");
-            }
-        })
-        .finally(() => {
-            // 4) Sakrij loader
+
+            if (!res.ok) throw await res.json();
+            const j = await res.json();
+            window.location = j.redirectUrl;
+
+        } catch (err) {
+            alert('Greška pri slanju forme.');
+        } finally {
             loader.classList.add('hidden');
-        });
+        }
     });
 });
 </script>

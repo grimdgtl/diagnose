@@ -6,11 +6,9 @@ use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
 {
-    /**
-     * The application's global HTTP middleware stack.
-     *
-     * @var array
-     */
+    /* --------------------------------------------------
+     |  Global HTTP middleware
+     |-------------------------------------------------- */
     protected $middleware = [
         \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
@@ -18,40 +16,45 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
     ];
 
-    /**
-     * The application's route middleware groups.
-     *
-     * @var array
-     */
+    /* --------------------------------------------------
+     |  Middleware grupe
+     |-------------------------------------------------- */
     protected $middlewareGroups = [
         'web' => [
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            \App\Http\Middleware\VerifyCsrfToken::class, // Tvoj custom middleware
+            \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
+
         'api' => [
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];
 
-    /**
-     * The application's route middleware.
-     *
-     * @var array
-     */
-    protected $routeMiddleware = [
-        'auth' => \App\Http\Middleware\Authenticate::class,
-        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
-        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'filament.admin' => \App\Http\Middleware\EnsureAdminEmail::class,
+    /* --------------------------------------------------
+     |  Alias-i (umesto starog $routeMiddleware)
+     |-------------------------------------------------- */
+    protected $middlewareAliases = [
+        'auth'          => \App\Http\Middleware\Authenticate::class,
+        'guest'         => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'verified'      => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'throttle'      => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+
+        /* Filament */
+        'filament.admin'=> \App\Http\Middleware\EnsureAdminEmail::class,
+
+        /* Naš limiter za neregistrovane korisnike */
+        'guest.limit' => \App\Http\Middleware\GuestLimit::class,
     ];
 
+    /* --------------------------------------------------
+     |  Artisan komande
+     |-------------------------------------------------- */
     protected $commands = [
         \App\Console\Commands\GenerateSitemap::class,
     ];
 }
-

@@ -6,7 +6,7 @@
     <h1 class="page-title">Dodaj vozilo u garazu</h1>
     <p class="text-center mb-8">Nemate nijedno vozilo. Unesite podatke o svom automobilu:</p>
 
-    <form action="{{ route('garage.store') }}" method="POST" class="max-w-xl mx-auto space-y-4">
+    <form action="{{ route('garage.store') }}" method="POST" class="max-w-xl mx-auto space-y-4 p-8 md:p-0">
       @csrf
       <input name="brand"           class="input-field" placeholder="Proizvođač" value="{{ old('brand') }}">
       <input name="model"           class="input-field" placeholder="Model"     value="{{ old('model') }}">

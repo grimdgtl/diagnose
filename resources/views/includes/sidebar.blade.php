@@ -28,14 +28,13 @@
             <div class="nav-button dijagnoza-submenu-section">
                 <input type="checkbox" id="dijagnoza-submenu" class="hidden">
                 <label for="dijagnoza-submenu" class="dijagnoza-menu-label">
-                    <i class="fas fa-diagnoses"></i>
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
                     <span class="link-text">Virtuelni mehaničar</span>
                 </label>
                 <div class="dijagnoza-submenu">
                     <a href="{{ route('dashboard') }}">Aktivni Chat</a>
                     <a href="{{ route('chat.new') }}">Novi Chat</a>
                     <a href="{{ route('profile.history') }}">Istorija</a>
-                    <a href="{{ route('profile.garage') }}">Moja Garaža</a>
                 </div>
             </div>
 
@@ -75,10 +74,17 @@
 
             <div class="nav-button">
                 <a href="{{ route('service-book.index') }}">
-                    <i class="fas fa-book"></i> <!-- FontAwesome ikonica za knjigu -->
+                    <i class="fa-solid fa-book"></i> <!-- FontAwesome ikonica za knjigu -->
                     <span class="link-text">Servisna Knjiga</span>
                 </a>
             </div>
+
+            <div class="nav-button">
+                <a href="{{ route('profile.garage') }}">
+                    <i class="fa-solid fa-warehouse"></i> <!-- FontAwesome ikonica za knjigu -->
+                    <span class="link-text">Moja Garaža</span>
+                </a>
+            </div> 
 
             <!-- Moj Profil sa podmenijem -->
             <div class="nav-button profile-submenu-section">
@@ -95,13 +101,13 @@
 
             <div class="nav-button">
                 <a href="{{ route('profile.subscription') }}">
-                    <i class="fas fa-suitcase"></i>
+                    <i class="fa-solid fa-cart-shopping"></i>
                     <span class="link-text">Kupi tokene</span>
                 </a>
             </div>
             <div class="nav-button">
                 <a href="{{ route('support') }}">
-                    <i class="fas fa-life-ring"></i>
+                    <i class="fa-solid fa-headset"></i>
                     <span class="link-text">Podrška</span>
                 </a>
             </div>
@@ -124,7 +130,7 @@
             </div>
             <div class="nav-button">
                 <a href="{{ route('guest.wizard-form') }}">
-                    <i class="fas fa-diagnoses"></i>
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
                     <span class="link-text">Virtuelni Mehaničar</span>
                 </a>
             </div>

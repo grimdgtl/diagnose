@@ -1,17 +1,17 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="chat relative">
+<div class="page-format relative">
   {{-- ceo ekran kao kolona – header + ostatak --}}
   <div class="flex flex-col h-full">
 
     {{-- ---------------- HEADER ---------------- --}}
     <div class="flex items-center justify-between chat-header p-4">
-      <h1 class="page-title">Moja garaža</h1>
+      <h1 class="page-title title-max-width">Moja garaža</h1>
 
       @if($cars->count())
         <a href="{{ route('profile.garage', ['add' => 1]) }}"
-           class="btn-orange px-6 py-2 text-black hover:bg-orange-500 add-car">
+           class="btn-orange px-6 py-2 text-black hover:bg-orange-500 add-car small-button">
           + <i class="fas fa-car"></i>
         </a>
       @endif
@@ -23,7 +23,7 @@
     @if($cars->isEmpty() || request()->boolean('add'))
       {{-- *** forma ostaje ista kao do sada *** --}}
       {{-- -------------- naslov + validacija + form -------------- --}}
-      <h2 class="text-center my-8 text-orange text-xl font-semibold">
+      <h2 class="text-center mt-4 md:mt-8 mb-0  text-orange text-xl font-semibold">
         Dodaj vozilo u garažu
       </h2>
 
@@ -39,7 +39,7 @@
 
       <form action="{{ route('service-book.add-car') }}"
             method="POST"
-            class="space-y-6 default-width mx-auto">
+            class="space-y-6 default-width mx-auto pt-0 pb:0 md:pb-0 px-8 md:p-0">
         @csrf
         {{-- … svi inputi ostaju nepromenjeni … --}}
         {{-- RED 1 --}}
@@ -92,7 +92,7 @@
       {{-- flex-grow za preostali prostor, centriranje i po osi Y --}}
       <div class="flex-1 items-center justify-center overflow-y-scroll garage-card-list">
         {{-- same kartice – wrap i horizontalno centriranje --}}
-        <div class="flex flex-wrap justify-center items-start gap-2 p-4">
+        <div class="flex flex-wrap justify-center items-start gap-2 p-4 w-full">
           @foreach($cars as $car)
             <div
               class="garage-card relative bg-gray-900 rounded-xl border-2 border-orange-500/20 p-6 hover:border-orange-500/50 transition-all

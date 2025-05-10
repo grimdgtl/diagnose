@@ -71,111 +71,67 @@ const startBtn  = document.getElementById('start');
 const countSpan = document.getElementById('carCount');
 const csrf      = document.querySelector('meta[name="csrf-token"]').content;
 
-function serialize(frm){
-    return Object.fromEntries(new FormData(frm).entries());
-}
+function serialize(f){ return Object.fromEntries(new FormData(f).entries()); }
 
 async function saveCar(data){
     const res = await fetch('{{ route('advisor.guest.wizard.store') }}', {
         method : 'POST',
-        headers: {
-            'X-CSRF-TOKEN': csrf,
-            'Content-Type': 'application/json',
-            'Accept'      : 'application/json'
-        },
-        body: JSON.stringify(data)
+        headers: { 'X-CSRF-TOKEN': csrf, 'Content-Type':'application/json', 'Accept':'application/json' },
+        body   : JSON.stringify(data)
     });
-    if(!res.ok){
-        const msg = await res.text();
-        throw new Error(msg || 'Greška pri čuvanju vozila');
+    if (res.status === 403) {
+        const j = await res.json();
+        window.location = j.redirectUrl;
+        return null;
     }
+    if (!res.ok) throw new Error(await res.text());
     return res.json();
 }
 
-function updateCounter(n){
-    countSpan.textContent = n;
-    addBtn.disabled = n >= 3;
-}
+function updateCounter(n){ countSpan.textContent = n; addBtn.disabled = n >= 3; }
 
 addBtn.addEventListener('click', async () => {
-    try{
+    try {
         const data = serialize(form);
-        const d = await saveCar(data);
-        updateCounter(d.count);
+        const j = await saveCar(data);
+        if (!j) return;
+        updateCounter(j.count);
         form.reset();
-        alert(`Vozilo dodato (${d.count}/3)`);
-    } catch(e) {
-        alert(e.message);
-    }
+    } catch(e){ alert(e.message); }
 });
 
 clearBtn.addEventListener('click', async () => {
     try{
         const res = await fetch('{{ route('advisor.guest.wizard.clear') }}', {
-            method : 'POST',
-            headers: {'X-CSRF-TOKEN': csrf, 'Accept':'application/json'}
+            method:'POST', headers:{'X-CSRF-TOKEN':csrf,'Accept':'application/json'}
         });
-        if(!res.ok) throw new Error('Greška pri brisanju vozila');
+        if (!res.ok) throw new Error('Greška pri brisanju vozila');
         const j = await res.json();
         updateCounter(j.count);
         form.reset();
-        alert('Sva vozila su obrisana.');
-    } catch(e) {
-        alert(e.message);
-    }
+    } catch(e){ alert(e.message); }
 });
 
 startBtn.addEventListener('click', async () => {
+    document.getElementById('loader').classList.remove('hidden');
     try{
         const data = serialize(form);
-        // Ako je forma popunjena, sačuvaj vozilo
-        const filled = Object.values(data).some(v => v.trim() !== '');
-        if(filled){
-            const d = await saveCar(data);
-            updateCounter(d.count);
-        }
+        if (Object.values(data).some(v=>v.trim()!=='')) await saveCar(data);
+
         const res = await fetch('{{ route('advisor.guest.wizard.start') }}', {
-            method: 'POST',
-            headers: {'X-CSRF-TOKEN': csrf, 'Accept':'application/json'}
+            method:'POST', headers:{'X-CSRF-TOKEN':csrf,'Accept':'application/json'}
         });
-        if(!res.ok){
-            const msg = await res.text();
-            throw new Error(msg || 'Neuspešan start');
+        if (res.status === 403){
+            const j = await res.json();
+            window.location = j.redirectUrl;
+            return;
         }
+        if (!res.ok) throw new Error(await res.text());
         const j = await res.json();
         window.location = j.redirectUrl;
-    } catch(e) {
-        alert(e.message);
-    }
+
+    } catch(e){ alert(e.message); }
+    finally { document.getElementById('loader').classList.add('hidden'); }
 });
-
-startBtn.addEventListener('click', async () => {
-  // 1) Prikaži loader
-  document.getElementById('loader').classList.remove('hidden');
-  
-  try {
-    const data = serialize(form);
-    const filled = Object.values(data).some(v => v.trim() !== '');
-    if (filled) {
-      const d = await saveCar(data);
-      updateCounter(d.count);
-    }
-
-    const res = await fetch('{{ route("advisor.guest.wizard.start") }}', {
-      method: 'POST',
-      headers: {'X-CSRF-TOKEN': csrf, 'Accept':'application/json'}
-    });
-    if (!res.ok) throw new Error(await res.text() || 'Neuspešan start');
-    const j = await res.json();
-
-    // 2) Redirect
-    window.location = j.redirectUrl;
-  } catch (e) {
-    // 3) Sakrij loader ako je greška
-    document.getElementById('loader').classList.add('hidden');
-    alert(e.message);
-  }
-});
-
 </script>
 @endsection

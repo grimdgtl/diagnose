@@ -8,15 +8,17 @@
     $tokensLeft   = Auth::user()->num_of_questions_left;
 @endphp
 
-<div class="bg-black border-orange radius h-full main-child mobile-height">
-    <div class="flex items-center justify-between default-width border-orange radius-10 p-4 bg-orange">
-        <h1 class="text-3xl white font-bold text-center page-title">
-            Dodaj vozilo
-        </h1>
-        <span id="questions-left" class="bg-orange text-white px-3 py-1 rounded-md">
-            <b>Broj preostalih tokena: {{ $tokensLeft }}</b>
-        </span>
-    </div>
+<div class="page-format relative">
+  {{-- ceo ekran kao kolona – header + ostatak --}}
+    <div class="flex flex-col h-full">
+        <div class="flex items-center justify-between chat-header p-0 md:p-4">
+            <h1 class="page-title">
+                Dodaj vozilo
+            </h1>
+            <span id="questions-left" class="bg-orange text-white px-3 py-1 rounded-md">
+                <b>Broj preostalih tokena: {{ $tokensLeft }}</b>
+            </span>
+        </div>
 
     {{-- === LOADER === --}}
     <div id="loader" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50 hidden">
@@ -28,14 +30,14 @@
 
     @if($tokensLeft > 0)
         {{-- indikator --}}
-        <div class="flex items-center justify-between auth-form mb-4">
+        <div class="flex items-center justify-between auth-form mb-4 mt-0 md:mt-8 vehicle-form relative self-center">
             <div id="carCounter" class="mb-2 text-right font-bold text-orange">
                 Dodato vozila: <span id="carCount">{{ $currentCount }}</span>/3
             </div>
             <button type="button" id="clearCar" class="btn-orange second-btn">Ukloni vozila</button>
         </div>
 
-        <form id="vehicleForm" class="auth-form">
+        <form id="vehicleForm" class="auth-form mx-8 vehicle-form self-center">
             @csrf
             <div class="grid md:grid-cols-2 gap-4">
                 <input  name="brand"           class="input-field" placeholder="Proizvođač">
@@ -209,5 +211,6 @@
             </a>
         </div>
     @endif
+</div>
 </div>
 @endsection

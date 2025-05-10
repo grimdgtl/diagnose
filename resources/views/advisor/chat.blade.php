@@ -3,19 +3,19 @@
 @section('content')
 @auth
     @php
-        $tokensLeft = Auth::user()->num_of_questions_left;     // *** NOVO
-        $subscriptionUrl = route('profile.subscription');      // *** NOVO
+        $tokensLeft = Auth::user()->num_of_questions_left;
+        $subscriptionUrl = route('profile.subscription');
     @endphp
 @endauth
 
 <div class="chat relative">
     <!-- ---------------- Header ---------------- -->
     <div class="chat-header flex items-center justify-between">
-        <h1 class="page-title">SAVETNIK</h1>
+        <h1 class="page-title hidden md:block">SAVETNIK</h1>
 
         @auth
-            <span id="questions-left" class="bg-orange text-white px-3 py-1 rounded-md shadow-lg">
-                <b>Broj preostalih tokena: {{ $tokensLeft }}</b>
+            <span id="questions-left" class="btn-orange">
+                Preostali tokeni: {{ $tokensLeft }}
             </span>
         @endauth
 

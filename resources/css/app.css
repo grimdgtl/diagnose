@@ -373,6 +373,16 @@ select:focus {
   box-shadow: 0 0 10px var(--orange); 
 }
 
+.page-format {
+  height: calc(100vh - 4rem); /* 100vh minus padding .layout-container (2rem gore + 2rem dole) */
+  display: flex;
+  flex-direction: column;
+  background-color: var(--black);
+  border: 2px solid var(--orange);
+  border-radius: 10px;
+  overflow: hidden; /* Sprečava prelivanje */
+}
+
 /********************************************************************************
  * 5) CHAT STILOVI
  ********************************************************************************/
@@ -1091,6 +1101,9 @@ select.input-field:focus {
   #questions-left {
     width: 100%;
     font-size: 14px;
+    max-width: 200px;
+    margin-top:1rem;
+    margin-bottom: 1rem;
   }
 
   .chat-container {
@@ -1126,9 +1139,9 @@ select.input-field:focus {
     padding: 0.5rem;
   }
 
-  .chat-header h1 {
+  /*.chat-header h1 {
     display: none;
-  }
+  }*/
 
   .chat-header span {
     margin-top: 0.25rem;
@@ -1263,6 +1276,31 @@ select.input-field:focus {
     text-align: center;
   }
 
+  .title-max-width {
+    max-width: 200px;
+    text-align: left !important;
+    margin-left: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .small-button {
+    margin-right: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .service-card {
+    width: 100% !important;
+  }
+
+  .vehicle-form {
+    max-width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .page-format {
+    height: 100%;
+  }
 }
 
 /********************************************************************************
@@ -1340,6 +1378,10 @@ select.input-field:focus {
   border: 2px solid var(--orange);
   padding: 1rem;
   max-width: 94%;
+}
+
+.service-card {
+  width: 45%;
 }
 
 /********************************************************************************
@@ -1620,11 +1662,13 @@ p, a, label, span {
     width: 100%;
     border-collapse: collapse;
 }
+
 .advisor-table th,
 .advisor-table td {
     border: 1px solid var(--orange);
     padding: .5rem;
 }
+
 @media (max-width: 480px) {
     .advisor-table table { display:block; overflow-x:auto; }
 }
@@ -1633,6 +1677,7 @@ p, a, label, span {
 .advisor-submenu-section {
   position: relative;
 }
+
 .advisor-menu-label {
   cursor: pointer;
   font-weight: 700;
@@ -1641,15 +1686,18 @@ p, a, label, span {
   padding: 0.8rem 1rem;
   transition: background 0.2s;
 }
+
 .advisor-menu-label:hover {
   background: #1c1c1c;
 }
+
 .advisor-submenu {
   display: none;
   background-color: #0a0a0a; 
   margin-left: 1rem;
   border-left: 2px solid var(--orange);
 }
+
 .advisor-submenu a {
   display: block;
   color: var(--white);
@@ -1658,9 +1706,11 @@ p, a, label, span {
   border-bottom: 1px solid #222;
   font-family: 'Red Hat Display', sans-serif;
 }
+
 .advisor-submenu a:hover {
   background-color: #1c1c1c;
 }
+
 #used-cars-submenu:checked ~ .advisor-submenu {
   display: block;
 }
@@ -1672,12 +1722,13 @@ p, a, label, span {
   padding: 1rem;
   border-top: 2px solid var(--orange);
 }
-/*----------------------------*/
 
 /*-------Dijagnoza sub menu-------*/
+
 .dijagnoza-submenu-section {
   position: relative;
 }
+
 .dijagnoza-menu-label {
   cursor: pointer;
   font-weight: 700;
@@ -1686,15 +1737,18 @@ p, a, label, span {
   padding: 0.8rem 1rem;
   transition: background 0.2s;
 }
+
 .dijagnoza-menu-label:hover {
   background: #1c1c1c;
 }
+
 .dijagnoza-submenu {
   display: none;
   background-color: #0a0a0a; 
   margin-left: 1rem;
   border-left: 2px solid var(--orange);
 }
+
 .dijagnoza-submenu a {
   display: block;
   color: var(--white);
@@ -1703,12 +1757,15 @@ p, a, label, span {
   border-bottom: 1px solid #222;
   font-family: 'Red Hat Display', sans-serif;
 }
+
 .dijagnoza-submenu a:hover {
   background-color: #1c1c1c;
 }
+
 #dijagnoza-submenu:checked ~ .dijagnoza-submenu {
   display: block;
 }
+
 /*----------------------------*/
 
 #chatInput {
@@ -1741,3 +1798,4 @@ p, a, label, span {
   max-height: 70vh;
   overflow-x: scroll;
 }
+

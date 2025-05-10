@@ -4,15 +4,16 @@
 @section('title', 'Unos problema i podataka o automobilu (registrovani)')
 
 @section('content')
-<div class="bg-black border-orange radius h-full main-child mobile-height"
+<div class="page-format relative"
      x-data="{
          step: 1,
          carOption: 'existing',
          isSubmitting: false
      }"
 >
-    <div class="flex items-center justify-between default-width border-orange radius-10 p-4 bg-orange">
-        <h1 class="text-3xl white font-bold text-center page-title">
+    <div class="flex flex-col h-full">
+    <div class="flex items-center justify-between chat-header p-4">
+        <h1 class="page-title title-max-width">
             Novi Chat
         </h1>
         <span id="questions-left" class="bg-orange text-white px-3 py-1 rounded-md">

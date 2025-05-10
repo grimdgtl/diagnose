@@ -14,6 +14,12 @@ class GuestAdvisorController extends Controller
 {
     public function showWizard()
     {
+        if ($id = session('advisor_temp_id')) {
+            // koristiš tabelu temp_advisor_chats_guest preko modela
+            if ($chat = TempAdvisorChat::where('temp_id', $id)->first()) {
+                return redirect()->route('advisor.guest.chat', $chat->id);
+            }
+        }
         return view('advisor.guest-wizard');
     }
 
@@ -30,14 +36,18 @@ class GuestAdvisorController extends Controller
             'transmission'    => 'required|string',
         ]);
 
+        // kreiranje privremenog usera i session('advisor_temp_id') isti kao pre…
         $tempId = session('advisor_temp_id');
         if (! $tempId || ! TempAdvisorUser::where('temp_id', $tempId)->exists()) {
             $tempId = (string) Str::uuid();
-            TempAdvisorUser::create([
-                'temp_id'    => $tempId,
-                'created_at' => now(),
-            ]);
+            TempAdvisorUser::create(['temp_id' => $tempId, 'created_at' => now()]);
             session(['advisor_temp_id' => $tempId]);
+        }
+
+        // **OVDE** umjesto where('temp_id',$tempId) na porukama:
+        $chat = TempAdvisorChat::where('temp_id', $tempId)->first();
+        if ($chat && $chat->messages()->where('role', 'user')->count() >= 2) {
+            return response()->json(['redirectUrl' => route('register')], 403);
         }
 
         $count = TempAdvisorVehicle::where('temp_id', $tempId)->count();
@@ -53,14 +63,6 @@ class GuestAdvisorController extends Controller
         return response()->json(['count' => $count + 1]);
     }
 
-    public function clearVehicles()
-    {
-        if ($tempId = session('advisor_temp_id')) {
-            TempAdvisorVehicle::where('temp_id', $tempId)->delete();
-        }
-        return response()->json(['count' => 0]);
-    }
-
     public function startChat(AdvisorAiService $ai)
     {
         $tempId = session('advisor_temp_id');
@@ -68,94 +70,81 @@ class GuestAdvisorController extends Controller
             return response()->json(['error' => 'Nema podataka o vozilima.'], 400);
         }
 
-        $vehiclesRaw = TempAdvisorVehicle::where('temp_id', $tempId)->get()->toArray();
-        if (empty($vehiclesRaw)) {
+        // i ovdje provjera istih poruka po chat_id
+        $chat = TempAdvisorChat::where('temp_id', $tempId)->first();
+        if ($chat && $chat->messages()->where('role', 'user')->count() >= 2) {
+            return response()->json(['redirectUrl' => route('register')], 403);
+        }
+
+        $raw = TempAdvisorVehicle::where('temp_id', $tempId)->get();
+        if ($raw->isEmpty()) {
             return response()->json(['error' => 'Nema vozila.'], 400);
         }
 
-        $vehicles = collect($vehiclesRaw)
-            ->unique(fn($v) => implode('|', [
-                $v['brand'], $v['model'], $v['year'], $v['mileage'],
-                $v['engine_capacity'], $v['engine_power'],
-                $v['fuel_type'], $v['transmission'],
-            ]))
-            ->values()
-            ->toArray();
-
-        $tempChat = TempAdvisorChat::create([
+        // kreiraš chat
+        $chat = TempAdvisorChat::create([
             'temp_id'    => $tempId,
             'status'     => 'open',
             'created_at' => now(),
         ]);
 
-        $ai->getInitialAnalysisForGuest($tempChat, $vehicles);
+        $vehicles = $raw->unique(function ($v) {
+            return implode('|', [
+                $v->brand, $v->model, $v->year, $v->mileage,
+                $v->engine_capacity, $v->engine_power, $v->fuel_type, $v->transmission,
+            ]);
+        })->values()->toArray();
+
+        $ai->getInitialAnalysisForGuest($chat, $vehicles);
 
         TempAdvisorVehicle::where('temp_id', $tempId)->delete();
 
-        return response()->json([
-            'redirectUrl' => route('advisor.guest.chat', $tempChat->id),
-        ]);
+        return response()->json(['redirectUrl' => route('advisor.guest.chat', $chat->id)]);
     }
 
     public function showChat($chatId)
     {
-        $tempChat = TempAdvisorChat::findOrFail($chatId);
-        $messages = TempAdvisorMessage::where('chat_id', $chatId)
-                                      ->orderBy('id')
-                                      ->get();
+        $chat      = TempAdvisorChat::findOrFail($chatId);
+        $messages  = TempAdvisorMessage::where('chat_id', $chatId)->orderBy('id')->get();
+        $needReg   = $messages->where('role', 'user')->count() >= 2;
 
-        $userCount        = $messages->where('role', 'user')->count();
-        $promptRegistration = $userCount >= 2;
-
-        return view('advisor.guest-chat', compact(
-            'tempChat', 'messages', 'promptRegistration'
-        ));
+        return view('advisor.guest-chat', [
+            'tempChat'           => $chat,
+            'messages'           => $messages,
+            'promptRegistration' => $needReg,
+        ]);
     }
 
-    public function storeGuestFollowup(
-        Request $request,
-        $chatId,
-        AdvisorAiService $ai
-    ) {
+    public function storeGuestFollowup(Request $request, $chatId, AdvisorAiService $ai)
+    {
         $data = $request->validate(['message' => 'required|string']);
         $chat = TempAdvisorChat::findOrFail($chatId);
 
-        // 1) Snimi samo user poruku
+        if (TempAdvisorMessage::where('chat_id', $chatId)->where('role', 'user')->count() >= 2) {
+            return response()->json(['redirectUrl' => route('register')], 403);
+        }
+
         TempAdvisorMessage::create([
-            'chat_id'    => $chat->id,
-            'role'       => 'user',
-            'content'    => $data['message'],
+            'chat_id' => $chat->id,
+            'role'    => 'user',
+            'content' => $data['message'],
             'created_at' => now(),
         ]);
 
-        // 2) Pozovi servis koji **sam** snimi assistant odgovor
         $reply = $ai->followUpGuest($chat, $data['message']);
 
-        // 3) Brojač user poruka
-        $userCount = TempAdvisorMessage::where('chat_id', $chat->id)
-                                       ->where('role', 'user')
-                                       ->count();
+        $count = TempAdvisorMessage::where('chat_id', $chat->id)->where('role', 'user')->count();
 
-        // 4) Priprema HTML
-        $q = e($data['message']);
-        $r = e($reply);
+        $qHtml = '<div class="flex justify-end mb-2"><div class="bubble user animate-fadeIn">'
+               . e($data['message']) . '</div></div>';
 
-        $questionHtml = <<<HTML
-<div class="flex justify-end mb-2">
-  <div class="bubble user animate-fadeIn">{$q}</div>
-</div>
-HTML;
-
-        $responseHtml = <<<HTML
-<div class="flex justify-start mb-2">
-  <div class="bubble assistant animate-fadeIn markdown-content" data-content="{$r}"></div>
-</div>
-HTML;
+        $rHtml = '<div class="flex justify-start mb-2"><div class="bubble assistant animate-fadeIn markdown-content" data-content="'
+               . e($reply) . '"></div></div>';
 
         return response()->json([
-            'questionHtml' => $questionHtml,
-            'responseHtml' => $responseHtml,
-            'userCount'    => $userCount,
+            'questionHtml' => $qHtml,
+            'responseHtml' => $rHtml,
+            'userCount'    => $count,
         ]);
     }
 }

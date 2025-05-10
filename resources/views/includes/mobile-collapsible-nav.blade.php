@@ -38,7 +38,7 @@
             <div class="collapsible-link submenu-section">
                 <input type="checkbox" id="mobile-dijagnoza-submenu" class="hidden" />
                 <label for="mobile-dijagnoza-submenu" class="dijagnoza-submenu-label">
-                    <i class="fas fa-diagnoses"></i> Virtuelni mehaničar
+                    <i class="fa-solid fa-screwdriver-wrench"></i> Virtuelni mehaničar
                 </label>
                 <div class="dijagnoza-submenu-items">
                     <a href="{{ route('dashboard') }}">Aktivni Chat</a>
@@ -82,7 +82,13 @@
 
             <div class="collapsible-link">
                 <a href="{{ route('service-book.index') }}">
-                    <i class="fas fa-book"></i> Servisna Knjiga
+                    <i class="fa-solid fa-book"></i> Servisna Knjiga
+                </a>
+            </div>
+
+             <div class="collapsible-link">
+                <a href="{{ route('profile.garage') }}">
+                    <i class="fa-solid fa-warehouse"></i> Moja Garaža
                 </a>
             </div>
 
@@ -101,12 +107,12 @@
 
             <div class="collapsible-link">
                 <a href="{{ route('profile.subscription') }}">
-                    <i class="fas fa-suitcase"></i> Kupi tokene
+                    <i class="fa-solid fa-cart-shopping"></i> Kupi tokene
                 </a>
             </div>
             <div class="collapsible-link">
                 <a href="{{ route('support') }}">
-                    <i class="fas fa-life-ring"></i> Pordrška
+                    <i class="fa-solid fa-headset"></i> Pordrška
                 </a>
             </div>
             <div class="collapsible-link">
@@ -126,7 +132,7 @@
             </div>
             <div class="collapsible-link">
                 <a href="{{ route('guest.wizard-form') }}">
-                    <i class="fas fa-diagnoses"></i> Virtuelni Mehaničar
+                    <i class="fa-solid fa-screwdriver-wrench"></i> Virtuelni Mehaničar
                 </a>
             </div>
             <div class="collapsible-link">

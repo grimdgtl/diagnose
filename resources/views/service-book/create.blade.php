@@ -1,10 +1,13 @@
 @extends('layouts.app')
 @section('content')
-<div class="h-full mobile-height main-child bg-black border-orange radius-10">
-    <form method="POST" action="{{ route('service-book.store') }}" class="w-full">
+<div class="page-format relative">
+    <div class="flex flex-col h-full">
+        <div class="flex items-center justify-between chat-header p-4">
+            <h1 class="page-title title-max-width">Dodaj Novi Servisni Zapis</h1>
+        </div>
+    <form method="POST" action="{{ route('service-book.store') }}" class="space-y-4 default-width mx-auto p-8 md:p-0">
         @csrf
-        <h1 class="page-title md:text-xl mb-6">Dodaj Novi Servisni Zapis</h1>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:gap-6 md:gap-2">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:gap-4 md:gap-2">
             <div class="mb-4">
                 <select name="car_detail_id" id="car_detail_id" class="input-field">
                     @foreach($cars as $car)
@@ -28,7 +31,7 @@
             <span class="text-red-500 text-sm">{{ $message }}</span>
             @enderror
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:gap-6 md:gap-2">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:gap-4 md:gap-2">
             <div class="mb-4">
                 
                 <input type="number" name="mileage" id="mileage" placeholder="Kilometraža" class="input-field" required>
@@ -51,5 +54,6 @@
         </div>
         <button type="submit" class="btn-orange">Sačuvaj</button>
     </form>
+</div>
 </div>
 @endsection
