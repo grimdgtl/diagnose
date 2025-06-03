@@ -6,7 +6,7 @@ use App\Models\CarDetail;
 use App\Models\ServiceRecord;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Barryvdh\DomPDF\Facade\PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ServiceBookController extends Controller
 {
@@ -127,7 +127,7 @@ class ServiceBookController extends Controller
                                        ->orderBy('service_date', 'desc')
                                        ->get();
 
-        $pdf = PDF::loadView('service-book.pdf', compact('car', 'serviceRecords'))
+        $pdf = Pdf::loadView('service-book.pdf', compact('car', 'serviceRecords'))
                   ->setPaper('a4', 'portrait');
 
         return $pdf->download("servisna-knjiga-{$car->brand}-{$car->model}.pdf");
