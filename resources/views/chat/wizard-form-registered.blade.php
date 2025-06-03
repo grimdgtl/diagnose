@@ -41,9 +41,10 @@
     </div>
 
     @if(Auth::user()->num_of_questions_left > 0)
+    <div class="flex-grow flex flex-col justify-center p-8">
         <p class="text-gray-400 text-center">
-        Dvostepni formular. Na drugom koraku možeš da izabereš postojeći auto iz garaže ili da uneseš potpuno novi.
-    </p>
+            Dvostepni formular. Na drugom koraku možeš da izabereš postojeći auto iz garaže ili da uneseš potpuno novi.
+        </p>
         <form id="wizardForm" action="{{ route('registered.store-data') }}" method="POST"
               @submit="document.getElementById('loader').classList.remove('hidden')"
               class="space-y-6 default-width"
@@ -166,6 +167,7 @@
                 </div>
             </div>
         </form>
+    </div>
     @else
         <div class="flex flex-col items-center justify-center h-full default-width">
             <p class="text-gray-400 mb-4 text-center">Nemate više tokena.</p>

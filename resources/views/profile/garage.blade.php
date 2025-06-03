@@ -117,7 +117,7 @@
                   {{ $car->brand }} {{ $car->model }}
                 </h2>
 
-                <div class="flex items-center space-x-2 text-gray-300">
+                <div class="flex items-center space-x-4 text-gray-300">
                   <i class="fas fa-calendar-alt"></i>
                   <span>{{ $car->year }}. godište</span>
                 </div>

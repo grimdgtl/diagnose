@@ -1300,6 +1300,7 @@ select.input-field:focus {
 
   .page-format {
     height: 100%;
+    overflow-y: scroll;
   }
 }
 
@@ -1798,4 +1799,3 @@ p, a, label, span {
   max-height: 70vh;
   overflow-x: scroll;
 }
-
