@@ -10,6 +10,8 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import '@fortawesome/fontawesome-free/js/all.min.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import './bootstrap'; // ili obavezni include
+import { Serbian } from 'flatpickr/dist/l10n/sr.js';
 
 /**
  * Next, we will create a fresh Vue application instance. You may then begin
@@ -64,16 +66,15 @@ document.querySelectorAll('.toggle-password').forEach(function(toggle) {
     });
 });
 
-// Inicijalizacija Flatpickr nakon učitavanja DOM-a
+
 document.addEventListener('DOMContentLoaded', function () {
-    flatpickr('#service_date', {
-        dateFormat: 'Y-m-d', // Format datuma za HTML input
-        altInput: true, // Prikazivanje korisniku lepšeg formata datuma
-        altFormat: 'd.m.Y', // Lepši format za korisnika (npr. 05.03.2025)
-        theme: 'dark', // Osnovna tamna tema
-        minDate: 'today', // Ograničavanje na današnji dan ili kasnije
-    });
+  flatpickr('#service_date', {
+    dateFormat: 'd.m.Y',
+    locale: 'sr',
+    // NIJE postavljen minDate: "today"
+  });
 });
+
 
 document.addEventListener('DOMContentLoaded', function() {
   function adjustChatContainerHeight() {

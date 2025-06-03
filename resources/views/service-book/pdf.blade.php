@@ -5,91 +5,97 @@
     <title>Servisna Knjiga - {{ $car->brand }} {{ $car->model }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     
     <style>
+        /* ------------------------------------------------
+           OSNOVNI RESET + TIPOGRAFIJA
+        ------------------------------------------------ */
         body {
-            font-family: 'Red Hat Display', sans-serif; /* Font koji podržava srpske karaktere */
-            background-color: #0a0a0a; /* Crna pozadina */
-            color: #FFFFFF; /* Bela boja teksta */
-            margin: 0; /* Uklanjanje margina */
-            padding: 0; /* Uklanjanje paddinga */
-            height: 100%; /* Osigurava punu visinu */
-            width: 100%; /* Osigurava punu širinu */
+            font-family: "DejaVu Sans", sans-serif;
+            background-color: #ffffff;   /* BELO */
+            color: #000000;              /* CRNO */
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
         }
-
-        /* Header */
+        h1, h2, h3, h4, h5, h6 {
+            margin: 0;
+            padding: 0;
+            color: #000000;              /* CRNI NASLOVI */
+        }
+        /* ------------------------------------------------
+           HEADER
+        ------------------------------------------------ */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 20px;
-            background-color: #FF5C00; /* Narandžasta boja za header */
-            border-bottom: 2px solid #FF5C00;
+            background-color: #ffffff;   /* BELO */
+            border-bottom: 1px solid #000000; /* TANAK CRNI OKVIR */
         }
-
-        .header img {
-            height: 50px; /* Veličina loga, prilagodite prema vašem logu */
-            width: auto;
+        .header span {
+            font-weight: 900;
+            font-style: italic;
+            color: #000000;              /* CRNO */
         }
-
         .header h1 {
-            color: #FFFFFF; /* Bela boja teksta za naslov */
-            margin: 0;
             font-size: 1.5rem;
             text-transform: uppercase;
             font-weight: 900;
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+            color: #000000;              /* CRNO */
         }
-
-        /* Informacije o vozilu */
+        /* ------------------------------------------------
+           INFORMACIJE O VOZILU
+        ------------------------------------------------ */
         .car-info {
             padding: 20px;
-            background-color: #1a1a1a; /* Tamno siva/crna pozadina */
-            border-bottom: 2px solid #FF5C00; /* Narandžasta ivica */
+            background-color: #ffffff;   /* BELO */
+            border-bottom: 1px solid #000000; /* TANAK CRNI OKVIR */
             margin-bottom: 20px;
             font-size: 1.1rem;
-            color: #FFFFFF;
+            color: #000000;              /* CRNO */
         }
-
-        /* Tabela */
+        .car-info p {
+            margin: 4px 0;
+        }
+        /* ------------------------------------------------
+           TABELA
+        ------------------------------------------------ */
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 0;
-            padding: 20px;
+            padding: 0;
         }
-
         th, td {
-            border: 1px solid #FF5C00; /* Narandžasta ivica */
-            padding: 12px;
+            border: 1px solid #000000; /* CRNI OKVIR */
+            padding: 10px;
             text-align: left;
-            color: #FFFFFF; /* Bela boja teksta */
+            color: #000000;            /* CRNO */
         }
-
         th {
-            background-color: #FF5C00; /* Narandžasta pozadina za zaglavlja */
-            color: #FFFFFF; /* Bela boja teksta za zaglavlja */
+            background-color: #f0f0f0; /* SVETLO SIVA pozadina za zaglavlja */
             font-weight: 700;
             text-transform: uppercase;
         }
-
         tr:nth-child(even) {
-            background-color: #1a1a1a; /* Tamno siva/crna pozadina za parne redove */
+            background-color: #ffffff; /* BELO */
         }
-
         tr:nth-child(odd) {
-            background-color: #0a0a0a; /* Crna pozadina za neparne redove */
+            background-color: #f9f9f9; /* BLAGO SVETLO SIVA */
         }
-
-        /* Footer */
+        /* ------------------------------------------------
+           FOOTER
+        ------------------------------------------------ */
         .footer {
             text-align: center;
             padding: 20px;
-            background-color: #FF5C00; /* Narandžasta pozadina za footer */
-            color: #FFFFFF; /* Bela boja teksta */
+            background-color: #ffffff;   /* BELO */
+            color: #000000;              /* CRNO */
             font-size: 0.9rem;
-            border-top: 2px solid #FF5C00;
+            border-top: 1px solid #000000; /* TANAK CRNI OKVIR */
             margin-top: 20px;
         }
     </style>
@@ -97,19 +103,19 @@
 <body>
     <!-- Header sa logom i naslovom -->
     <div class="header">
-        <span style="color: #FFFFFF; font-weight: 900; font-style:italic;">DIJAGNOZA</span>
-        <h1>Servisna Knjiga</h1>
+        <h1>DIJAGNOZA</h1>
+        <span>Servisna Knjiga</span>
     </div>
 
     <!-- Informacije o vozilu -->
     <div class="car-info">
-        Proizvodjac: {{ $car->brand }}<br>
-        Model: {{ $car->model }}<br>
-        Godina: {{ $car->year }}<br>
-        Zapremina motora: {{ $car->engine_capacity}}<br>
-        Snaga motora: {{ $car->engine_power }}<br>
-        Gorivo: {{ $car->fuel_type }}<br>
-        Menjac: {{ $car->transmission }}<br>
+        <p>Proizvođač: {{ $car->brand }}</p>
+        <p>Model: {{ $car->model }}</p>
+        <p>Godina: {{ $car->year }}</p>
+        <p>Zapremina motora: {{ $car->engine_capacity }}</p>
+        <p>Snaga motora: {{ $car->engine_power }}</p>
+        <p>Gorivo: {{ $car->fuel_type }}</p>
+        <p>Menjač: {{ $car->transmission }}</p>
     </div>
 
     <!-- Tabela sa servisnim zapisima -->

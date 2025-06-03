@@ -45,7 +45,7 @@
          B) Lista postojećih vozila – VERTIKALNO CENTRIRANO
     ************************************************************ --}}
     @else
-      <div class="flex-grow flex flex-col justify-center p-8">
+      <div class="flex-grow flex flex-col overflow-y-scroll justify-center p-8">
 
         <p class="text-center mb-8">
           Odaberite vozilo kojem želite da pregledate servisnu knjigu
