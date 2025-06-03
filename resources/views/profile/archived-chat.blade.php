@@ -28,7 +28,7 @@
                 </div>
                 @endforeach
             @endforeach
-            <div id="chat-input-container" class="left-0">
+            <div id="chat-input-container" class="left-0 mobile-hidden">
                 <div class="back-button text-right">
                     <a href="{{ route('profile.history') }}" class="btn-orange text-blue-400 inline-block">Nazad</a>
                  </div>

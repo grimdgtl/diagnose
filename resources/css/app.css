@@ -954,6 +954,10 @@ select.input-field:focus {
     overflow: hidden;
   }
 
+  .mobile-hidden {
+    display: none;
+  }
+
   .layout-container {
     padding: 0;
     height: 100vh;
@@ -1798,4 +1802,9 @@ p, a, label, span {
 .service-home {
   max-height: 70vh;
   overflow-x: scroll;
+}
+
+.card-list-grid {
+  height: 80vh;
+  align-content: flex-start;
 }

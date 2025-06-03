@@ -52,7 +52,7 @@ class ServiceBookController extends Controller
             'year'            => 'required|integer',
             'mileage'         => 'required|integer|min:0',
             'engine_capacity' => 'required|string',
-            'engine_power'    => 'required|numeric',
+            'engine_power'    => 'required|string',
             'fuel_type'       => 'required|string',
             'transmission'    => 'required|string',
         ]);

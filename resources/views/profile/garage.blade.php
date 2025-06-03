@@ -57,7 +57,16 @@
         {{-- RED 3 --}}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <input name="engine_capacity" class="input-field" placeholder="Kubikaža (npr. 1499)" value="{{ old('engine_capacity') }}">
-          <input name="engine_power"    type="number" class="input-field" placeholder="Snaga (kW)" value="{{ old('engine_power') }}">
+          <select id="engine_power" name="engine_power" class="input-field">
+                            <option value="">Snaga motora</option>
+                            @foreach ([
+                                "29kW (40KS)", "35kW (48KS)", "37kW (50KS)", "44kW (60KS)", "50kW (68KS)", "55kW (75KS)", "59kW (80KS)", "66kW (90KS)", "74kW (100KS)", "80kW (109KS)", "82kW (112KS)", "85kW (116KS)", "90kW (122KS)", "96kW (130KS)", "100kW (136KS)", "107kW (145KS)", "110kW (150KS)", "118kW (160KS)", "125kW (170KS)", "132kW (180KS)", "143kW (195KS)", "147kW (200KS)", "150kW (204KS)", "162kW (220KS)", "184kW (250KS)", "200kW (272KS)", "220kW (300KS)", "265kW (360KS)", "294kW (400KS)", "331kW (450KS)", "373kW (500KS)"
+                            ] as $option)
+                                <option value="{{ $option }}" {{ old('engine_power') == $option ? 'selected' : '' }}>
+                                    {{ $option }}
+                                </option>
+                            @endforeach
+                        </select>
         </div>
 
         {{-- RED 4 --}}
@@ -90,9 +99,9 @@
     ========================================================= --}}
     @else
       {{-- flex-grow za preostali prostor, centriranje i po osi Y --}}
-      <div class="flex-1 items-center justify-center overflow-y-scroll garage-card-list">
+      <div class="overflow-y-scroll garage-card-list">
         {{-- same kartice – wrap i horizontalno centriranje --}}
-        <div class="flex flex-wrap justify-center items-start gap-2 p-4 w-full">
+        <div class="flex flex-wrap justify-start gap-2 p-4 w-full">
           @foreach($cars as $car)
             <div
               class="garage-card relative bg-gray-900 rounded-xl border-2 border-orange-500/20 p-6 hover:border-orange-500/50 transition-all
@@ -122,7 +131,7 @@
                   <span>{{ $car->year }}. godište</span>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 gap-4">
                   <div class="flex items-center space-x-2 text-gray-300">
                     <i class="fas fa-tachometer-alt"></i>
                     <span>{{ $car->engine_power }}</span>
@@ -133,7 +142,7 @@
                   </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 gap-4">
                   <div class="flex items-center space-x-2 text-gray-300">
                     <i class="fas fa-gas-pump"></i>
                     <span>{{ $car->fuel_type }}</span>

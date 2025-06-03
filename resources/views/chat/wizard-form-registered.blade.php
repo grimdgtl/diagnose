@@ -125,10 +125,7 @@
                         <select id="engine_power" name="engine_power" class="input-field">
                             <option value="">Snaga motora</option>
                             @foreach ([
-                                "25kW (34KS)", "35kW (48KS)", "44kW (60KS)", "55kW (75KS)", "66kW (90KS)",
-                                "74kW (101KS)", "80kW (109KS)", "85kW (116KS)", "96kW (131KS)", "110kW (150KS)",
-                                "125kW (170KS)", "147kW (200KS)", "184kW (250KS)", "222kW (302KS)",
-                                "262kW (356KS)", "294kW (402KS)", "333kW (453KS)"
+                                "29kW (40KS)", "35kW (48KS)", "37kW (50KS)", "44kW (60KS)", "50kW (68KS)", "55kW (75KS)", "59kW (80KS)", "66kW (90KS)", "74kW (100KS)", "80kW (109KS)", "82kW (112KS)", "85kW (116KS)", "90kW (122KS)", "96kW (130KS)", "100kW (136KS)", "107kW (145KS)", "110kW (150KS)", "118kW (160KS)", "125kW (170KS)", "132kW (180KS)", "143kW (195KS)", "147kW (200KS)", "150kW (204KS)", "162kW (220KS)", "184kW (250KS)", "200kW (272KS)", "220kW (300KS)", "265kW (360KS)", "294kW (400KS)", "331kW (450KS)", "373kW (500KS)"
                             ] as $option)
                                 <option value="{{ $option }}" {{ old('engine_power') == $option ? 'selected' : '' }}>
                                     {{ $option }}
