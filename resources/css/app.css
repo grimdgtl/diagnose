@@ -1395,6 +1395,11 @@ select.input-field:focus {
 
 .service-card {
   width: 45%;
+  line-height: 1rem;
+}
+
+.service-card svg {
+  color: var(--orange);
 }
 
 /********************************************************************************

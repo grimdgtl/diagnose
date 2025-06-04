@@ -14,9 +14,9 @@
           <i class="fas fa-home"></i>
         </a>
       @else
-        <a href="{{ route('profile.garage', ['add' => 1]) }}"
-           class="btn-orange px-6 py-2 text-black hover:bg-orange-500 add-car">
-          + <i class="fas fa-car"></i>
+        <a href="{{ route('home') }}"
+          class="btn-orange px-6 py-2 text-black hover:bg-orange-500 add-car">
+          <i class="fas fa-home"></i>
         </a>
       @endif
     </div>

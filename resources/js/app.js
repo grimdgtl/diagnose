@@ -69,9 +69,17 @@ document.querySelectorAll('.toggle-password').forEach(function(toggle) {
 
 document.addEventListener('DOMContentLoaded', function () {
   flatpickr('#service_date', {
-    dateFormat: 'd.m.Y',
-    locale: 'sr',
-    // NIJE postavljen minDate: "today"
+    // Vrednost (value) u inputu će biti u formatu "YYYY-MM-DD"
+    dateFormat: 'Y-m-d',
+
+    // Korisnik vidi lokalni prikaz "DD.MM.YYYY", ali stvarno value ostaje Y-m-d
+    altInput: true,
+    altFormat: 'd.m.Y',
+
+    locale: Serbian,
+
+    // Ako hoćeš da datum bude minimalno danas:
+    // minDate: "today",
   });
 });
 

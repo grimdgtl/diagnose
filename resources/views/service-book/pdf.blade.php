@@ -37,7 +37,6 @@
         }
         .header span {
             font-weight: 900;
-            font-style: italic;
             color: #000000;              /* CRNO */
         }
         .header h1 {
