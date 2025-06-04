@@ -11,9 +11,9 @@
 <div class="page-format relative">
   {{-- ceo ekran kao kolona – header + ostatak --}}
     <div class="flex flex-col h-full">
-        <div class="flex items-center justify-between chat-header p-0 md:p-4">
+        <div class="flex items-center justify-between chat-header">
             <h1 class="page-title">
-                Dodaj vozilo
+                Savetnik
             </h1>
             <span id="questions-left" class="bg-orange text-white px-3 py-1 rounded-md">
                 <b>Broj preostalih tokena: {{ $tokensLeft }}</b>

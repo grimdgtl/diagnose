@@ -13,10 +13,10 @@
 >
     <div class="flex flex-col h-full">
     <div class="flex items-center justify-between chat-header p-4">
-        <h1 class="page-title title-max-width">
+        <h1 class="page-title">
             Novi Chat
         </h1>
-        <span id="questions-left" class="bg-orange text-white px-3 py-1 rounded-md">
+        <span id="questions-left" class="bg-orange text-white text-center px-3 py-1 rounded-md">
             <b>Broj preostalih tokena: {{ Auth::user()->num_of_questions_left }}</b>
         </span>
     </div>
@@ -36,12 +36,12 @@
     <div id="loader" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50 hidden">
         <div class="text-center">
             <img class="pulse" src="{{ asset('assets/images/logo-neon.png') }}" alt="Loader">
-            <p class="text-white uppercase font-black">Treba mi 10s da razmislim, molim sačekajte...</p>
+            <p class="text-white uppercase font-black">Treba mi malo vremena da razmislim, molim sačekajte...</p>
         </div>
     </div>
 
     @if(Auth::user()->num_of_questions_left > 0)
-    <div class="flex-grow flex flex-col justify-center p-8">
+    <div class="flex-grow flex flex-col justify-center p-2 md:p-8">
         <p class="text-gray-400 text-center">
             Dvostepni formular. Na drugom koraku možeš da izabereš postojeći auto iz garaže ili da uneseš potpuno novi.
         </p>

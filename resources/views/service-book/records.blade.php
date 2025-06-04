@@ -4,8 +4,8 @@
 <div class="page-format relative">
     <div class="flex flex-col h-full">
         <div class="flex items-center justify-between chat-header p-4">
-            <h1 class="page-title title-max-width">Servisni Zapisi za {{ $car->brand }} {{ $car->model }}</h1>
-            <div class="flex w-1/5 gap-4 small-button">
+            <h1 class="page-title">Servisni Zapisi</h1>
+            <div class="flex gap-4">
                 <a href="{{ route('service-book.create', $car->id) }}"
                     class="btn-orange px-6 py-2 text-black hover:bg-orange-500 add-car">
                     <i class="fa-solid fa-plus"></i>

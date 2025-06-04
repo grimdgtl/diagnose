@@ -3,9 +3,13 @@
 <div class="page-format relative">
     <div class="flex flex-col h-full">
         <div class="flex items-center justify-between chat-header p-4">
-            <h1 class="page-title title-max-width">Dodaj Novi Servisni Zapis</h1>
+            <h1 class="page-title">Novi Zapis</h1>
+            <a href="{{ route('profile.garage', ['add' => 1]) }}"
+                class="btn-orange px-6 py-2 text-black hover:bg-orange-500 add-car">
+                Nazad
+            </a>
         </div>
-    <form method="POST" action="{{ route('service-book.store') }}" class="space-y-4 default-width mx-auto p-8 md:p-0">
+    <form method="POST" action="{{ route('service-book.store') }}" class="space-y-4 default-width mx-auto p-2 md:p-8">
         @csrf
         <div class="grid grid-cols-1 md:grid-cols-2 lg:gap-4 md:gap-2">
             <div class="mb-4">

@@ -7,13 +7,17 @@
 
     {{-- ---------------- HEADER ---------------- --}}
     <div class="flex items-center justify-between chat-header p-4">
-      <h1 class="page-title title-max-width">Moja garaža</h1>
-
+      <h1 class="page-title">Moja garaža</h1>
       @if($cars->count())
         <a href="{{ route('profile.garage', ['add' => 1]) }}"
-           class="btn-orange px-6 py-2 text-black hover:bg-orange-500 add-car small-button">
+           class="btn-orange px-6 py-2 text-black hover:bg-orange-500 add-car">
           + <i class="fas fa-car"></i>
         </a>
+      @else
+        <a href="{{ route('home') }}"
+          class="btn-orange px-6 py-2 text-black hover:bg-orange-500 add-car">
+          <i class="fas fa-home"></i>
+        </a>  
       @endif
     </div>
 
@@ -39,7 +43,7 @@
 
       <form action="{{ route('service-book.add-car') }}"
             method="POST"
-            class="space-y-6 default-width mx-auto pt-0 pb:0 md:pb-0 px-8 md:p-0">
+            class="space-y-6 default-width mx-auto p-2 md:p-4">
         @csrf
         {{-- … svi inputi ostaju nepromenjeni … --}}
         {{-- RED 1 --}}
@@ -101,7 +105,7 @@
       {{-- flex-grow za preostali prostor, centriranje i po osi Y --}}
       <div class="overflow-y-scroll garage-card-list">
         {{-- same kartice – wrap i horizontalno centriranje --}}
-        <div class="flex flex-wrap justify-start gap-2 p-4 w-full">
+        <div class="flex flex-wrap justify-start gap-2 p-2 md:p-4 w-full">
           @foreach($cars as $car)
             <div
               class="garage-card relative bg-gray-900 rounded-xl border-2 border-orange-500/20 p-6 hover:border-orange-500/50 transition-all

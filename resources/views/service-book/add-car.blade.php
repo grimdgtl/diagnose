@@ -1,4 +1,4 @@
-@extends('layouts.app')
+`@extends('layouts.app')
 
 @section('content')
 <div class="h-full main-child bg-black border-orange radius-10">

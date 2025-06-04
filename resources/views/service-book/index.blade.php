@@ -5,12 +5,17 @@
   <div class="flex flex-col h-full">
 
     {{-- ---------------- HEADER ---------------- --}}
-    <div class="flex items-center justify-between chat-header lg:p-4 md:p-2 sm:p-2 ">
-      <h1 class="page-title title-max-width">Servisna knjiga</h1>
+    <div class="flex items-center justify-between chat-header">
+      <h1 class="page-title">Servisna knjiga</h1>
 
       @if($cars->count())
+        <a href="{{ route('home') }}"
+          class="btn-orange px-6 py-2 text-black hover:bg-orange-500 add-car">
+          <i class="fas fa-home"></i>
+        </a>
+      @else
         <a href="{{ route('profile.garage', ['add' => 1]) }}"
-           class="btn-orange px-6 py-2 text-black hover:bg-orange-500 add-car small-button">
+           class="btn-orange px-6 py-2 text-black hover:bg-orange-500 add-car">
           + <i class="fas fa-car"></i>
         </a>
       @endif
@@ -45,7 +50,7 @@
          B) Lista postojećih vozila – VERTIKALNO CENTRIRANO
     ************************************************************ --}}
     @else
-      <div class="flex-grow flex flex-col overflow-y-scroll justify-center p-8">
+      <div class="flex-grow flex flex-col overflow-y-scroll justify-top p-2 md:p-8">
 
         <p class="text-center mb-8">
           Odaberite vozilo kojem želite da pregledate servisnu knjigu

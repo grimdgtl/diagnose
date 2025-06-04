@@ -4,7 +4,7 @@
     <input type="checkbox" id="mobile-menu-toggle" class="hidden" />
 
     <!-- 2) Header (logo i hamburger) -->
-    <header class="mobile-header bg-black px-4 py-2">
+    <header class="mobile-header bg-black pr-2 py-2">
         <div class="flex items-center justify-between">
             <!-- Logo levo -->
             <a href="{{ route('dashboard') }}" class="flex items-center">

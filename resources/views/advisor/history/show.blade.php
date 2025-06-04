@@ -4,8 +4,10 @@
 <div class="chat relative">
     <!-- Header -->
     <div class="chat-header flex items-center justify-between px-4 py-3 bg-white shadow-sm">
-        <h1 class="page-title text-lg font-semibold">ARHIVIRANI CHAT</h1>
-        <a href="{{ route('advisor.history') }}" class="btn-orange">Nazad</a>
+        <h1 class="page-title text-lg font-semibold">CHAT</h1>
+        <a href="{{ route('advisor.history') }}" class="btn-orange add-car">
+            <i class="fas fa-arrow-left"></i>
+        </a>
     </div>
 
     <!-- Poruke -->
