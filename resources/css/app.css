@@ -954,6 +954,16 @@ select.input-field:focus {
     overflow: hidden;
   }
 
+  .collapsible-link a {
+    padding: 1rem;
+  }
+
+  .dijagnoza-submenu-label,
+  .advisor-submenu-label,
+  .submenu-label {
+    padding: 1rem;
+  }
+
   .mobile-hidden {
     display: none;
   }
@@ -1152,19 +1162,17 @@ select.input-field:focus {
     margin-bottom: 0.25rem;
   }
 
-  .submenu-label svg {
-    height: 1.25rem;
-    margin-right: 15px;
-  }
-
-  .dijagnoza-submenu-label svg {
-    height: 1.25rem;
-    margin-right: 15px;
-  }
-
+  .collapsible-link a svg,
+  .submenu-label svg,
+  .dijagnoza-submenu-label svg,
   .advisor-submenu-label svg {
     height: 1.25rem;
     margin-right: 15px;
+    max-width: 20px;
+  }
+
+  .collapsible-link {
+    border-bottom: 1px solid #222;
   }
 
   .bubble {
